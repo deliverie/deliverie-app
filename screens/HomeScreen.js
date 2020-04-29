@@ -9,6 +9,10 @@ import {
   Dimensions,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import FlashMessage, {
+  showMessage,
+} from 'react-native-flash-message';
+
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { Formik } from 'formik';
@@ -27,6 +31,11 @@ import ShopListItem from '../components/ShopListItem';
 import LocationSheet from '../components/LocationSheet';
 import H1 from '../components/H1';
 /** Components Ends */
+
+/** REDUX */
+import { useDispatch, useSelector } from 'react-redux';
+import { Creators as LocationsActions } from '../store/ducks/locations';
+/** REDUX END */
 
 export default function HomeScreen() {
   const locationSheet = React.useRef();

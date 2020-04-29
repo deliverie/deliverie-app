@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import Reactotron, { overlay } from "reactotron-react-native";
-import { reactotronRedux } from "reactotron-redux";
-import sagaPlugin from "reactotron-redux-saga";
+import Reactotron, { overlay } from 'reactotron-react-native';
+import { reactotronRedux } from 'reactotron-redux';
+import sagaPlugin from 'reactotron-redux-saga';
 
 export const reactotronConfigure = () => {
   if (__DEV__) {
-    const tron = Reactotron.configure({ host: "192.168.0.106" })
+    const tron = Reactotron.configure({ host: '192.168.0.106' })
       .useReactNative()
       .use(overlay())
       .use(reactotronRedux())

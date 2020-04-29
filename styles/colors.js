@@ -9,8 +9,8 @@ export default {
 
   primary: '#FB7944',
   secundary: '#444a5a',
-  success: '#9dca83',
-  danger: '#e37a7a',
+  success: '#4caf50',
+  danger: '#c32a1e',
 
   transparent: 'transparent',
   darkTransparent: 'rgba(0,0,0,0.6)',

@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import shops from './shops';
+import locations from './locations';
 
 const rootReducer = combineReducers({
-  shops,
+  locations,
 });
 
 export default rootReducer;

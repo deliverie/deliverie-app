@@ -6,8 +6,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import FlashMessage from 'react-native-flash-message';
+
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
+
+/** REDUX */
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store';
+import { Provider } from 'react-redux';
+/** REDUX END */
 
 const Stack = createStackNavigator();
 
@@ -56,18 +64,23 @@ export default function App(props) {
         {Platform.OS === 'ios' && (
           <StatusBar barStyle="dark-content" />
         )}
-        <NavigationContainer
-          ref={containerRef}
-          initialState={initialNavigationState}
-        >
-          <Stack.Navigator headerShown>
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="Root"
-              component={BottomTabNavigator}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <NavigationContainer
+              ref={containerRef}
+              initialState={initialNavigationState}
+            >
+              <Stack.Navigator headerShown>
+                <Stack.Screen
+                  options={{ headerShown: false }}
+                  name="Root"
+                  component={BottomTabNavigator}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </PersistGate>
+        </Provider>
+        {/* <FlashMessage position="top" /> */}
       </View>
     );
   }

@@ -1,21 +1,21 @@
 /* eslint-disable no-console */
-import { createStore, compose, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga";
-import { persistStore, persistReducer } from "redux-persist";
-import { AsyncStorage } from "react-native";
+import { createStore, compose, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import { persistStore, persistReducer } from 'redux-persist';
+import { AsyncStorage } from 'react-native';
 
-import { reactotronConfigure } from "../config/ReactotronConfig";
-import rootSagas from "./sagas";
-import rootReducers from "./ducks";
+import { reactotronConfigure } from '../config/ReactotronConfig';
+import rootSagas from './sagas';
+import rootReducers from './ducks';
 
 /** SECURE STORAGE */
 
 reactotronConfigure();
 
 const persistConfig = {
-  key: "@brasiliapp@:",
+  key: '@DELIVERIE@:',
   storage: AsyncStorage,
-  blacklist: ["deputadoDetalhe", "deputados", "senadores", "senadorDetalhe"]
+  whitelist: ['locations'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducers);
@@ -26,7 +26,10 @@ const middlewares = [];
 middlewares.push(sagaMiddleware);
 
 const composer = __DEV__
-  ? compose(applyMiddleware(...middlewares), console.tron.createEnhancer())
+  ? compose(
+      applyMiddleware(...middlewares),
+      console.tron.createEnhancer(),
+    )
   : compose(applyMiddleware(...middlewares));
 
 const store = createStore(persistedReducer, composer);

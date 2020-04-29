@@ -23,9 +23,10 @@ export default function Input({
   options,
   autoCapitalize,
   name,
+  disabled,
 }) {
   return (
-    <>
+    <View style={{ alignSelf: 'stretch' }}>
       {name && <Text style={styles.text}>{name}</Text>}
       <View
         style={[
@@ -48,11 +49,12 @@ export default function Input({
             autoCorrect={false}
             placeholder={placeholder}
             underlineColorAndroid="rgba(0, 0, 0, 0)"
-            placeholderTextColor={colors.darker}
+            placeholderTextColor={'rgba(0, 0, 0, 0.4)'}
             onChangeText={onChangeText}
             value={value}
             keyboardType={keyboardType || 'default'}
             secureTextEntry={!!secureTextEntry}
+            editable={!disabled}
           />
         )}
         {mask && (
@@ -64,15 +66,16 @@ export default function Input({
             autoCorrect={false}
             placeholder={placeholder}
             underlineColorAndroid="rgba(0, 0, 0, 0)"
-            placeholderTextColor={colors.darker}
+            placeholderTextColor={'rgba(0, 0, 0, 0.4)'}
             onChangeText={onChangeText}
             value={value}
             keyboardType={keyboardType || 'default'}
             secureTextEntry={!!secureTextEntry}
+            editable={!disabled}
           />
         )}
       </View>
       {msg && <InputMessage msg={msg} />}
-    </>
+    </View>
   );
 }

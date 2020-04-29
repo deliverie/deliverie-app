@@ -17,8 +17,21 @@ import { colors } from '../../styles';
 
 /** Components Ends */
 
+/** REDUX */
+import { useDispatch, useSelector } from 'react-redux';
+import { Creators as LocationsActions } from '../../store/ducks/locations';
+/** REDUX END */
+
 export default function CurrentPlace({ open, close }) {
   const [active, setActive] = React.useState(1);
+
+  const { locations, currentLocation } = useSelector(
+    (state) => state.locations,
+  );
+
+  React.useEffect(() => {
+    console.tron.log(locations);
+  }, []);
 
   function handleActive(index) {
     if (index !== active) {
@@ -60,7 +73,17 @@ export default function CurrentPlace({ open, close }) {
         style={styles.addressContainer}
       >
         <Text style={styles.addressText}>
-          R: Arlindo Cardoso Vieira, 116
+          {currentLocation
+            ? `${currentLocation.logradouro}, ${
+                currentLocation.numero
+                  ? `${currentLocation.numero},`
+                  : ''
+              } ${
+                currentLocation.localidade
+                  ? `${currentLocation.localidade}`
+                  : ''
+              }`
+            : 'Adicione um endereço'}
         </Text>
         <SimpleLineIcons
           name="arrow-down"
