@@ -1,15 +1,17 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import * as React from 'react';
 
 import Colors from '../constants/Colors';
 
 export default function TabBarIcon(props) {
   return (
-    <Ionicons
+    <Feather
       name={props.name}
-      size={30}
+      size={24}
       style={{ marginBottom: -3 }}
-      color={props.focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+      color={
+        props.focused ? Colors.tabIconSelected : Colors.tabIconDefault
+      }
     />
   );
 }

@@ -15,21 +15,48 @@ export default function BottomTabNavigator({ navigation, route }) {
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
   return (
-    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+    <BottomTab.Navigator
+      tabBarOptions={{ activeTintColor: '#FB7944' }}
+      initialRouteName={INITIAL_ROUTE_NAME}
+    >
       <BottomTab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Get Started',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          title: 'Início',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="home" />
+          ),
         }}
       />
       <BottomTab.Screen
-        name="Links"
+        name="Packages"
         component={LinksScreen}
         options={{
-          title: 'Resources',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
+          title: 'Pedidos',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="package" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Settings"
+        component={LinksScreen}
+        options={{
+          title: 'Configurações',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="settings" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Account"
+        component={LinksScreen}
+        options={{
+          title: 'Conta',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="user" />
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -37,11 +64,13 @@ export default function BottomTabNavigator({ navigation, route }) {
 }
 
 function getHeaderTitle(route) {
-  const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  const routeName =
+    route.state?.routes[route.state.index]?.name ??
+    INITIAL_ROUTE_NAME;
 
   switch (routeName) {
     case 'Home':
-      return 'How to get started';
+      return 'Início';
     case 'Links':
       return 'Links to learn more';
   }

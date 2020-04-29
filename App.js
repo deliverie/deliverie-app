@@ -12,8 +12,13 @@ import useLinking from './navigation/useLinking';
 const Stack = createStackNavigator();
 
 export default function App(props) {
-  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
-  const [initialNavigationState, setInitialNavigationState] = React.useState();
+  const [isLoadingComplete, setLoadingComplete] = React.useState(
+    false,
+  );
+  const [
+    initialNavigationState,
+    setInitialNavigationState,
+  ] = React.useState();
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
 
@@ -48,10 +53,19 @@ export default function App(props) {
   } else {
     return (
       <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
-            <Stack.Screen name="Root" component={BottomTabNavigator} />
+        {Platform.OS === 'ios' && (
+          <StatusBar barStyle="dark-content" />
+        )}
+        <NavigationContainer
+          ref={containerRef}
+          initialState={initialNavigationState}
+        >
+          <Stack.Navigator headerShown>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Root"
+              component={BottomTabNavigator}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </View>
