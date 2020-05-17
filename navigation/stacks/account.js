@@ -3,14 +3,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
-import Login from '../../screens/Login';
-import Register from '../../screens/Register';
+import Account from '../../screens/Account';
 
 export default function AccountStack() {
   return (
     <Stack.Navigator headerMode="none">
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="AccountStack" component={Account} />
     </Stack.Navigator>
   );
 }

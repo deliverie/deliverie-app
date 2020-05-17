@@ -8,7 +8,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import FlashMessage from 'react-native-flash-message';
 
-import BottomTabNavigator from './navigation/BottomTabNavigator';
+// import BottomTabNavigator from './navigation/BottomTabNavigator';
+import Router from './navigation/Router';
 import useLinking from './navigation/useLinking';
 
 /** REDUX */
@@ -70,13 +71,14 @@ export default function App(props) {
               ref={containerRef}
               initialState={initialNavigationState}
             >
-              <Stack.Navigator headerShown>
+              {/* <Stack.Navigator headerShown>
                 <Stack.Screen
                   options={{ headerShown: false }}
                   name="Root"
                   component={BottomTabNavigator}
                 />
-              </Stack.Navigator>
+              </Stack.Navigator> */}
+              <Router isLoadingComplete={isLoadingComplete} />
             </NavigationContainer>
           </PersistGate>
         </Provider>

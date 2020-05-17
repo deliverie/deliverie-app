@@ -43,9 +43,9 @@ export default function Login({ navigation }) {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
 
-  // React.useEffect(() => {
-  //   dispatch(LoginActions.loginLogout());
-  // }, []);
+  React.useEffect(() => {
+    dispatch(LoginActions.loginLogout());
+  }, []);
 
   return (
     <ScrollView

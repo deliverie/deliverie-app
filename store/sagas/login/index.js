@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
-import { api } from '../../../services/api';
+import api from '../../../services/api';
 import { showMessage } from 'react-native-flash-message';
 import { colors } from '../../../styles';
 import { showToast } from '../../../utils/toast';
@@ -10,12 +10,13 @@ import {
 } from '../../ducks/login';
 
 function* login({ payload }) {
-  console.tron.log('entrou na saga de login');
+  console.tron.log('entrou na saga de login', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
-    console.tron.log(response);
-    yield put(LoginActions.loginSucces(response.data));
+    console.tron.log('teste requisição', response);
+    yield put(LoginActions.loginSuccess(response.data));
   } catch (error) {
+    console.tron.log('catch', error);
     yield put(LoginActions.loginFail());
 
     showToast(
@@ -27,7 +28,7 @@ function* login({ payload }) {
 }
 
 function* loginWatcher() {
-  takeLatest(LoginTypes.LOGIN_REQUEST, login);
+  yield takeLatest(LoginTypes.LOGIN_REQUEST, login);
 }
 
 export default function* rootSaga() {

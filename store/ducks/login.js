@@ -6,7 +6,7 @@ export const Types = {
 };
 
 const INITIAL_STATE = {
-  data: [],
+  data: null,
   loading: false,
   error: false,
 };
@@ -17,10 +17,10 @@ export default function login(state = INITIAL_STATE, action) {
       console.log(action.payload);
       return { ...state, loading: true };
     case Types.LOGIN_SUCCESS:
+      console.tron.log('teste saga succcess', action);
       return {
         ...state,
-        locations: action.payload.data,
-        currentLocation: action.payload.data[0],
+        data: action.payload,
         loading: false,
         error: false,
       };
@@ -30,7 +30,7 @@ export default function login(state = INITIAL_STATE, action) {
       return { ...state, shops: [], loading: false, error: false };
     case Types.LOGIN_LOGOUT:
       return {
-        data: [],
+        data: null,
         loading: false,
         error: false,
       };
@@ -44,7 +44,7 @@ export const Creators = {
     type: Types.LOGIN_REQUEST,
     payload,
   }),
-  loginSucces: (payload) => ({
+  loginSuccess: (payload) => ({
     type: Types.LOGIN_SUCCESS,
     payload,
   }),
