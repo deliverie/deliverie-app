@@ -38,7 +38,8 @@ export default function Input({
           <MaterialCommunityIcons
             name={icon}
             size={22}
-            color="#7dc242"
+            color={colors.primary}
+            style={{ paddingRight: 10 }}
           />
         )}
 
@@ -74,8 +75,8 @@ export default function Input({
             editable={!disabled}
           />
         )}
+        {msg && <InputMessage msg={msg} />}
       </View>
-      {msg && <InputMessage msg={msg} />}
     </View>
   );
 }

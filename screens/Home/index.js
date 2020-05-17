@@ -19,25 +19,25 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import CurrentPlace from '../components/CurrentPlace';
+import CurrentPlace from '../../components/CurrentPlace';
 
 /** Internal Imports */
-import { colors } from '../styles';
+import { colors } from '../../styles';
 /** Internal Imports Ends */
 
 /** Components */
-import Input from '../components/Input';
-import ShopListItem from '../components/ShopListItem';
-import LocationSheet from '../components/LocationSheet';
-import H1 from '../components/H1';
+import Input from '../../components/Input';
+import ShopListItem from '../../components/ShopListItem';
+import LocationSheet from '../../components/LocationSheet';
+import H1 from '../../components/H1';
 /** Components Ends */
 
 /** REDUX */
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as LocationsActions } from '../store/ducks/locations';
+import { Creators as LocationsActions } from '../../store/ducks/locations';
 /** REDUX END */
 
-export default function HomeScreen() {
+export default function Login() {
   const locationSheet = React.useRef();
   const [loading, setLoading] = React.useState(true);
 
@@ -52,6 +52,10 @@ export default function HomeScreen() {
         .min(1)
         .required('Insira um número'),
     });
+
+  React.useEffect(() => {
+    console.log(locationSheet.current);
+  }, []);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -70,7 +74,7 @@ export default function HomeScreen() {
   );
 }
 
-HomeScreen.navigationOptions = {
+Login.navigationOptions = {
   header: null,
 };
 

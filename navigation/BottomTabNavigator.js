@@ -2,11 +2,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import Home from '../screens/Home';
+import Login from '../screens/Login';
 import LinksScreen from '../screens/LinksScreen';
+
+import AccountStack from './stacks/account';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
+
+const userLogged = false;
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -21,7 +26,7 @@ export default function BottomTabNavigator({ navigation, route }) {
     >
       <BottomTab.Screen
         name="Home"
-        component={HomeScreen}
+        component={Home}
         options={{
           title: 'Início',
           tabBarIcon: ({ focused }) => (
@@ -31,7 +36,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Packages"
-        component={LinksScreen}
+        component={userLogged ? LinksScreen : Login}
         options={{
           title: 'Pedidos',
           tabBarIcon: ({ focused }) => (
@@ -51,7 +56,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Account"
-        component={LinksScreen}
+        component={AccountStack}
         options={{
           title: 'Conta',
           tabBarIcon: ({ focused }) => (

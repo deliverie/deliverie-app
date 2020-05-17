@@ -80,7 +80,7 @@ export default function App(props) {
             </NavigationContainer>
           </PersistGate>
         </Provider>
-        {/* <FlashMessage position="top" /> */}
+        <FlashMessage position="top" />
       </View>
     );
   }

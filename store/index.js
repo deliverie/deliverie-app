@@ -15,7 +15,7 @@ reactotronConfigure();
 const persistConfig = {
   key: '@DELIVERIE@:',
   storage: AsyncStorage,
-  whitelist: ['locations'],
+  whitelist: ['login', 'locations'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducers);

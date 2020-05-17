@@ -6,15 +6,25 @@ import { hpd } from '../../utils/scalling';
 const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: 'rgba(0,0,0,0.5)',
+    borderWidth: 1,
+    borderColor: '#f1f1f1',
+    backgroundColor: colors.white,
+    borderRadius: metrics.baseRadius * 3,
+    padding: metrics.basePadding / 2,
     alignItems: 'center',
+    shadowColor: 'rgba(0,0,0,0.3)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 3,
   },
   input: {
     color: colors.darker,
     fontWeight: '300',
-    paddingBottom: 10,
-    paddingTop: 3,
     width: '50%',
   },
   text: {
