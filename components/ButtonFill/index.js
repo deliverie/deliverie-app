@@ -20,11 +20,21 @@ const ButtonFill = ({
   <TouchableOpacity
     onPress={onPress}
     disabled={disabled}
-    style={[styles.buttonContainer, { backgroundColor: color, borderColor: color }, style]}
+    style={[
+      styles.buttonContainer,
+      { backgroundColor: color, borderColor: color },
+      style,
+    ]}
   >
     <>
       {title && !loading ? (
-        <Text style={[styles.buttonText, fontColor ? { color: fontColor } : null, textStyle]}>
+        <Text
+          style={[
+            styles.buttonText,
+            fontColor ? { color: fontColor } : null,
+            textStyle,
+          ]}
+        >
           {title}
         </Text>
       ) : (

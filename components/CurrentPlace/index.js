@@ -9,6 +9,7 @@ import {
 import { SimpleLineIcons } from '@expo/vector-icons';
 
 /** Internal Imports */
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './styles';
 import { colors } from '../../styles';
 /** Internal Imports Ends */
@@ -18,7 +19,6 @@ import { colors } from '../../styles';
 /** Components Ends */
 
 /** REDUX */
-import { useDispatch, useSelector } from 'react-redux';
 import { Creators as LocationsActions } from '../../store/ducks/locations';
 /** REDUX END */
 
@@ -26,7 +26,7 @@ export default function CurrentPlace({ open, close }) {
   const [active, setActive] = React.useState(1);
 
   const { locations, currentLocation } = useSelector(
-    (state) => state.locations,
+    state => state.locations,
   );
 
   React.useEffect(() => {

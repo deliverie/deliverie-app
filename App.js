@@ -8,14 +8,21 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import FlashMessage from 'react-native-flash-message';
 
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import AlertProvider from 'react-native-alert-utils';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 
 /** REDUX */
-import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store';
-import { Provider } from 'react-redux';
+import CompanyScreen from './screens/CompanyScreen';
 /** REDUX END */
+
+import spaceMono from './assets/fonts/SpaceMono-Regular.ttf';
+import roboto from './assets/fonts/Roboto-Regular.ttf';
+import robotoLight from './assets/fonts/Roboto-Light.ttf';
+import robotoBold from './assets/fonts/Roboto-Bold.ttf';
 
 const Stack = createStackNavigator();
 
@@ -42,7 +49,10 @@ export default function App(props) {
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,
-          'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'space-mono': spaceMono,
+          roboto,
+          'roboto-light': robotoLight,
+          'roboto-bold': robotoBold,
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
@@ -58,37 +68,42 @@ export default function App(props) {
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null;
-  } else {
-    return (
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && (
-          <StatusBar barStyle="dark-content" />
-        )}
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <NavigationContainer
-              ref={containerRef}
-              initialState={initialNavigationState}
-            >
-              <Stack.Navigator headerShown>
-                <Stack.Screen
-                  options={{ headerShown: false }}
-                  name="Root"
-                  component={BottomTabNavigator}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </PersistGate>
-        </Provider>
-        {/* <FlashMessage position="top" /> */}
-      </View>
-    );
   }
+  return (
+    <View style={styles.container}>
+      {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <NavigationContainer
+            ref={containerRef}
+            initialState={initialNavigationState}
+          >
+            <Stack.Navigator headerShown>
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="Root"
+                component={BottomTabNavigator}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="Company"
+                component={CompanyScreen}
+              />
+            </Stack.Navigator>
+            <AlertProvider />
+          </NavigationContainer>
+        </PersistGate>
+      </Provider>
+      {/* <FlashMessage position="top" /> */}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    marginTop:
+      Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 });

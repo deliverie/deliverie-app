@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import FlashMessage, {
@@ -19,6 +21,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import { useDispatch, useSelector } from 'react-redux';
 import CurrentPlace from '../components/CurrentPlace';
 
 /** Internal Imports */
@@ -33,7 +36,6 @@ import H1 from '../components/H1';
 /** Components Ends */
 
 /** REDUX */
-import { useDispatch, useSelector } from 'react-redux';
 import { Creators as LocationsActions } from '../store/ducks/locations';
 /** REDUX END */
 
@@ -54,7 +56,12 @@ export default function HomeScreen() {
     });
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+      }}
+    >
       <CurrentPlace
         open={() => locationSheet.current.open()}
         close={() => locationSheet.current.close()}

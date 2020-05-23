@@ -8,6 +8,6 @@ export const showToast = (message, description, type, time) => {
     backgroundColor: colors[type],
     floating: true,
     position: 'top',
-    animationDuration: time ? time : 400,
+    animationDuration: time || 400,
   });
 };

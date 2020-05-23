@@ -45,18 +45,18 @@ export const Creators = {
   getLocations: () => ({
     type: Types.GET_LOCATIONS_RESQUEST,
   }),
-  getLocationsSuccess: (payload) => ({
+  getLocationsSuccess: payload => ({
     type: Types.GET_LOCATIONS_SUCCESS,
     payload,
   }),
   getLocationsFail: () => ({
     type: Types.GET_LOCATIONS_FAIL,
   }),
-  removeSingleLocation: (payload) => ({
+  removeSingleLocation: payload => ({
     type: Types.REMOVE_SINGLE_LOCATION,
     payload,
   }),
-  setLocation: (payload) => ({
+  setLocation: payload => ({
     type: Types.SET_LOCATION,
     payload,
   }),

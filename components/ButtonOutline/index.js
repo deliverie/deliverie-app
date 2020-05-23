@@ -6,7 +6,15 @@ import LottieView from 'lottie-react-native';
 import styles from './styles';
 import loadingJson from '../../assets/images/loading.json';
 
-const ButtonOutline = ({ style, title, color, textColor, loading, onPress, disabled }) => (
+const ButtonOutline = ({
+  style,
+  title,
+  color,
+  textColor,
+  loading,
+  onPress,
+  disabled,
+}) => (
   <TouchableOpacity
     onPress={onPress}
     style={[styles.buttonContainer, { borderColor: color }, style]}
@@ -23,7 +31,11 @@ const ButtonOutline = ({ style, title, color, textColor, loading, onPress, disab
         }}
       />
     )}
-    {title && !loading && <Text style={[styles.buttonText, { color: textColor }]}>{title}</Text>}
+    {title && !loading && (
+      <Text style={[styles.buttonText, { color: textColor }]}>
+        {title}
+      </Text>
+    )}
   </TouchableOpacity>
 );
 

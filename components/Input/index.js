@@ -49,7 +49,7 @@ export default function Input({
             autoCorrect={false}
             placeholder={placeholder}
             underlineColorAndroid="rgba(0, 0, 0, 0)"
-            placeholderTextColor={'rgba(0, 0, 0, 0.4)'}
+            placeholderTextColor="rgba(0, 0, 0, 0.4)"
             onChangeText={onChangeText}
             value={value}
             keyboardType={keyboardType || 'default'}
@@ -66,7 +66,7 @@ export default function Input({
             autoCorrect={false}
             placeholder={placeholder}
             underlineColorAndroid="rgba(0, 0, 0, 0)"
-            placeholderTextColor={'rgba(0, 0, 0, 0.4)'}
+            placeholderTextColor="rgba(0, 0, 0, 0.4)"
             onChangeText={onChangeText}
             value={value}
             keyboardType={keyboardType || 'default'}

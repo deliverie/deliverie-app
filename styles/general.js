@@ -1,7 +1,7 @@
 import colors from './colors';
 import metrics from './metrics';
 
-export default{
+export default {
   box: {
     backgroundColor: colors.white,
     borderRadius: metrics.baseRadius,

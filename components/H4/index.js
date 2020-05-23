@@ -10,7 +10,7 @@ export default function H4({ text, margin, badge, color }) {
         { fontSize: 12, fontWeight: '300' },
         margin ? { marginHorizontal: metrics.baseMargin } : {},
         badge ? { fontWeight: '500' } : {},
-        color ? { color: color } : {},
+        color ? { color } : {},
       ]}
     >
       {text}

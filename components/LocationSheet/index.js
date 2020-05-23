@@ -17,6 +17,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Feather, SimpleLineIcons } from '@expo/vector-icons';
 
+import { useDispatch, useSelector } from 'react-redux';
 import { showToast } from '../../utils/toast';
 
 import apiViaCep from '../../services/viacep';
@@ -33,7 +34,6 @@ import H1 from '../H1';
 /** Components Ends */
 
 /** REDUX */
-import { useDispatch, useSelector } from 'react-redux';
 import { Creators as LocationsActions } from '../../store/ducks/locations';
 /** REDUX END */
 
@@ -50,7 +50,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
     });
 
   const { locations, currentLocation } = useSelector(
-    (state) => state.locations,
+    state => state.locations,
   );
 
   async function getAddress(values) {
@@ -90,7 +90,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
   return (
     <RBSheet
       ref={ref}
-      closeOnDragDown={true}
+      closeOnDragDown
       closeOnPressMask={false}
       height={Dimensions.get('window').height - getStatusBarHeight()}
       customStyles={{
@@ -110,10 +110,8 @@ const LocationSheet = React.forwardRef((props, ref) => {
       {validCep || currentLocation ? (
         <Formik
           key="full-form"
-          initialValues={
-            currentLocation ? currentLocation : { ...validCep }
-          }
-          onSubmit={(values) => saveAddres(values)}
+          initialValues={currentLocation || { ...validCep }}
+          onSubmit={values => saveAddres(values)}
           validationSchema={schema}
         >
           {({
@@ -153,7 +151,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
                   value={values.cep}
                   onChangeText={handleChange('cep')}
                   msg={errors.cep ? errors.cep : null}
-                  disabled={true}
+                  disabled
                 />
                 <View
                   style={{
@@ -169,7 +167,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
                     value={values.localidade}
                     onChangeText={handleChange('localidade')}
                     msg={errors.localidade ? errors.localidade : null}
-                    disabled={true}
+                    disabled
                   />
                   <Input
                     name="Estado"
@@ -177,7 +175,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
                     value={values.uf}
                     onChangeText={handleChange('uf')}
                     msg={errors.uf ? errors.uf : null}
-                    disabled={true}
+                    disabled
                   />
                 </View>
 
@@ -212,7 +210,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
               </View>
               {isValid && (
                 <ButtonFill
-                  title={'Salvar'}
+                  title="Salvar"
                   fontColor={colors.darker}
                   disabled={!isValid}
                   color={colors.primary}
@@ -230,7 +228,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
           initialValues={{
             cep: '',
           }}
-          onSubmit={(values) => getAddress(values.cep)}
+          onSubmit={values => getAddress(values.cep)}
           validationSchema={schema}
         >
           {({
@@ -264,7 +262,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
               </View>
               {isValid && values.cep.length > 0 && (
                 <ButtonFill
-                  title={'AVANÇAR'}
+                  title="AVANÇAR"
                   fontColor={colors.darker}
                   disabled={!isValid}
                   color={colors.primary}
