@@ -10,7 +10,8 @@ import {
 import { AsyncStorage } from 'react-native';
 
 import loginSagas from './login';
+import locationSagas from './location';
 
 export default function* rootSaga() {
-  return yield all([loginSagas()]);
+  return yield all([loginSagas(), locationSagas()]);
 }

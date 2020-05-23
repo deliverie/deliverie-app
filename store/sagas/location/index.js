@@ -7,7 +7,7 @@ import {
   Types as LoginTypes,
 } from '../../ducks/login';
 
-function* login({ payload }) {
+function* location({ payload }) {
   console.tron.log('entrou na saga de login', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
@@ -25,10 +25,10 @@ function* login({ payload }) {
   }
 }
 
-function* loginWatcher() {
-  yield takeLatest(LoginTypes.LOGIN_REQUEST, login);
+function* addLocation() {
+  yield takeLatest(LoginTypes.LOGIN_REQUEST, location);
 }
 
 export default function* rootSaga() {
-  yield all([fork(loginWatcher)]);
+  yield all([fork(addLocation)]);
 }

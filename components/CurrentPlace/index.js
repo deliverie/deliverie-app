@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import { SimpleLineIcons } from '@expo/vector-icons';
+import SkeletonContent from 'react-native-skeleton-content';
 
 /** Internal Imports */
 import styles from './styles';
@@ -68,29 +69,42 @@ export default function CurrentPlace({ open, close }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        onPress={() => open()}
-        style={styles.addressContainer}
+      <SkeletonContent
+        containerStyle={{
+          flex: 1,
+          width: 300,
+          marginLeft: 10,
+          marginTop: 3,
+        }}
+        isLoading={false}
+        layout={[
+          { key: 'address', width: 220, height: 20, marginBottom: 6 },
+        ]}
       >
-        <Text style={styles.addressText}>
-          {currentLocation
-            ? `${currentLocation.logradouro}, ${
-                currentLocation.numero
-                  ? `${currentLocation.numero},`
-                  : ''
-              } ${
-                currentLocation.localidade
-                  ? `${currentLocation.localidade}`
-                  : ''
-              }`
-            : 'Adicione um endereço'}
-        </Text>
-        <SimpleLineIcons
-          name="arrow-down"
-          size={10}
-          color={colors.primary}
-        />
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => open()}
+          style={styles.addressContainer}
+        >
+          <Text style={styles.addressText}>
+            {currentLocation
+              ? `${currentLocation.logradouro}, ${
+                  currentLocation.numero
+                    ? `${currentLocation.numero},`
+                    : ''
+                } ${
+                  currentLocation.localidade
+                    ? `${currentLocation.localidade}`
+                    : ''
+                }`
+              : 'Adicione um endereço'}
+          </Text>
+          <SimpleLineIcons
+            name="arrow-down"
+            size={10}
+            color={colors.primary}
+          />
+        </TouchableOpacity>
+      </SkeletonContent>
     </SafeAreaView>
   );
 }
