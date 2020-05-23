@@ -5,8 +5,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { AsyncStorage } from 'react-native';
 
 import { reactotronConfigure } from '../config/ReactotronConfig';
-import rootSagas from './sagas';
-import rootReducers from './ducks';
+import { rootReducer, rootSaga } from './rootDuck';
 
 /** SECURE STORAGE */
 
@@ -18,7 +17,7 @@ const persistConfig = {
   whitelist: ['locations'],
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducers);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const sagaMonitor = __DEV__ ? console.tron.createSagaMonitor() : null;
 const sagaMiddleware = createSagaMiddleware({ sagaMonitor });
@@ -35,6 +34,6 @@ const composer = __DEV__
 const store = createStore(persistedReducer, composer);
 const persistor = persistStore(store);
 
-sagaMiddleware.run(rootSagas);
+sagaMiddleware.run(rootSaga);
 
 export { store, persistor };

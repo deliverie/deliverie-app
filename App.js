@@ -69,6 +69,9 @@ export default function App(props) {
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null;
   }
+
+  console.disableYellowBox = true;
+
   return (
     <View style={styles.container}>
       {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
@@ -103,7 +106,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop:
-      Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 });

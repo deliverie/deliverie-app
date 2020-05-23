@@ -4,7 +4,6 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  ScrollView,
   StyleSheet,
   Dimensions,
 } from 'react-native';
@@ -15,99 +14,26 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
-import { setModal } from 'react-native-alert-utils';
-import { SimpleLayout } from 'react-native-alert-utils/Layout';
-import { LinearGradient } from 'expo-linear-gradient';
-import { hpd } from '../utils/scalling';
-import { colors } from '../styles';
+import { hpd } from '../../utils/scalling';
+import { colors } from '../../styles';
 
-// import { Container } from './styles';
+import { Badge } from './components/Badge';
+import { FeaturedProducts } from './components/FeaturedProducts';
+import { Cart } from './components/Cart';
+import { Tabs } from './components/Tabs';
+import { API_URL } from '../../store/crud';
 
-const CompanyScreen = ({ navigation }) => {
+const CompanyScreen = ({ navigation, route: { params } }) => {
+  const { item } = params;
+  if (!item) {
+    return null;
+  }
+
+  const [cart, setCart] = useState(false);
   const IMAGE_HEIGHT = hpd(25);
   const MIN_HEADER_HEIGHT = 80;
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
-
-  const Badge = ({ title, desc }) => (
-    <View
-      style={{
-        backgroundColor: colors.primaryLight,
-        width: 100,
-        height: 60,
-        borderRadius: 10,
-      }}
-    >
-      <View style={{}}>
-        <Text
-          style={{
-            color: 'white',
-            fontFamily: 'roboto-light',
-            textAlign: 'center',
-          }}
-        >
-          {title}
-        </Text>
-      </View>
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 1,
-        }}
-      >
-        <Text
-          style={{
-            color: 'white',
-            fontFamily: 'roboto-bold',
-          }}
-        >
-          {desc}
-        </Text>
-      </View>
-    </View>
-  );
-  const Tabs = () => {
-    const [tab, setTab] = useState(0);
-    return (
-      <View
-        style={{
-          backgroundColor: colors.light,
-        }}
-      >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-          }}
-        >
-          {[...Array(6).keys()].map(e => (
-            <TouchableOpacity key={e} onPress={() => setTab(e)}>
-              <View
-                style={{
-                  padding: 10,
-                  backgroundColor:
-                    e === tab ? colors.primary : colors.primaryLight,
-                  borderBottomLeftRadius: e === tab ? 5 : 0,
-                  borderBottomRightRadius: e === tab ? 5 : 0,
-                }}
-              >
-                <Text
-                  style={{
-                    color: e === tab ? colors.white : colors.lighter,
-                  }}
-                >
-                  CATEGORIA{' '}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-    );
-  };
 
   const y = useValue(0);
 
@@ -132,7 +58,7 @@ const CompanyScreen = ({ navigation }) => {
   const translateX = interpolate(y, {
     inputRange: [0, IMAGE_HEIGHT],
     outputRange: [0, 40],
-    extrapolateRight: Extrapolate.CLAMP,
+    extrapolate: Extrapolate.CLAMP,
   });
 
   return (
@@ -155,17 +81,31 @@ const CompanyScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
-      <Animated.Image
-        source={{ uri: 'https://picsum.photos/536/354' }}
-        style={{
-          position: 'absolute',
-          width: wWidth,
-          resizeMode: 'cover',
-          left: 0,
-          height,
-          top,
-        }}
-      />
+      {item?.photo ? (
+        <Animated.Image
+          source={{ uri: `${API_URL}${item.photo}` }}
+          style={{
+            position: 'absolute',
+            width: wWidth,
+            resizeMode: 'cover',
+            left: 0,
+            height,
+            top,
+          }}
+        />
+      ) : (
+        <Animated.Image
+          source={{ uri: 'https://picsum.photos/536/354' }}
+          style={{
+            position: 'absolute',
+            width: wWidth,
+            resizeMode: 'cover',
+            left: 0,
+            height,
+            top,
+          }}
+        />
+      )}
       <Animated.ScrollView
         style={StyleSheet.absoluteFill}
         scrollEventThrottle={1}
@@ -181,85 +121,16 @@ const CompanyScreen = ({ navigation }) => {
           style={{
             paddingBottom: 20,
             paddingHorizontal: 5,
-            marginTop: 5,
+            marginTop: 20,
           }}
         >
-          <Text
-            style={{
-              fontFamily: 'roboto-bold',
-              fontSize: 18,
-              color: colors.dark,
-              marginLeft: 5,
-            }}
-          >
-            PRODUTOS EM DESTAQUE
-          </Text>
-          <View
-            style={{
-              paddingBottom: 10,
-              borderColor: colors.regular,
-              borderBottomWidth: 0.5,
-            }}
-          >
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            >
-              {[...Array(5).keys()].map(e => (
-                <View
-                  key={e}
-                  style={{
-                    backgroundColor: colors.primary,
-                    borderRadius: 10,
-                    padding: 10,
-                    alignItems: 'center',
-                    marginRight: 5,
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri:
-                        'https://www.itambe.com.br/portal/Images/Produto/110119leiteuhtsemidesnatado1lt_medium.png',
-                    }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: 'roboto-light',
-                      color: colors.lighter,
-                    }}
-                  >
-                    PRODUTO 1
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'roboto-bold',
-                      color: colors.lighter,
-                    }}
-                  >
-                    R$ 10,00
-                  </Text>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
+          <FeaturedProducts />
           <View style={{ marginTop: 10 }}>
             {[...Array(15).keys()].map(e => (
               <TouchableOpacity
                 style={{ marginBottom: 5 }}
                 key={e}
-                onPress={() => {}}
+                onPress={() => setCart(true)}
               >
                 <Card>
                   <View
@@ -282,7 +153,7 @@ const CompanyScreen = ({ navigation }) => {
                     <View style={{ paddingLeft: 10 }}>
                       <Text
                         style={{
-                          fontWeight: 'roboto',
+                          fontFamily: 'roboto',
                           color: colors.primary,
                         }}
                       >
@@ -350,7 +221,7 @@ const CompanyScreen = ({ navigation }) => {
                 transform: [{ translateX }],
               }}
             >
-              EMPRESA DE TESTE
+              {item?.fantasy_name}
             </Animated.Text>
             <View style={{ flex: 1 }}>
               <TouchableOpacity
@@ -381,6 +252,7 @@ const CompanyScreen = ({ navigation }) => {
           <Tabs />
         </Animated.View>
       </Animated.View>
+      {cart && <Cart />}
     </View>
   );
 };

@@ -1,0 +1,99 @@
+import { takeLatest, put, call } from 'redux-saga/effects';
+import { showToast } from '../../utils/toast';
+import { getCompany } from '../crud/company';
+
+export const Types = {
+  GET_COMPANY: 'COMPANY/GET_COMPANY',
+  GET_COMPANY_SUCCESS: 'COMPANY/GET_COMPANY_SUCCESS',
+  GET_COMPANY_ERROR: 'COMPANY/GET_COMPANY_ERROR',
+  GET_COMPANY_BY_ID: 'COMPANY/GET_COMPANY_BY_ID',
+  GET_COMPANY_BY_ID_SUCCESS: 'COMPANY/GET_COMPANY_BY_ID_SUCCESS',
+  GET_COMPANY_BY_ID_ERROR: 'COMPANY/GET_COMPANY_BY_ID_ERROR',
+};
+
+const INITIAL_STATE = {
+  loading: false,
+  companies: [],
+  company: null,
+  page: null,
+  total: null,
+  lastPage: null,
+};
+
+export const reducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case Types.GET_COMPANY: {
+      return { ...state, loading: true };
+    }
+    case Types.GET_COMPANY_SUCCESS: {
+      return { ...state, ...action.payload, loading: false };
+    }
+    case Types.GET_COMPANY_ERROR: {
+      return { ...state, loading: false };
+    }
+    case Types.GET_COMPANY_BY_ID: {
+      return { ...state, loading: true };
+    }
+    case Types.GET_COMPANY_BY_ID_SUCCESS: {
+      return { ...state, ...action.payload, loading: false };
+    }
+    case Types.GET_COMPANY_BY_ID_ERROR: {
+      return { ...state, loading: false };
+    }
+    default:
+      return state;
+  }
+};
+
+export const actions = {
+  getCompany: payload => ({
+    type: Types.GET_COMPANY,
+    payload,
+  }),
+  getCompanySuccess: payload => ({
+    type: Types.GET_COMPANY_SUCCESS,
+    payload,
+  }),
+  getCompanyError: () => ({
+    type: Types.GET_COMPANY_ERROR,
+  }),
+  getCompanyById: payload => ({
+    type: Types.GET_COMPANY_BY_ID,
+    payload,
+  }),
+  getCompanyByIdSuccess: payload => ({
+    type: Types.GET_COMPANY_BY_ID_SUCCESS,
+    payload,
+  }),
+  getCompanyByIdError: () => ({
+    type: Types.GET_COMPANY_BY_ID_ERROR,
+  }),
+};
+
+function* getCompanySaga({ payload }) {
+  try {
+    const { data: company, status } = yield call(getCompany, payload);
+    if (status === 200) {
+      const { page, total, lastPage } = company;
+
+      yield put(
+        actions.getCompanySuccess({
+          company: company.data,
+          page,
+          total,
+          lastPage,
+        }),
+      );
+    } else {
+      showToast('Erro', 'Erro ao obter estabelecimentos', 'error');
+      yield put(actions.getCompanyError());
+    }
+  } catch (e) {
+    showToast('Erro', 'Erro ao obter estabelecimentos', 'error');
+    yield put(actions.getCompanyError());
+  }
+}
+
+export function* saga() {
+  yield takeLatest(Types.GET_COMPANY, getCompanySaga);
+}
