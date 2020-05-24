@@ -180,6 +180,17 @@ const Company = ({ navigation, route: { params } }) => {
                     padding: 4,
                   }}
                 >
+                  <Text style={{ fontSize: 12 }}>
+                    (41) 9 9730-8176
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: '#8bc34a',
+                    borderRadius: 4,
+                    padding: 4,
+                  }}
+                >
                   <Text style={{ fontSize: 12 }}>Aberto</Text>
                 </View>
                 <TouchableOpacity
@@ -324,7 +335,7 @@ const Company = ({ navigation, route: { params } }) => {
             backgroundColor: colors.primary,
           }}
         >
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               padding: 10,
@@ -351,7 +362,7 @@ const Company = ({ navigation, route: { params } }) => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
           {showInfo && (
             <View
               style={{
