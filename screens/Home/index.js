@@ -21,7 +21,8 @@ import H1 from '../../components/H1';
 import styles from './styles';
 
 /** REDUX */
-import * as company from '../../store/ducks/company';
+import { Creators as CompanyActions } from '../../store/ducks/company';
+
 /** REDUX END */
 
 const firstLayout = [
@@ -47,7 +48,7 @@ const secondLayout = [
   },
 ];
 
-export default function HomeScreen() {
+export default function Home() {
   const locationSheet = useRef();
   const dispatch = useDispatch();
   const { loading, company: dataCompany, total } = useSelector(
@@ -55,7 +56,7 @@ export default function HomeScreen() {
   );
 
   useEffect(() => {
-    dispatch(company.actions.getCompany());
+    dispatch(CompanyActions.getCompany());
   }, []);
 
   const LoadingShop = () =>
@@ -115,6 +116,6 @@ export default function HomeScreen() {
   );
 }
 
-HomeScreen.navigationOptions = {
+Home.navigationOptions = {
   header: null,
 };

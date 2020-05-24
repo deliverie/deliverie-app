@@ -2,13 +2,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
-import Home from '../screens/Home';
 import LinksScreen from '../screens/LinksScreen';
+import { useDispatch, useSelector } from 'react-redux';
+import HomeStack from './stacks/Home';
+import AccountStack from './stacks/account';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
-export default function BottomTabNavigator({ navigation, route }) {
+const userLogged = false;
+
+export default function AuthTab({ navigation, route }) {
+  const login = useSelector(state => state.login);
+  console.tron.log('Auth Tab', login);
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
@@ -21,7 +27,7 @@ export default function BottomTabNavigator({ navigation, route }) {
     >
       <BottomTab.Screen
         name="Home"
-        component={Home}
+        component={HomeStack}
         options={{
           title: 'Início',
           tabBarIcon: ({ focused }) => (
@@ -51,9 +57,15 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Account"
-        component={LinksScreen}
+        component={AccountStack}
         options={{
-          title: 'Conta',
+          title:
+            login.data !== null
+              ? login.data.user.name
+                  .split(' ')
+                  .slice(0, -1)
+                  .join(' ')
+              : 'Conta',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="user" />
           ),

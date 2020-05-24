@@ -5,7 +5,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { AsyncStorage } from 'react-native';
 
 import { reactotronConfigure } from '../config/ReactotronConfig';
-import { rootReducer, rootSaga } from './rootDuck';
+import rootReducer from './ducks';
+import rootSagas from './sagas';
 
 /** SECURE STORAGE */
 
@@ -34,6 +35,6 @@ const composer = __DEV__
 const store = createStore(persistedReducer, composer);
 const persistor = persistStore(store);
 
-sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSagas);
 
 export { store, persistor };

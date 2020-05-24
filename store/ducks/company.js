@@ -1,6 +1,5 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import { showToast } from '../../utils/toast';
-import { getCompany } from '../crud/company';
 
 export const Types = {
   GET_COMPANY: 'COMPANY/GET_COMPANY',
@@ -20,7 +19,7 @@ const INITIAL_STATE = {
   lastPage: null,
 };
 
-export const reducer = (state = INITIAL_STATE, action) => {
+export default function company(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.GET_COMPANY: {
       return { ...state, loading: true };
@@ -43,9 +42,9 @@ export const reducer = (state = INITIAL_STATE, action) => {
     default:
       return state;
   }
-};
+}
 
-export const actions = {
+export const Creators = {
   getCompany: payload => ({
     type: Types.GET_COMPANY,
     payload,

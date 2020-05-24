@@ -8,7 +8,6 @@ import { colors } from '../../styles';
 import styles from './styles';
 import H3 from '../H3';
 import H4 from '../H4';
-import { API_URL } from '../../store/crud';
 
 export default function ShopListItem({ item }) {
   const navigation = useNavigation();
@@ -22,7 +21,7 @@ export default function ShopListItem({ item }) {
           {item?.photo ? (
             <Image
               style={styles.image}
-              source={{ uri: `${API_URL}${item.photo}` }}
+              source={{ uri: `http://206.189.219.178/${item.photo}` }}
             />
           ) : (
             <View style={styles.image} />
@@ -34,7 +33,7 @@ export default function ShopListItem({ item }) {
               paddingHorizontal: 10,
             }}
           >
-            <H3 text={item.fantasy_name} />
+            {/* <H3 text={item.fantasy_name} /> */}
             <View style={{ flexDirection: 'row', marginTop: 4 }}>
               <H4 text="Variadas -" />
               <H4 text=" 2,2 km" />

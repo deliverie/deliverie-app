@@ -39,7 +39,7 @@ import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 const LocationSheet = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [validCep, setValidCep] = React.useState(false);
   const schema = () =>
     yup.object().shape({

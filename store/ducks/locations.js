@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   error: true,
 };
 
-export const reducer = (state = INITIAL_STATE, action) => {
+export default function locations(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.GET_LOCATIONS_RESQUEST:
       return { ...state, loading: true };
@@ -39,7 +39,7 @@ export const reducer = (state = INITIAL_STATE, action) => {
     default:
       return state;
   }
-};
+}
 
 export const Creators = {
   getLocations: () => ({

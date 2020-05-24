@@ -21,9 +21,8 @@ import { Badge } from './components/Badge';
 import { FeaturedProducts } from './components/FeaturedProducts';
 import { Cart } from './components/Cart';
 import { Tabs } from './components/Tabs';
-import { API_URL } from '../../store/crud';
 
-const CompanyScreen = ({ navigation, route: { params } }) => {
+const Company = ({ navigation, route: { params } }) => {
   const { item } = params;
   if (!item) {
     return null;
@@ -83,7 +82,7 @@ const CompanyScreen = ({ navigation, route: { params } }) => {
       </View>
       {item?.photo ? (
         <Animated.Image
-          source={{ uri: `${API_URL}${item.photo}` }}
+          source={{ uri: `http://206.189.219.178/${item.photo}` }}
           style={{
             position: 'absolute',
             width: wWidth,
@@ -257,4 +256,4 @@ const CompanyScreen = ({ navigation, route: { params } }) => {
   );
 };
 
-export default CompanyScreen;
+export default Company;

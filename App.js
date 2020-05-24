@@ -16,8 +16,9 @@ import useLinking from './navigation/useLinking';
 
 /** REDUX */
 import { store, persistor } from './store';
-import CompanyScreen from './screens/CompanyScreen';
 /** REDUX END */
+
+import Router from './navigation/Router';
 
 import spaceMono from './assets/fonts/SpaceMono-Regular.ttf';
 import roboto from './assets/fonts/Roboto-Regular.ttf';
@@ -81,7 +82,8 @@ export default function App(props) {
             ref={containerRef}
             initialState={initialNavigationState}
           >
-            <Stack.Navigator headerShown>
+            <Router isLoadingComplete={isLoadingComplete} />
+            {/* <Stack.Navigator headerShown>
               <Stack.Screen
                 options={{ headerShown: false }}
                 name="Root"
@@ -92,7 +94,7 @@ export default function App(props) {
                 name="Company"
                 component={CompanyScreen}
               />
-            </Stack.Navigator>
+            </Stack.Navigator> */}
             <AlertProvider />
           </NavigationContainer>
         </PersistGate>
