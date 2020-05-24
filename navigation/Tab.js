@@ -75,3 +75,14 @@ function getHeaderTitle(route) {
       return 'Links to learn more';
   }
 }
+
+function getTabBarVisible(route) {
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : route.params?.screen || 'Home';
+
+  if (routeName === 'Details') {
+    return false;
+  }
+  return true;
+}
