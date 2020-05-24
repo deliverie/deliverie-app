@@ -51,13 +51,22 @@ const secondLayout = [
 export default function Home() {
   const locationSheet = useRef();
   const dispatch = useDispatch();
-  const { loading, company: dataCompany, total } = useSelector(
+  const { companies: dataCompany, total } = useSelector(
     state => state.company,
   );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     dispatch(CompanyActions.getCompany());
   }, []);
+
+  useEffect(() => {
+    if (dataCompany?.length) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  }, [dataCompany]);
 
   const LoadingShop = () =>
     [...Array(6).keys()].map(e => (
@@ -108,7 +117,7 @@ export default function Home() {
       ) : (
         <View>
           {dataCompany?.map(e => (
-            <ShopListItem key={e} item={e} />
+            <ShopListItem key={e.id} item={e} />
           ))}
         </View>
       )}

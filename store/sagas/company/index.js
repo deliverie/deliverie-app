@@ -16,7 +16,7 @@ function* getCompanies({ payload }) {
       const { page, total, lastPage } = response.data;
       yield put(
         CompanyActions.getCompanySuccess({
-          company: response.data.data,
+          companies: response.data.data,
           page,
           total,
           lastPage,
@@ -32,10 +32,38 @@ function* getCompanies({ payload }) {
   }
 }
 
+function* getCompanyById({ payload }) {
+  try {
+    const { status, data: company } = yield call(
+      api.get,
+      `/companies/${payload}`,
+    );
+
+    console.tron.log('response companies', company);
+    if (status === 200) {
+      yield put(
+        CompanyActions.getCompanyByIdSuccess({
+          company,
+        }),
+      );
+    } else {
+      showToast('Erro', 'Erro ao obter estabelecimento!', 'error');
+      yield put(CompanyActions.getCompanyByIdError());
+    }
+  } catch (e) {
+    showToast('Erro', 'Erro ao obter estabelecimento!', 'error');
+    yield put(CompanyActions.getCompanyByIdError());
+  }
+}
+
 function* getCompaniesWatcher() {
   yield takeLatest(CompanyTypes.GET_COMPANY, getCompanies);
 }
 
+function* getCompanyByIdWatcher() {
+  yield takeLatest(CompanyTypes.GET_COMPANY_BY_ID, getCompanyById);
+}
+
 export default function* rootSaga() {
-  yield all([fork(getCompaniesWatcher)]);
+  yield all([fork(getCompaniesWatcher), fork(getCompanyByIdWatcher)]);
 }

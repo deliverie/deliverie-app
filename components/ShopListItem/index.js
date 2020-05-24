@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as React from 'react';
-import { TouchableOpacity, Image, View } from 'react-native';
+import { TouchableOpacity, Image, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Card } from 'react-native-paper';
 import { colors } from '../../styles';
@@ -8,20 +8,23 @@ import { colors } from '../../styles';
 import styles from './styles';
 import H3 from '../H3';
 import H4 from '../H4';
+import { baseURL } from '../../services/api';
 
 export default function ShopListItem({ item }) {
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('Company', { item })}
+      onPress={() =>
+        navigation.navigate('Company', { item: item.id })
+      }
     >
       <Card style={styles.card}>
         <View style={styles.container}>
           {item?.photo ? (
             <Image
               style={styles.image}
-              source={{ uri: `http://206.189.219.178/${item.photo}` }}
+              source={{ uri: `${baseURL}/${item.photo}` }}
             />
           ) : (
             <View style={styles.image} />
@@ -34,10 +37,15 @@ export default function ShopListItem({ item }) {
             }}
           >
             {/* <H3 text={item.fantasy_name} /> */}
-            <View style={{ flexDirection: 'row', marginTop: 4 }}>
-              <H4 text="Variadas -" />
-              <H4 text=" 2,2 km" />
-              <H4 badge color={colors.primary} text=" Tem cupons" />
+            <View style={{ flexDirection: 'column', marginTop: 4 }}>
+              <View style={{ flex: 1 }}>
+                <Text>{item?.name}</Text>
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <H4 text="Variadas -" />
+                <H4 text=" 2,2 km" />
+                <H4 badge color={colors.primary} text=" Tem cupons" />
+              </View>
             </View>
             <View
               style={{

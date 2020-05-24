@@ -68,31 +68,3 @@ export const Creators = {
     type: Types.GET_COMPANY_BY_ID_ERROR,
   }),
 };
-
-function* getCompanySaga({ payload }) {
-  try {
-    const { data: company, status } = yield call(getCompany, payload);
-    if (status === 200) {
-      const { page, total, lastPage } = company;
-
-      yield put(
-        actions.getCompanySuccess({
-          company: company.data,
-          page,
-          total,
-          lastPage,
-        }),
-      );
-    } else {
-      showToast('Erro', 'Erro ao obter estabelecimentos', 'error');
-      yield put(actions.getCompanyError());
-    }
-  } catch (e) {
-    showToast('Erro', 'Erro ao obter estabelecimentos', 'error');
-    yield put(actions.getCompanyError());
-  }
-}
-
-export function* saga() {
-  yield takeLatest(Types.GET_COMPANY, getCompanySaga);
-}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -18,6 +18,8 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
+import SkeletonContent from 'react-native-skeleton-content';
+import { useDispatch, useSelector } from 'react-redux';
 import { hpd } from '../../utils/scalling';
 import { colors } from '../../styles';
 
@@ -25,21 +27,30 @@ import { Badge } from './components/Badge';
 import { FeaturedProducts } from './components/FeaturedProducts';
 import { Cart } from './components/Cart';
 import { Tabs } from './components/Tabs';
+import { baseURL } from '../../services/api';
+import { Creators as CompanyActions } from '../../store/ducks/company';
 
 const Company = ({ navigation, route: { params } }) => {
   navigation.setOptions({ tabBarVisible: false });
 
   const { item } = params;
-  console.tron.log(item);
+
   if (!item) {
     return null;
   }
-
+  const dispatch = useDispatch();
+  const { loading, company: data } = useSelector(
+    state => state.company,
+  );
   const [cart, setCart] = useState(false);
-  const IMAGE_HEIGHT = hpd(32);
+  const IMAGE_HEIGHT = hpd(35);
   const MIN_HEADER_HEIGHT = 80;
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
+
+  useEffect(() => {
+    dispatch(CompanyActions.getCompanyById(item));
+  }, []);
 
   const y = useValue(0);
 
@@ -67,57 +78,65 @@ const Company = ({ navigation, route: { params } }) => {
     extrapolate: Extrapolate.CLAMP,
   });
 
+  const toAddress = () => {
+    if (data?.address) {
+      const { street, number, district } = data.address;
+      return `${street}, ${number}, ${district}`;
+    }
+    return '';
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      {item?.photo ? (
-        <Animated.View
+      <Animated.View
+        style={{
+          position: 'absolute',
+          width: wWidth,
+          resizeMode: 'cover',
+          left: 0,
+          height,
+          top,
+          zIndex: 9998,
+        }}
+      >
+        <SafeAreaView
           style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            margin: 20,
+            width: Dimensions.get('window').width - 40,
+            zIndex: 9999999,
             position: 'absolute',
-            width: wWidth,
-            resizeMode: 'cover',
-            left: 0,
-            height,
-            top,
-            zIndex: 9998,
+            borderWidht: 1,
+            flex: 1,
+            alignSelf: 'stretch',
           }}
         >
-          <SafeAreaView
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              margin: 20,
-              width: Dimensions.get('window').width - 40,
-              zIndex: 9999999,
-              position: 'absolute',
-              borderWidht: 1,
-              flex: 1,
-              alignSelf: 'stretch',
-            }}
-          >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons
-                name="md-arrow-back"
-                size={23}
-                color="white"
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="md-arrow-back" size={23} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="md-share" size={23} color="white" />
+          </TouchableOpacity>
+        </SafeAreaView>
+        <ImageBackground
+          source={{ uri: `${baseURL}/${data?.banner}` }}
+          style={{
+            flex: 1,
+            width: null,
+            height: null,
+            padding: 20,
+            paddingTop: 50,
+          }}
+        >
+          <View style={{ zIndex: 9999999999 }}>
+            {loading ? (
+              <SkeletonContent
+                isLoading
+                containerStyle={{}}
+                layout={[{ width: 90, height: 90, marginBottom: 5 }]}
               />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="md-share" size={23} color="white" />
-            </TouchableOpacity>
-          </SafeAreaView>
-
-          <ImageBackground
-            // source={{ uri: `http://206.189.219.178/${item.photo}` }}
-            source={{ uri: `https://picsum.photos/536/354` }}
-            style={{
-              flex: 1,
-              width: null,
-              height: null,
-              justifyContent: 'flex-end',
-              padding: 20,
-            }}
-          >
-            <View style={{ zIndex: 9999999999 }}>
+            ) : (
               <View
                 style={{
                   width: 90,
@@ -129,69 +148,87 @@ const Company = ({ navigation, route: { params } }) => {
               >
                 <Image
                   source={{
-                    uri:
-                      'https://static-images.ifood.com.br/image/upload/f_auto,t_thumbnail/logosgde/202004151324_d24644a5-066b-4292-8384-5cf79c9e355f.jpg',
+                    uri: `${baseURL}/${data?.photo}`,
                   }}
                   style={{ width: 90, height: 90, borderRadius: 5 }}
-                  resizeMode="contain"
+                  resizeMode="cover"
                 />
               </View>
+            )}
+            {loading ? (
+              <SkeletonContent
+                containerStyle={{}}
+                isLoading
+                layout={[
+                  { width: 80, height: 20, marginBottom: 5 },
+                  { width: 140, height: 20 },
+                ]}
+              />
+            ) : (
+              <>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 17,
+                    fontWeight: 'bold',
+                    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 2,
+                  }}
+                >
+                  {data?.fantasy_name}
+                </Text>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 16,
 
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 17,
-                  fontWeight: 'bold',
-                  textShadowColor: 'rgba(0, 0, 0, 0.75)',
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 2,
-                }}
-              >
-                {item?.fantasy_name}
-              </Text>
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 16,
-
-                  textShadowColor: 'rgba(0, 0, 0, 0.75)',
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 2,
-                }}
-              >
-                Rua Arlindo Cardoso Vieira, 116, Itaí/SP
-              </Text>
+                    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 2,
+                  }}
+                >
+                  {toAddress()}
+                </Text>
+              </>
+            )}
+            {!loading && (
               <View
                 style={{
                   flex: 1,
                   padding: 3,
                   borderRadius: 4,
                   marginTop: 8,
-                  height: 30,
                   flexDirection: 'row',
                   width: wWidth - 40,
                   justifyContent: 'space-between',
                 }}
               >
-                <View
-                  style={{
-                    backgroundColor: '#8bc34a',
-                    borderRadius: 4,
-                    padding: 4,
-                  }}
-                >
-                  <Text style={{ fontSize: 12 }}>
-                    (41) 9 9730-8176
+                <View style={{}}>
+                  <Text
+                    style={{
+                      backgroundColor: '#8bc34a',
+                      fontSize: 12,
+                      color: colors.light,
+                      borderRadius: 4,
+                      padding: 6,
+                    }}
+                  >
+                    ({data?.phone_ddd}) {data?.phone_num}
                   </Text>
                 </View>
-                <View
-                  style={{
-                    backgroundColor: '#8bc34a',
-                    borderRadius: 4,
-                    padding: 4,
-                  }}
-                >
-                  <Text style={{ fontSize: 12 }}>Aberto</Text>
+                <View style={{}}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: colors.light,
+                      backgroundColor: '#8bc34a',
+                      borderRadius: 4,
+                      padding: 4,
+                    }}
+                  >
+                    Aberto
+                  </Text>
                 </View>
                 <TouchableOpacity
                   onPress={() => setShowInfo(!showInfo)}
@@ -203,35 +240,21 @@ const Company = ({ navigation, route: { params } }) => {
                   />
                 </TouchableOpacity>
               </View>
-            </View>
-
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.8)']}
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                ...StyleSheet.absoluteFill,
-                zIndex: 9999,
-              }}
-            />
-          </ImageBackground>
-        </Animated.View>
-      ) : (
-        <Animated.Image
-          source={{ uri: 'https://picsum.photos/536/354' }}
-          style={{
-            position: 'absolute',
-            width: wWidth,
-            resizeMode: 'cover',
-            left: 0,
-            height,
-            top,
-          }}
-        />
-      )}
-
+            )}
+          </View>
+          <LinearGradient
+            colors={['transparent', 'rgba(0,0,0,0.8)']}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              ...StyleSheet.absoluteFill,
+              zIndex: 9999,
+            }}
+          />
+        </ImageBackground>
+      </Animated.View>
       <Animated.ScrollView
         style={StyleSheet.absoluteFill}
         scrollEventThrottle={1}
@@ -248,77 +271,97 @@ const Company = ({ navigation, route: { params } }) => {
             style={{
               paddingBottom: 20,
               paddingHorizontal: 5,
-              marginTop: 20,
             }}
           >
-            <FeaturedProducts />
-            <View style={{ marginTop: 10 }}>
-              {[...Array(15).keys()].map(e => (
-                <TouchableOpacity
-                  style={{ marginBottom: 5 }}
+            {/* <FeaturedProducts /> */}
+            {loading ? (
+              [...Array(4).keys()].map(e => (
+                <SkeletonContent
                   key={e}
-                  onPress={() => setCart(true)}
-                >
-                  <Card>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        padding: 15,
-                      }}
+                  isLoading
+                  containerStyle={{}}
+                  layout={[
+                    {
+                      width: wWidth - 10,
+                      height: 80,
+                      marginBottom: 5,
+                    },
+                  ]}
+                />
+              ))
+            ) : (
+              <View style={{ marginTop: 10 }}>
+                {data?.products
+                  ?.filter(e => e.is_active)
+                  .map(e => (
+                    <TouchableOpacity
+                      style={{ marginBottom: 5 }}
+                      key={e.id}
+                      onPress={() => setCart(true)}
                     >
-                      <Image
-                        source={{
-                          uri:
-                            'https://www.itambe.com.br/portal/Images/Produto/110119leiteuhtsemidesnatado1lt_medium.png',
-                        }}
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 10,
-                        }}
-                      />
-                      <View style={{ paddingLeft: 10 }}>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto',
-                            color: colors.primary,
-                          }}
-                        >
-                          PRODUTO {e}
-                        </Text>
-                        <Text style={{ fontFamily: 'roboto-light' }}>
-                          descrição do produto
-                        </Text>
-                      </View>
-                      <View style={{ flex: 1 }} />
-                      <View
-                        style={{
-                          padding: 10,
-                          borderRadius: 10,
-                        }}
-                      >
+                      <Card>
                         <View
                           style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            flex: 1,
+                            flexDirection: 'row',
+                            padding: 15,
                           }}
                         >
-                          <Text
+                          <Image
+                            source={{
+                              uri:
+                                'https://www.itambe.com.br/portal/Images/Produto/110119leiteuhtsemidesnatado1lt_medium.png',
+                            }}
                             style={{
-                              color: colors.primary,
-                              fontFamily: 'roboto-bold',
+                              width: 50,
+                              height: 50,
+                              borderRadius: 10,
+                            }}
+                          />
+                          <View style={{ paddingLeft: 10 }}>
+                            <Text
+                              style={{
+                                fontFamily: 'roboto',
+                                color: colors.primary,
+                              }}
+                            >
+                              {e.name}
+                            </Text>
+                            <Text
+                              style={{ fontFamily: 'roboto-light' }}
+                            >
+                              {e.desc}
+                            </Text>
+                          </View>
+                          <View style={{ flex: 1 }} />
+                          <View
+                            style={{
+                              padding: 10,
+                              borderRadius: 10,
                             }}
                           >
-                            R$ 10,00
-                          </Text>
+                            <View
+                              style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flex: 1,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  color: colors.primary,
+                                  fontFamily: 'roboto-bold',
+                                }}
+                              >
+                                R$ {e.price}
+                              </Text>
+                            </View>
+                          </View>
                         </View>
-                      </View>
-                    </View>
-                  </Card>
-                </TouchableOpacity>
-              ))}
-            </View>
+                      </Card>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            )}
           </View>
         </SafeAreaView>
       </Animated.ScrollView>
@@ -349,7 +392,7 @@ const Company = ({ navigation, route: { params } }) => {
                 transform: [{ translateX }],
               }}
             >
-              {item?.fantasy_name}
+              {data?.fantasy_name}
             </Animated.Text>
             <View style={{ flex: 1 }}>
               <TouchableOpacity
@@ -377,7 +420,15 @@ const Company = ({ navigation, route: { params } }) => {
               <Badge title="TEMPO DE ENTREGA" desc="40-60min" />
             </View>
           )}
-          <Tabs />
+          {loading ? (
+            <SkeletonContent
+              containerStyle={{}}
+              layout={[{ width: wWidth, height: 40 }]}
+              isLoading
+            />
+          ) : (
+            <Tabs />
+          )}
         </Animated.View>
       </Animated.View>
       {cart && <Cart />}
