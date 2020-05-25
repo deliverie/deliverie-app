@@ -27,6 +27,7 @@ export default function Tab({ navigation, route }) {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="home" />
           ),
+          tabBarVisible: !route.state?.routes[0]?.state?.index,
         }}
       />
       <BottomTab.Screen

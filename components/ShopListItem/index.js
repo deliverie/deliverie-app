@@ -18,74 +18,73 @@ export default function ShopListItem({ item }) {
       onPress={() =>
         navigation.navigate('Company', { item: item.id })
       }
+      style={styles.card}
     >
-      <Card style={styles.card}>
-        <View style={styles.container}>
-          {item?.photo ? (
-            <Image
-              style={styles.image}
-              source={{ uri: `${baseURL}/${item.photo}` }}
-            />
-          ) : (
-            <View style={styles.image} />
-          )}
+      <View style={styles.container}>
+        {item?.photo ? (
+          <Image
+            style={styles.image}
+            source={{ uri: `${baseURL}/${item.photo}` }}
+          />
+        ) : (
+          <View style={styles.image} />
+        )}
+        <View
+          style={{
+            flex: 1,
+            paddingVertical: 10,
+            paddingHorizontal: 10,
+          }}
+        >
+          {/* <H3 text={item.fantasy_name} /> */}
+          <View style={{ flexDirection: 'column', marginTop: 4 }}>
+            <View style={{ flex: 1 }}>
+              <Text>{item?.fantasy_name}</Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <H4 text="Variadas -" />
+              <H4 text=" 2,2 km" />
+              <H4 badge color={colors.primary} text=" Tem cupons" />
+            </View>
+          </View>
           <View
             style={{
-              flex: 1,
-              paddingVertical: 10,
-              paddingHorizontal: 10,
+              flexDirection: 'row',
+              marginTop: 4,
+              justifyContent: 'space-between',
+              alignContent: 'center',
+              alignItems: 'center',
             }}
           >
-            {/* <H3 text={item.fantasy_name} /> */}
-            <View style={{ flexDirection: 'column', marginTop: 4 }}>
-              <View style={{ flex: 1 }}>
-                <Text>{item?.name}</Text>
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <H4 text="Variadas -" />
-                <H4 text=" 2,2 km" />
-                <H4 badge color={colors.primary} text=" Tem cupons" />
-              </View>
-            </View>
             <View
               style={{
                 flexDirection: 'row',
-                marginTop: 4,
-                justifyContent: 'space-between',
+                marginRight: 5,
                 alignContent: 'center',
                 alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginRight: 5,
-                  alignContent: 'center',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="clock-outline"
-                  size={12}
-                  color={colors.darker}
-                  style={{ marginRight: 3 }}
-                />
-                <H4 text="30-80 min" />
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <MaterialCommunityIcons
-                  name="bike"
-                  size={14}
-                  color={colors.darker}
-                  style={{ marginRight: 3 }}
-                />
-                <H4 text="R$ 3,30" />
-              </View>
+              <MaterialCommunityIcons
+                name="clock-outline"
+                size={12}
+                color={colors.darker}
+                style={{ marginRight: 3 }}
+              />
+              <H4 text="30-80 min" />
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <MaterialCommunityIcons
+                name="bike"
+                size={14}
+                color={colors.darker}
+                style={{ marginRight: 3 }}
+              />
+              <H4 text="R$ 3,30" />
             </View>
           </View>
         </View>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
 }
