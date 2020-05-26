@@ -9,11 +9,24 @@ import { colors } from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
 
 import H1 from '../../../components/H1';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Creators as ProductsActions } from '../../../store/ducks/products';
 
 export const Tabs = ({ categories }) => {
+  const dispatch = useDispatch();
+
   const [tab, setTab] = useState(categories[0]);
   useEffect(() => {
     console.tron.log(tab);
+  }, [tab]);
+
+  useEffect(() => {
+    if (tab) {
+      dispatch(
+        ProductsActions.getProductsRequest({ category: tab.id }),
+      );
+    }
   }, [tab]);
   return (
     <View
