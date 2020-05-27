@@ -7,6 +7,8 @@ import {
   Types as CompanyTypes,
 } from '../../ducks/company';
 
+import { Creators as ProductsActions } from '../../ducks/products';
+
 function* getCompanies({ payload }) {
   try {
     const response = yield call(api.get, '/companies', payload);
@@ -39,7 +41,8 @@ function* getCompanyById({ payload }) {
       `/companies/${payload}`,
     );
 
-    console.tron.log('response companies', company);
+    console.tron.log('testando company id');
+
     if (status === 200) {
       yield put(
         CompanyActions.getCompanyByIdSuccess({

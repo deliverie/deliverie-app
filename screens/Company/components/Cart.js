@@ -32,6 +32,7 @@ export const Cart = () => {
         flexDirection: 'row',
         alignContent: 'center',
         alignItems: 'center',
+        marginBottom: 15,
       }}
     >
       <Ionicons name="md-cart" size={24} color="white" />
