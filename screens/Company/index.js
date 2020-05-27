@@ -12,19 +12,23 @@ import {
   Share,
   Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import SvgUri from 'react-native-svg-uri';
-import CategorieSheet from '../../components/CategorieSheet';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+
 import { onScrollEvent, useValue } from 'react-native-redash';
 import { Card } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
+  event,
+  Value,
   interpolate,
-  Extrapolate,
+  timing,
+  Easing,
 } from 'react-native-reanimated';
 import SkeletonContent from 'react-native-skeleton-content';
 import { useDispatch, useSelector } from 'react-redux';
+import CategorieSheet from '../../components/CategorieSheet';
 import { hpd } from '../../utils/scalling';
 import { colors } from '../../styles';
 
@@ -34,9 +38,11 @@ import { Cart } from './components/Cart';
 import { Tabs } from './components/Tabs';
 import { baseURL } from '../../services/api';
 import { Creators as CompanyActions } from '../../store/ducks/company';
+import CartSheet from '../../components/CartSheet';
 
 export default function Company({ navigation, route: { params } }) {
   const categorieSheetRef = useRef();
+  const cartSheetRef = useRef();
 
   const { item } = params;
 
@@ -53,9 +59,18 @@ export default function Company({ navigation, route: { params } }) {
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
 
+  const translationX = new Value(100);
+  const config = {
+    duration: 1000,
+    toValue: -100,
+    easing: Easing.inOut(Easing.ease),
+  };
+
   useEffect(() => {
     dispatch(CompanyActions.getCompanyById(item));
+    cartSheetRef.current.open();
   }, []);
+
   useEffect(() => {
     console.tron.log('testing company', data);
   }, [data]);
@@ -361,25 +376,50 @@ export default function Company({ navigation, route: { params } }) {
         ) : (
           <Tabs categories={data?.categories || []} />
         )}
-        {[...Array(26).keys()].map(e => (
-          <TouchableOpacity
-            onPress={() => categorieSheetRef.current.open()}
-            key={e}
-          >
-            <View
+        {[...Array(1).keys()].map(e => (
+          <PanGestureHandler key={e}>
+            <Animated.View
               style={{
-                padding: 10,
+                flex: 1,
+                flexDirection: 'row',
+                transform: [{ translateX: translationX }],
               }}
             >
-              <Text
+              <View>
+                <Image
+                  source={{
+                    uri:
+                      'https://www.itambe.com.br/portal/Images/Produto/110119leiteuhtsemidesnatado1lt_medium.png',
+                  }}
+                  style={{ width: 50, height: 50 }}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: 'roboto', fontSize: 18 }}>
+                  Produto 1
+                </Text>
+                <Text
+                  style={{ fontFamily: 'roboto-light', fontSize: 16 }}
+                >
+                  Descrição do produto
+                </Text>
+                <Text>+ bacon</Text>
+                <Text>+ molho</Text>
+                <Text>+ coquinha geladinha hmmmm</Text>
+              </View>
+              <View
                 style={{
-                  color: colors.regular,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
-                PRODUTO
-              </Text>
-            </View>
-          </TouchableOpacity>
+                <Text style={{ color: colors.primary }}>
+                  R$ 10,00
+                </Text>
+                <Text style={{ fontSize: 16 }}>1 un.</Text>
+              </View>
+            </Animated.View>
+          </PanGestureHandler>
         ))}
       </ScrollView>
       {cart && (
@@ -388,6 +428,7 @@ export default function Company({ navigation, route: { params } }) {
         </SafeAreaView>
       )}
       <CategorieSheet ref={categorieSheetRef} />
+      <CartSheet ref={cartSheetRef} />
     </>
   );
 }

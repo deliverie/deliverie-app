@@ -95,7 +95,6 @@ export default function App(props) {
                 component={CompanyScreen}
               />
             </Stack.Navigator> */}
-            <AlertProvider />
           </NavigationContainer>
         </PersistGate>
       </Provider>

@@ -1753,6 +1753,11 @@ acorn@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.2.0.tgz#17ea7e40d7c8640ff54a694c889c26f31704effe"
   integrity sha512-apwXVmYVpQ34m/i71vrApRrRKCWQnZZF1+npOD0WV5xZFfwWOmKGQ2RWlfdy9vWITsenisM8M0Qeq8agcFHNiQ==
 
+add@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/add/-/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
+  integrity sha1-JI8Kn25aUo7yKV2+7DBTITCuIjU=
+
 aggregate-error@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.0.1.tgz#db2fe7246e536f40d9b5442a39e117d7dd6a24e0"
@@ -7090,6 +7095,11 @@ react-native-svg@11.0.1:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
 
+react-native-swipe-list-view@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-swipe-list-view/-/react-native-swipe-list-view-3.1.0.tgz#4c59a8b6358d203f406d199463e2347283ac08d1"
+  integrity sha512-JVRAN3w3fOjNnpfLSWi++X+4pB2SK4+5gFhAU5NFHcsLinPBLZT8MMpfQAtAa3nFdFrbtdogDMre5mHOScLycg==
+
 react-native-view-shot@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-3.1.2.tgz#8c8e84c67a4bc8b603e697dbbd59dbc9b4f84825"
@@ -7265,6 +7275,11 @@ realpath-native@^1.1.0:
   integrity sha512-wlgPA6cCIIg9gKz0fgAPjnzh4yR/LnXovwuo9hvyGvx3h8nX4+/iLZplfUWasXpqD8BdnGnP5njOFjkUwPzvjA==
   dependencies:
     util.promisify "^1.0.0"
+
+reanimated-bottom-sheet@^1.0.0-alpha.20:
+  version "1.0.0-alpha.20"
+  resolved "https://registry.yarnpkg.com/reanimated-bottom-sheet/-/reanimated-bottom-sheet-1.0.0-alpha.20.tgz#fc586b594a8e8c3e2a49821cfaaccd8c03f80660"
+  integrity sha512-bcXVkmJLL6SOoIPWU2dIJnT7+78a5tDi9eaE6ESsEewZ10lpfJhjfCCFrngPZKPhatQ6mjCJSYEAL+fwbXCiJw==
 
 redux-persist@^6.0.0:
   version "6.0.0"
@@ -9055,6 +9070,11 @@ yargs@^9.0.0:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^7.0.0"
+
+yarn@^1.22.4:
+  version "1.22.4"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.4.tgz#01c1197ca5b27f21edc8bc472cd4c8ce0e5a470e"
+  integrity sha512-oYM7hi/lIWm9bCoDMEWgffW8aiNZXCWeZ1/tGy0DWrN6vmzjCXIKu2Y21o8DYVBUtiktwKcNoxyGl/2iKLUNGA==
 
 yup@^0.28.4:
   version "0.28.4"
