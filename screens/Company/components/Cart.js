@@ -10,7 +10,9 @@ import {
   PanGestureHandler,
 } from 'react-native-gesture-handler';
 import { withSpring, onGestureEvent } from 'react-native-redash';
+import { useSelector } from 'react-redux';
 import { colors } from '../../../styles';
+import { monetize } from '../../../utils';
 
 const config = {
   damping: 15,
@@ -22,6 +24,19 @@ const config = {
 };
 
 export const Cart = () => {
+  const { cart } = useSelector(state => state.cart);
+
+  const getAllPrice = () => {
+    const cartMap = cart.map(e => {
+      const findPrice = Object.values(e.selectedAttr).find(
+        f => f.prices.price,
+      );
+      return findPrice.prices.price * e.qty;
+    });
+    const soma = cartMap.reduce((ac, cv) => ac + cv);
+    return monetize(soma);
+  };
+
   return (
     <View
       style={{
@@ -37,16 +52,29 @@ export const Cart = () => {
     >
       <Ionicons name="md-cart" size={24} color="white" />
       <View>
-        <Text
-          style={{
-            color: 'white',
-            marginLeft: 5,
-            fontSize: 17,
-            fontWeight: 'bold',
-          }}
-        >
-          Seu carrinho esta vázio :(
-        </Text>
+        {cart.length === 0 ? (
+          <Text
+            style={{
+              color: 'white',
+              marginLeft: 5,
+              fontSize: 17,
+              fontWeight: 'bold',
+            }}
+          >
+            Seu carrinho esta vázio :(
+          </Text>
+        ) : (
+          <Text
+            style={{
+              color: 'white',
+              marginLeft: 5,
+              fontSize: 16,
+              fontWeight: 'roboto-light',
+            }}
+          >
+            {cart.length} itens no valor de {getAllPrice()}
+          </Text>
+        )}
       </View>
     </View>
   );

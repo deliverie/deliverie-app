@@ -12,7 +12,7 @@ export const showToast = (
     description,
     type,
     backgroundColor:
-      type === 'success' ? colors.secundary : colors.tomato,
+      type === 'success' ? colors.success : colors.tomato,
     floating: true,
     position: 'top',
     animationDuration: time || 400,

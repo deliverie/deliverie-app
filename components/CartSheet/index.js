@@ -35,6 +35,7 @@ import { wpd } from '../../utils/scalling';
 /** REDUX END */
 
 const CartSheet = React.forwardRef((props, ref) => {
+  const { cart } = useSelector(state => state.cart);
   const [success, setSuccess] = useState(false);
   const Products = () => {
     const renderHidden = () => (
@@ -169,6 +170,7 @@ const CartSheet = React.forwardRef((props, ref) => {
 
   return (
     <RBSheet
+      closeOnDragDown
       ref={ref}
       closeOnPressMask={false}
       height={Dimensions.get('window').height}
@@ -183,6 +185,7 @@ const CartSheet = React.forwardRef((props, ref) => {
           backgroundColor: 'white',
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
+          marginTop: 20,
         },
       }}
     >
