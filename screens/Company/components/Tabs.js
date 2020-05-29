@@ -5,11 +5,11 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { colors } from '../../../styles';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { colors } from '../../../styles';
 
 import H1 from '../../../components/H1';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Creators as ProductsActions } from '../../../store/ducks/products';
 
@@ -28,6 +28,7 @@ export const Tabs = ({ categories }) => {
       );
     }
   }, [tab]);
+
   return (
     <View
       style={{

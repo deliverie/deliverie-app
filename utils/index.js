@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export function monetize(n) {
-  if (n)
+  if (n && typeof n === 'number')
     return `R$ ${n
       .toFixed(2) // casas decimais
       .replace('.', ',')
@@ -63,7 +63,7 @@ export function validateCnpj(cnpj) {
     resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
     if (resultado != digitos.charAt(0)) return false;
 
-    tamanho = tamanho + 1;
+    tamanho += 1;
     numeros = cnpj.substring(0, tamanho);
     soma = 0;
     pos = tamanho - 7;
@@ -79,11 +79,11 @@ export function validateCnpj(cnpj) {
 }
 
 export function cpf(v) {
-  if (v) v = v.replace(/\D/g, ''); //Remove tudo o que não é dígito
-  v = v.replace(/(\d{3})(\d)/, '$1.$2'); //Coloca um ponto entre o terceiro e o quarto dígitos
-  v = v.replace(/(\d{3})(\d)/, '$1.$2'); //Coloca um ponto entre o terceiro e o quarto dígitos
-  //de novo (para o segundo bloco de números)
-  v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); //Coloca um hífen entre o terceiro e o quarto dígitos
+  if (v) v = v.replace(/\D/g, ''); // Remove tudo o que não é dígito
+  v = v.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca um ponto entre o terceiro e o quarto dígitos
+  v = v.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca um ponto entre o terceiro e o quarto dígitos
+  // de novo (para o segundo bloco de números)
+  v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca um hífen entre o terceiro e o quarto dígitos
   return v;
 }
 
@@ -93,7 +93,7 @@ export function date(date) {
 
 export function diffDates(date1, date2) {
   const pastDate = moment(date2);
-  var today = moment(date1);
+  const today = moment(date1);
   return today.diff(pastDate, 'days');
 }
 
@@ -119,7 +119,7 @@ export function handleWorkHours(days) {
   ];
 
   if (days) {
-    let periods = {};
+    const periods = {};
     const uniqueDays = [...new Set(days.map(item => item.day))];
 
     days.map(day => {

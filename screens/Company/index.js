@@ -29,9 +29,6 @@ import SkeletonContent from 'react-native-skeleton-content';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { monetize, handleWorkHours } from '../../utils';
-import { colors } from '../../styles';
-
 import { onScrollEvent, useValue } from 'react-native-redash';
 import Animated, {
   event,
@@ -40,6 +37,9 @@ import Animated, {
   timing,
   Easing,
 } from 'react-native-reanimated';
+import { monetize, handleWorkHours } from '../../utils';
+import { colors } from '../../styles';
+
 import CategorieSheet from '../../components/CategorieSheet';
 import { hpd } from '../../utils/scalling';
 
@@ -76,6 +76,8 @@ export default function Company({ navigation, route: { params } }) {
   }
 
   const [cart, setCart] = useState(true);
+  const [qtd, setQtd] = useState(1);
+  const [attr, setAttr] = useState(null);
 
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
@@ -117,12 +119,20 @@ export default function Company({ navigation, route: { params } }) {
 
   function handleProductOpen(item) {
     setCurrentProduct(item);
+    setAttr(null);
     productSheetRef.current.open();
-    console.tron.log(item);
   }
+
   function handleProductClose() {
     setCurrentProduct(null);
     return productSheetRef.current.close();
+  }
+
+  function priceAll() {
+    if (attr && attr?.prices?.price) {
+      return monetize(attr.prices.price * qtd);
+    }
+    return monetize(currentProduct?.price * qtd);
   }
 
   function renderCurrentProduct() {
@@ -364,44 +374,48 @@ export default function Company({ navigation, route: { params } }) {
                                   alignItems: 'center',
                                 }}
                               >
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                  }}
+                                <TouchableOpacity
+                                  onPress={() => setAttr(opcoes)}
                                 >
                                   <View
                                     style={{
-                                      width: 26,
-                                      height: 26,
-                                      borderRadius: 20,
-                                      backgroundColor: '#f1f1f1',
-                                      marginRight: 10,
-                                      padding: 5,
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
                                     }}
                                   >
                                     <View
                                       style={{
-                                        width: 16,
-                                        height: 16,
+                                        width: 26,
+                                        height: 26,
                                         borderRadius: 20,
-                                        backgroundColor:
-                                          index === 1
-                                            ? colors.darker
-                                            : '#f1f1f1',
+                                        backgroundColor: '#f1f1f1',
                                         marginRight: 10,
+                                        padding: 5,
                                       }}
-                                    />
+                                    >
+                                      <View
+                                        style={{
+                                          width: 16,
+                                          height: 16,
+                                          borderRadius: 20,
+                                          backgroundColor:
+                                            opcoes.id === attr?.id
+                                              ? colors.darker
+                                              : '#f1f1f1',
+                                          marginRight: 10,
+                                        }}
+                                      />
+                                    </View>
+                                    <Text
+                                      style={{
+                                        color: colors.darker,
+                                        fontWeight: '200',
+                                      }}
+                                    >
+                                      {opcoes.name}
+                                    </Text>
                                   </View>
-                                  <Text
-                                    style={{
-                                      color: colors.darker,
-                                      fontWeight: '200',
-                                    }}
-                                  >
-                                    {opcoes.name}
-                                  </Text>
-                                </View>
+                                </TouchableOpacity>
                                 <Text
                                   style={{
                                     fontWeight: '500',
@@ -494,6 +508,7 @@ export default function Company({ navigation, route: { params } }) {
                 alignContent: 'center',
                 marginRight: 5,
               }}
+              onPress={() => qtd > 1 && setQtd(qtd - 1)}
             >
               <Feather
                 name="minus-circle"
@@ -515,7 +530,7 @@ export default function Company({ navigation, route: { params } }) {
                   fontWeight: '500',
                 }}
               >
-                0
+                {qtd}
               </Text>
             </View>
             <TouchableOpacity
@@ -529,6 +544,7 @@ export default function Company({ navigation, route: { params } }) {
                 justifyContent: 'center',
                 marginLeft: 5,
               }}
+              onPress={() => setQtd(qtd + 1)}
             >
               <Feather name="plus-circle" size={24} color="#8bc34a" />
             </TouchableOpacity>
@@ -546,9 +562,9 @@ export default function Company({ navigation, route: { params } }) {
               backgroundColor: '#8bc34a',
               alignItems: 'center',
             }}
+            onPress={() => {}}
           >
             <Ionicons name="md-cart" size={22} color="white" />
-
             <Text
               style={{
                 fontSize: 19,
@@ -557,7 +573,7 @@ export default function Company({ navigation, route: { params } }) {
                 marginLeft: 40,
               }}
             >
-              R$ 19,90
+              {priceAll()}
             </Text>
           </TouchableOpacity>
         </View>
@@ -945,7 +961,7 @@ export default function Company({ navigation, route: { params } }) {
         ref={productSheetRef}
         height={height}
         onClose={() => setCurrentProduct(null)}
-        closeOnPressMask={true}
+        closeOnPressMask
         closeOnDragDown={false}
         customStyles={{
           wrapper: {
