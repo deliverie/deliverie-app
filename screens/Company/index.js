@@ -48,10 +48,14 @@ import { Badge } from './components/Badge';
 import { Cart } from './components/Cart';
 import { Tabs } from './components/Tabs';
 import { baseURL } from '../../services/api';
-import { Creators as CompanyActions } from '../../store/ducks/company';
+import company, {
+  Creators as CompanyActions,
+} from '../../store/ducks/company';
+import { Creators as CartActions } from '../../store/ducks/cart';
 import CartSheet from '../../components/CartSheet';
 
 import styles from './styles';
+import { showToast } from '../../utils/toast';
 
 const { width, height } = Dimensions.get('window');
 
@@ -61,6 +65,7 @@ export default function Company({ navigation, route: { params } }) {
   const { loading, company: data } = useSelector(
     state => state.company,
   );
+  const { company_id } = useSelector(state => state.cart);
 
   const [currentProduct, setCurrentProduct] = useState(null);
   const [cartItems, setCartItens] = useState([]);
@@ -77,7 +82,7 @@ export default function Company({ navigation, route: { params } }) {
 
   const [cart, setCart] = useState(true);
   const [qtd, setQtd] = useState(1);
-  const [attr, setAttr] = useState(null);
+  const [attr, setAttr] = useState({});
 
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
@@ -106,7 +111,6 @@ export default function Company({ navigation, route: { params } }) {
 
     newCartItems.push(item);
     setCartItens(newCartItems);
-    setTimeout(() => console.tron.log(cartItems), 300);
   }
 
   const toAddress = () => {
@@ -119,7 +123,7 @@ export default function Company({ navigation, route: { params } }) {
 
   function handleProductOpen(item) {
     setCurrentProduct(item);
-    setAttr(null);
+    setAttr({});
     productSheetRef.current.open();
   }
 
@@ -128,11 +132,40 @@ export default function Company({ navigation, route: { params } }) {
     return productSheetRef.current.close();
   }
 
+  function addToCart() {
+    if (company_id && company_id !== currentProduct.company_id) {
+      showToast(
+        'Erro',
+        'Você possui itens adicionados no carrinho de outra loja, deseja limpar?',
+        'danger',
+      );
+      return;
+    }
+    const product = { ...currentProduct };
+
+    product.qty = qtd || 1;
+    product.selectedAttr = attr;
+
+    dispatch(CartActions.addCart(product));
+    productSheetRef.current.close();
+  }
+
   function priceAll() {
-    if (attr && attr?.prices?.price) {
-      return monetize(attr.prices.price * qtd);
+    if (Object.keys(attr).length) {
+      const prices = Object.values(attr).map(e => e.prices.price);
+      const reduce = prices.reduce((ac, v) => ac + v);
+
+      if (reduce) {
+        return monetize(reduce * qtd);
+      }
     }
     return monetize(currentProduct?.price * qtd);
+  }
+
+  function isSelected(opcoes) {
+    return Object.values(attr).find(e => e.id === opcoes.id)
+      ? colors.darker
+      : '#f1f1f1';
   }
 
   function renderCurrentProduct() {
@@ -375,7 +408,11 @@ export default function Company({ navigation, route: { params } }) {
                                 }}
                               >
                                 <TouchableOpacity
-                                  onPress={() => setAttr(opcoes)}
+                                  onPress={() => {
+                                    const newAttr = { ...attr };
+                                    newAttr[attribute.id] = opcoes;
+                                    setAttr(newAttr);
+                                  }}
                                 >
                                   <View
                                     style={{
@@ -398,10 +435,9 @@ export default function Company({ navigation, route: { params } }) {
                                           width: 16,
                                           height: 16,
                                           borderRadius: 20,
-                                          backgroundColor:
-                                            opcoes.id === attr?.id
-                                              ? colors.darker
-                                              : '#f1f1f1',
+                                          backgroundColor: isSelected(
+                                            opcoes,
+                                          ),
                                           marginRight: 10,
                                         }}
                                       />
@@ -549,33 +585,36 @@ export default function Company({ navigation, route: { params } }) {
               <Feather name="plus-circle" size={24} color="#8bc34a" />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={{
-              borderWidth: 1,
-              borderColor: '#4caf50',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              marginLeft: 20,
-              paddingHorizontal: 20,
-              borderRadius: 3,
-              paddingVertical: 10,
-              backgroundColor: '#8bc34a',
-              alignItems: 'center',
-            }}
-            onPress={() => {}}
-          >
-            <Ionicons name="md-cart" size={22} color="white" />
-            <Text
-              style={{
-                fontSize: 19,
-                fontWeight: '500',
-                color: colors.white,
-                marginLeft: 40,
-              }}
-            >
-              {priceAll()}
-            </Text>
-          </TouchableOpacity>
+          {currentProduct.attributes.length &&
+            Object.keys(attr).length > 0 && (
+              <TouchableOpacity
+                style={{
+                  borderWidth: 1,
+                  borderColor: '#4caf50',
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  marginLeft: 20,
+                  paddingHorizontal: 20,
+                  borderRadius: 3,
+                  paddingVertical: 10,
+                  backgroundColor: '#8bc34a',
+                  alignItems: 'center',
+                }}
+                onPress={() => addToCart()}
+              >
+                <Ionicons name="md-cart" size={22} color="white" />
+                <Text
+                  style={{
+                    fontSize: 19,
+                    fontWeight: '500',
+                    color: colors.white,
+                    marginLeft: 40,
+                  }}
+                >
+                  {priceAll()}
+                </Text>
+              </TouchableOpacity>
+            )}
         </View>
       </View>
     );
@@ -623,7 +662,6 @@ export default function Company({ navigation, route: { params } }) {
       <FlatList
         data={products.products}
         renderItem={({ item }) => {
-          console.tron.log('single product', item);
           if (item.is_active === 1) {
             return (
               <TouchableOpacity
@@ -954,7 +992,11 @@ export default function Company({ navigation, route: { params } }) {
         <SafeAreaView
           containerStyle={{ backgroundColor: 'transparent' }}
         >
-          <Cart />
+          <TouchableOpacity
+            onPress={() => cartSheetRef.current.open()}
+          >
+            <Cart />
+          </TouchableOpacity>
         </SafeAreaView>
       )}
       <RBSheet
