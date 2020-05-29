@@ -7,7 +7,7 @@ export default {
   darker: '#333',
   black: '#000',
 
-  primary: '#FB7944',
+  primary: '#ff5900',
   primaryLight: '#ffaa71',
   primaryDark: '#c24917',
   secundary: '#444a5a',

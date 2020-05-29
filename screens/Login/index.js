@@ -30,7 +30,8 @@ import { colors } from '../../styles';
 import Input from '../../components/Input';
 import ButtonFill from '../../components/ButtonFill';
 import H1 from '../../components/H1';
-import H3 from '../../components/H3';
+
+import logo from '../../assets/images/logo-colored-small.png';
 
 /** Components Ends */
 
@@ -58,12 +59,24 @@ export default function Login({ navigation }) {
       }}
     >
       <SafeAreaView>
-        <H1
-          color={colors.primary}
-          text="Faça seu login"
-          align="center"
-        />
-
+        <View
+          style={{
+            justifyContent: 'center',
+            alignContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Image
+            style={{ width: 80 }}
+            resizeMode="contain"
+            source={logo}
+          />
+          <H1
+            color={colors.primary}
+            text="Faça seu login"
+            align="center"
+          />
+        </View>
         <Formik
           initialValues={{
             email: 'test@user.com',
