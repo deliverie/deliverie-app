@@ -8,9 +8,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secundary,
     borderRadius: 5,
     alignItems: 'center',
-    borderWidth: 2,
     justifyContent: 'center',
-    padding: wpd(4),
+    paddingHorizontal: wpd(4),
+    paddingVertical: wpd(3),
     marginVertical: hpd(2),
   },
   buttonText: {

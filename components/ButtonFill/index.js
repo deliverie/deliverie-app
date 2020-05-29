@@ -22,7 +22,7 @@ const ButtonFill = ({
     disabled={disabled}
     style={[
       styles.buttonContainer,
-      { backgroundColor: color, borderColor: color },
+      { backgroundColor: color },
       style,
     ]}
   >
