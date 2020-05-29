@@ -58,6 +58,7 @@ export default function Tab({ navigation, route }) {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="user" />
           ),
+          tabBarVisible: !route.state?.routes[0]?.state?.index,
         }}
       />
     </BottomTab.Navigator>

@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Creators as LoginActions } from '../../store/ducks/login';
 
 import H1 from '../../components/H1';
+import SimpleHeader from '../../components/SimpleHeader';
 
-export default function Account({ navigation }) {
+export default function Profile() {
   const dispatch = useDispatch();
   const login = useSelector(state => state.login);
   React.useEffect(() => {
@@ -20,6 +21,7 @@ export default function Account({ navigation }) {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <SimpleHeader text="Seu perfil" />
       <SafeAreaView>
         {login.data && (
           <View style={{ margin: 10 }}>
@@ -29,7 +31,9 @@ export default function Account({ navigation }) {
         <OptionButton
           icon="md-person"
           label="Alterar perfil"
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() =>
+            WebBrowser.openBrowserAsync('https://docs.expo.io')
+          }
         />
 
         <OptionButton

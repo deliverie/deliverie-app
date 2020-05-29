@@ -7,21 +7,24 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#f1f1f1',
+    borderColor: '#ccc',
     backgroundColor: colors.white,
     borderRadius: metrics.baseRadius * 3,
-    padding: metrics.basePadding / 2,
+    padding: metrics.basePadding / 2 + 7,
     alignItems: 'center',
-    shadowColor: 'rgba(0,0,0,0.3)',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 3,
   },
+  inputContainerFirst: {
+    flexDirection: 'row',
+    width: '95%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: colors.white,
+    borderRadius: metrics.baseRadius * 3,
+    padding: metrics.basePadding / 2 + 7,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+
   input: {
     color: colors.darker,
     fontWeight: '300',

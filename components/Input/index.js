@@ -24,13 +24,17 @@ export default function Input({
   autoCapitalize,
   name,
   disabled,
+  first,
 }) {
   return (
     <View style={{ alignSelf: 'stretch' }}>
       {name && <Text style={styles.text}>{name}</Text>}
+
       <View
         style={[
-          styles.inputContainer,
+          first === true
+            ? styles.inputContainerFirst
+            : styles.inputContainer,
           !name ? { marginTop: 15 } : {},
         ]}
       >

@@ -33,6 +33,7 @@ export default function AuthTab({ navigation, route }) {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="home" />
           ),
+          tabBarVisible: !route.state?.routes[0]?.state?.index,
         }}
       />
       <BottomTab.Screen
@@ -69,6 +70,7 @@ export default function AuthTab({ navigation, route }) {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="user" />
           ),
+          tabBarVisible: !route.state?.routes[0]?.state?.index,
         }}
       />
     </BottomTab.Navigator>

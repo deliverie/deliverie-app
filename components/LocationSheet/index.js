@@ -156,9 +156,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
                 <View
                   style={{
                     flexDirection: 'row',
-                    alignSelf: 'stretch',
-
-                    justifyContent: 'space-between',
+                    marginHorizontal: 20,
                   }}
                 >
                   <Input
@@ -168,6 +166,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
                     onChangeText={handleChange('localidade')}
                     msg={errors.localidade ? errors.localidade : null}
                     disabled
+                    first
                   />
                   <Input
                     name="Estado"
