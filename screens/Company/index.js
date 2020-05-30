@@ -66,6 +66,7 @@ export default function Company({ navigation, route: { params } }) {
     state => state.company,
   );
   const { company_id } = useSelector(state => state.cart);
+  const globalCart = useSelector(state => state.cart);
 
   const [currentProduct, setCurrentProduct] = useState(null);
   const [cartItems, setCartItens] = useState([]);
@@ -87,6 +88,12 @@ export default function Company({ navigation, route: { params } }) {
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
 
+  //to clean current state for diferent products
+  useEffect(() => {
+    //check if data already exists on cart reducer
+    console.tron.log('globalCart', globalCart);
+  }, [currentProduct]);
+
   const translationX = new Value(100);
   const config = {
     duration: 1000,
@@ -97,21 +104,6 @@ export default function Company({ navigation, route: { params } }) {
   useEffect(() => {
     dispatch(CompanyActions.getCompanyById(item));
   }, []);
-
-  function handleAddCartItem(item) {
-    const newCartItems = cartItems;
-    let product = null;
-    if (item.attribute) {
-      product = {
-        product: currentProduct.id,
-        name: currentProduct.name,
-        attribute: [],
-      };
-    }
-
-    newCartItems.push(item);
-    setCartItens(newCartItems);
-  }
 
   const toAddress = () => {
     if (data?.address) {
@@ -129,6 +121,8 @@ export default function Company({ navigation, route: { params } }) {
 
   function handleProductClose() {
     setCurrentProduct(null);
+    setCart([]);
+    setQtd(0);
     return productSheetRef.current.close();
   }
 
@@ -144,8 +138,8 @@ export default function Company({ navigation, route: { params } }) {
     const product = { ...currentProduct };
 
     product.qty = qtd || 1;
+    product.attribute_id = attr.id;
     product.selectedAttr = attr;
-
     dispatch(CartActions.addCart(product));
     productSheetRef.current.close();
   }
@@ -361,15 +355,32 @@ export default function Company({ navigation, route: { params } }) {
                 {currentProduct.attributes.map(attribute => {
                   return (
                     <View style={{ marginTop: 15 }}>
-                      <Text
-                        style={{
-                          fontSize: 17,
-                          fontWeight: '400',
-                          color: colors.darker,
-                        }}
-                      >
-                        {attribute.name}
-                      </Text>
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text
+                          style={{
+                            fontSize: 17,
+                            fontWeight: '400',
+                            color: colors.darker,
+                          }}
+                        >
+                          {attribute.name}
+                        </Text>
+                        <View
+                          style={{
+                            backgroundColor: colors.darker,
+                            borderRadius: 5,
+                            paddingVertical: 3,
+                            paddingHorizontal: 10,
+                            marginLeft: 10,
+                          }}
+                        >
+                          <Text
+                            style={{ fontSize: 10, color: 'white' }}
+                          >
+                            OBRIGATÓRIO
+                          </Text>
+                        </View>
+                      </View>
                       {attribute.values.map((opcoes, index) => {
                         return (
                           <View
@@ -395,11 +406,13 @@ export default function Company({ navigation, route: { params } }) {
                                 alignContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() =>
-                                handleAddCartItem(opcoes)
-                              }
                             >
-                              <View
+                              <TouchableOpacity
+                                onPress={() => {
+                                  const newAttr = { ...attr };
+                                  newAttr[attribute.id] = opcoes;
+                                  setAttr(newAttr);
+                                }}
                                 style={{
                                   flex: 1,
                                   flexDirection: 'row',
@@ -407,51 +420,44 @@ export default function Company({ navigation, route: { params } }) {
                                   alignItems: 'center',
                                 }}
                               >
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    const newAttr = { ...attr };
-                                    newAttr[attribute.id] = opcoes;
-                                    setAttr(newAttr);
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
                                   }}
                                 >
                                   <View
                                     style={{
-                                      flexDirection: 'row',
-                                      alignItems: 'center',
+                                      width: 26,
+                                      height: 26,
+                                      borderRadius: 20,
+                                      backgroundColor: '#f1f1f1',
+                                      marginRight: 10,
+                                      padding: 5,
                                     }}
                                   >
                                     <View
                                       style={{
-                                        width: 26,
-                                        height: 26,
+                                        width: 16,
+                                        height: 16,
                                         borderRadius: 20,
-                                        backgroundColor: '#f1f1f1',
+                                        backgroundColor: isSelected(
+                                          opcoes,
+                                        ),
                                         marginRight: 10,
-                                        padding: 5,
                                       }}
-                                    >
-                                      <View
-                                        style={{
-                                          width: 16,
-                                          height: 16,
-                                          borderRadius: 20,
-                                          backgroundColor: isSelected(
-                                            opcoes,
-                                          ),
-                                          marginRight: 10,
-                                        }}
-                                      />
-                                    </View>
-                                    <Text
-                                      style={{
-                                        color: colors.darker,
-                                        fontWeight: '200',
-                                      }}
-                                    >
-                                      {opcoes.name}
-                                    </Text>
+                                    />
                                   </View>
-                                </TouchableOpacity>
+                                  <Text
+                                    style={{
+                                      color: colors.darker,
+                                      fontWeight: '200',
+                                    }}
+                                  >
+                                    {opcoes.name}
+                                  </Text>
+                                </View>
+
                                 <Text
                                   style={{
                                     fontWeight: '500',
@@ -461,7 +467,7 @@ export default function Company({ navigation, route: { params } }) {
                                 >
                                   {monetize(opcoes?.prices.price)}
                                 </Text>
-                              </View>
+                              </TouchableOpacity>
                             </View>
                           </View>
                         );

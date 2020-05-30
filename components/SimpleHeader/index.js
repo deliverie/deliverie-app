@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Ionicons } from '@expo/vector-icons';
 
-export default function SimpleHeader({ text }) {
+export default function SimpleHeader({ text, goBack }) {
   const navigation = useNavigation();
 
   return (
@@ -31,7 +31,9 @@ export default function SimpleHeader({ text }) {
             name="ios-arrow-back"
             size={33}
             color={colors.primary}
-            onPress={() => navigation.goBack()}
+            onPress={
+              goBack ? () => goBack() : () => navigation.goBack()
+            }
           />
         </View>
         <Text
