@@ -31,7 +31,10 @@ export const Cart = () => {
       const findPrice = Object.values(e.selectedAttr).find(
         f => f.prices.price,
       );
-      return findPrice.prices.price * e.qty;
+      if (findPrice) {
+        return findPrice.prices.price * e.qty;
+      }
+      return e.price;
     });
     const soma = cartMap.reduce((ac, cv) => ac + cv);
     return monetize(soma);

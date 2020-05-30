@@ -1,0 +1,582 @@
+import React, { useState } from 'react';
+import {
+  View,
+  ScrollView,
+  ImageBackground,
+  StyleSheet,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
+import { colors } from '../../../styles';
+import { baseURL } from '../../../services/api';
+import { monetize } from '../../../utils';
+import { Creators as CartActions } from '../../../store/ducks/cart';
+import { showToast } from '../../../utils/toast';
+
+const Products = ({
+  productSheetRef,
+  currentProduct,
+  setCurrentProduct,
+}) => {
+  const dispatch = useDispatch();
+  const { company_id, cart } = useSelector(state => state.cart);
+  const [qtd, setQtd] = useState(1);
+  const [attr, setAttr] = useState({});
+  const { width: wWidth } = Dimensions.get('window');
+  const { loading, company: data } = useSelector(
+    state => state.company,
+  );
+
+  function handleProductClose() {
+    setCurrentProduct(null);
+    setQtd(0);
+    return productSheetRef.current.close();
+  }
+
+  function isSelected(opcoes) {
+    return Object.values(attr).find(e => e.id === opcoes.id)
+      ? colors.darker
+      : '#f1f1f1';
+  }
+
+  function haveSameProduct(productId, values) {
+    const filter = cart.filter(e => e.id === productId);
+    if (filter?.length) {
+      const find = filter.filter(e => {
+        const attrFind = Object.values(e.selectedAttr).map(f => f.id);
+        return (
+          _.difference(attrFind.sort(), values.sort()).length === 0
+        );
+      });
+      return find.length ? find[0] : null;
+    }
+    return null;
+  }
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      // eslint-disable-next-line func-names
+      function(c) {
+        // eslint-disable-next-line no-bitwise
+        const r = (Math.random() * 16) | 0;
+        const v = c == 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      },
+    );
+  }
+
+  function addToCart() {
+    if (company_id && company_id !== currentProduct.company_id) {
+      showToast(
+        'Erro',
+        'Você possui itens adicionados no carrinho de outra loja, deseja limpar?',
+        'danger',
+      );
+      return;
+    }
+    const product = { ...currentProduct };
+    const same = haveSameProduct(
+      product.id,
+      Object.values(attr).map(e => e.id),
+    );
+
+    if (same) {
+      product.qty = same.qty + qtd;
+      product.selectedAttr = attr;
+      dispatch(CartActions.updateCart(same.cart_id, product));
+    } else {
+      product.qty = qtd || 1;
+      product.selectedAttr = attr;
+      product.cart_id = cart.length + 1;
+      dispatch(CartActions.addCart(product));
+    }
+
+    productSheetRef.current.close();
+  }
+
+  function priceAll() {
+    if (Object.keys(attr).length) {
+      const prices = Object.values(attr).map(e => e.prices.price);
+      const reduce = prices.reduce((ac, v) => ac + v);
+
+      if (reduce) {
+        return monetize(reduce * qtd);
+      }
+    }
+    return monetize(currentProduct?.price * qtd);
+  }
+
+  function renderCartButton() {
+    if (currentProduct?.attributes?.length) {
+      if (!Object.keys(attr).length) {
+        return null;
+      }
+    }
+    return (
+      <TouchableOpacity
+        style={{
+          borderWidth: 1,
+          borderColor: '#4caf50',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          marginLeft: 20,
+          paddingHorizontal: 20,
+          borderRadius: 3,
+          paddingVertical: 10,
+          backgroundColor: '#8bc34a',
+          alignItems: 'center',
+        }}
+        onPress={() => addToCart()}
+      >
+        <Ionicons name="md-cart" size={22} color="white" />
+        <Text
+          style={{
+            fontSize: 19,
+            fontWeight: '500',
+            color: colors.white,
+            marginLeft: 40,
+          }}
+        >
+          {priceAll()}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
+  return (
+    <View style={{ paddingTop: getStatusBarHeight(), flex: 1 }}>
+      <ScrollView
+        containerStyle={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            paddingVertical: 5,
+            alignContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Ionicons
+            style={{ paddingHorizontal: 20 }}
+            name="ios-arrow-back"
+            size={33}
+            color={colors.dark}
+            onPress={() => handleProductClose()}
+          />
+          <Ionicons
+            style={{ paddingHorizontal: 20 }}
+            name="md-share"
+            size={28}
+            color={colors.dark}
+          />
+        </View>
+        {currentProduct?.image && (
+          <ImageBackground
+            style={{
+              height: 220,
+              borderRadius: 10,
+              marginHorizontal: 20,
+              justifyContent: 'flex-end',
+            }}
+            imageStyle={{ borderRadius: 10 }}
+            source={{
+              uri: `${baseURL}/${currentProduct.image.path}`,
+            }}
+            resizeMode="cover"
+          >
+            <LinearGradient
+              colors={[
+                'transparent',
+                'rgba(0,0,0,0.3)',
+
+                'rgba(0,0,0,0.3)',
+                'rgba(0,0,0,0.7)',
+              ]}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                ...StyleSheet.absoluteFill,
+                zIndex: 9999,
+              }}
+            />
+            <View
+              style={{
+                padding: 3,
+                borderRadius: 4,
+                marginTop: 8,
+                flexDirection: 'row',
+                width: wWidth - 40,
+                justifyContent: 'space-between',
+                height: 30,
+                zIndex: 99999,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name="ios-call"
+                  size={15}
+                  color={colors.white}
+                />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.white,
+                    marginLeft: 5,
+                  }}
+                >
+                  ({data?.phone_ddd}) {data?.phone_num}
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name="md-time"
+                  size={15}
+                  color={colors.white}
+                />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.white,
+                    marginLeft: 5,
+                  }}
+                >
+                  Aberto
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name="md-time"
+                  size={15}
+                  color={colors.white}
+                />
+
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.white,
+                    marginLeft: 5,
+                  }}
+                >
+                  {data?.min_delivery_time}-{data?.max_delivery_time}{' '}
+                  min
+                </Text>
+              </View>
+            </View>
+          </ImageBackground>
+        )}
+
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginBottom: 10,
+            paddingVertical: 12,
+            borderBottomWidth: 1,
+            borderColor: 'rgba(0,0,0,0.1)',
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 23,
+              fontWeight: '300',
+              color: colors.darker,
+            }}
+          >
+            {currentProduct?.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '300',
+              color: colors.dark,
+            }}
+          >
+            {currentProduct?.desc}
+          </Text>
+        </View>
+        <View
+          style={{
+            marginHorizontal: 20,
+            paddingBottom: 10,
+            orderWidth: 1,
+            flex: 1,
+          }}
+        >
+          {currentProduct?.attributes.length > 0 && (
+            <View>
+              {currentProduct.attributes.map(attribute => {
+                return (
+                  <View style={{ marginTop: 15 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text
+                        style={{
+                          fontSize: 17,
+                          fontWeight: '400',
+                          color: colors.darker,
+                        }}
+                      >
+                        {attribute.name}
+                      </Text>
+                      <View
+                        style={{
+                          backgroundColor: colors.darker,
+                          borderRadius: 5,
+                          paddingVertical: 3,
+                          paddingHorizontal: 10,
+                          marginLeft: 10,
+                        }}
+                      >
+                        <Text
+                          style={{ fontSize: 10, color: 'white' }}
+                        >
+                          OBRIGATÓRIO
+                        </Text>
+                      </View>
+                    </View>
+                    {attribute.values.map((opcoes, index) => {
+                      return (
+                        <View
+                          style={{
+                            borderBottomWidth:
+                              index === attribute.values.length - 1
+                                ? 1
+                                : 0,
+                            paddingBottom:
+                              index === attribute.values.length - 1
+                                ? 5
+                                : 0,
+                            borderColor: 'rgba(0,0,0,0.1)',
+                          }}
+                        >
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              marginTop: index === 0 ? 22 : 0,
+                              paddingTop: 5,
+                              paddingBottom: 5,
+                              alignContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <TouchableOpacity
+                              onPress={() => {
+                                const newAttr = { ...attr };
+                                newAttr[attribute.id] = opcoes;
+                                setAttr(newAttr);
+                              }}
+                              style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    width: 26,
+                                    height: 26,
+                                    borderRadius: 20,
+                                    backgroundColor: '#f1f1f1',
+                                    marginRight: 10,
+                                    padding: 5,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      width: 16,
+                                      height: 16,
+                                      borderRadius: 20,
+                                      backgroundColor: isSelected(
+                                        opcoes,
+                                      ),
+                                      marginRight: 10,
+                                    }}
+                                  />
+                                </View>
+                                <Text
+                                  style={{
+                                    color: colors.darker,
+                                    fontWeight: '200',
+                                  }}
+                                >
+                                  {opcoes.name}
+                                </Text>
+                              </View>
+
+                              <Text
+                                style={{
+                                  fontWeight: '500',
+                                  color: '#8bc34a',
+                                  fontSize: 16,
+                                }}
+                              >
+                                {monetize(opcoes?.prices.price)}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                );
+              })}
+            </View>
+          )}
+
+          {currentProduct?.attributes.length === 0 && (
+            <View
+              style={{
+                borderColor: 'rgba(0,0,0,0.1)',
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+
+                  paddingBottom: 5,
+                  alignContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => {}}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: '500',
+                      color: '#8bc34a',
+                      fontSize: 23,
+                    }}
+                  >
+                    {monetize(currentProduct?.price)}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: 'white',
+          padding: 20,
+          justifyContent: 'space-between',
+          shadowColor: '#f1f1f1',
+          borderTopWidth: 1,
+          borderTopColor: '#f1f1f1',
+          shadowOffset: {
+            width: 0,
+            height: -10,
+          },
+          shadowOpacity: 0.5,
+          shadowRadius: 3,
+
+          elevation: 3,
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity
+            style={{
+              width: 30,
+              height: 30,
+              borderColor: '#f1f1f1',
+              borderWidth: 1,
+              borderRadius: 100,
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignContent: 'center',
+              marginRight: 5,
+            }}
+            onPress={() => qtd > 1 && setQtd(qtd - 1)}
+          >
+            <Feather name="minus-circle" size={24} color="#f44336" />
+          </TouchableOpacity>
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text
+              style={{
+                color: 'rgba(34,60,120,1)',
+                fontWeight: '500',
+              }}
+            >
+              {qtd}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              width: 30,
+              height: 30,
+              borderColor: '#f1f1f1',
+              borderWidth: 1,
+              borderRadius: 100,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 5,
+            }}
+            onPress={() => setQtd(qtd + 1)}
+          >
+            <Feather name="plus-circle" size={24} color="#8bc34a" />
+          </TouchableOpacity>
+        </View>
+        {renderCartButton()}
+      </View>
+    </View>
+  );
+};
+
+export default Products;

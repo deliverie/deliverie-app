@@ -28,6 +28,7 @@
     "expo-linear-gradient": "~8.1.0",
     "expo-web-browser": "~8.1.0",
     "formik": "^2.1.4",
+    "lodash": "^4.17.15",
     "lottie-react-native": "^3.3.2",
     "moment": "^2.26.0",
     "react": "~16.9.0",
