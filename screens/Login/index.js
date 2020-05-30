@@ -133,11 +133,34 @@ export default function Login({ navigation }) {
                 // disabled={loading}
                 // loading={login.loading}
                 onPress={handleSubmit}
-                fontColor={colors.darker}
+                fontColor={colors.white}
               />
             </>
           )}
         </Formik>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Register')}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text
+            style={{
+              color: colors.secundary,
+              fontSize: 17,
+              fontWeight: 'bold',
+            }}
+          >
+            FAZER CADASTRO
+          </Text>
+          <MaterialCommunityIcons
+            name="arrow-right"
+            size={23}
+            color={colors.secundary}
+          />
+        </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>
   );

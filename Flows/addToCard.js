@@ -5,6 +5,7 @@ const cart = [
     company_id: null,
     product_id: null,
     attribute_id: null,
+    attribute_price: null,
     price_id: null,
     qty: 3,
   },

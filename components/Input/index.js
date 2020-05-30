@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { TextInput, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -25,7 +25,23 @@ export default function Input({
   name,
   disabled,
   first,
+  onBlur,
 }) {
+  const [focused, setFocused] = useState(false);
+
+  useEffect(() => {
+    if (focused) {
+      onBlur();
+    } else {
+      null;
+    }
+  }, [focused]);
+
+  function handleFocus() {
+    if (onBlur) {
+      setFocused(!focused);
+    }
+  }
   return (
     <View style={{ alignSelf: 'stretch' }}>
       {name && <Text style={styles.text}>{name}</Text>}
@@ -36,13 +52,14 @@ export default function Input({
             ? styles.inputContainerFirst
             : styles.inputContainer,
           !name ? { marginTop: 15 } : {},
+          disabled === true ? { backgroundColor: '#f1f1f1' } : {},
         ]}
       >
         {icon && (
           <MaterialCommunityIcons
             name={icon}
             size={22}
-            color={colors.primary}
+            color={focused ? colors.primary : colors.dark}
             style={{ paddingRight: 10 }}
           />
         )}
@@ -53,6 +70,8 @@ export default function Input({
             autoCapitalize={autoCapitalize || 'none'}
             autoCorrect={false}
             placeholder={placeholder}
+            onBlur={() => handleFocus()}
+            onFocus={() => handleFocus()}
             underlineColorAndroid="rgba(0, 0, 0, 0)"
             placeholderTextColor="rgba(0, 0, 0, 0.4)"
             onChangeText={onChangeText}
@@ -73,6 +92,8 @@ export default function Input({
             underlineColorAndroid="rgba(0, 0, 0, 0)"
             placeholderTextColor="rgba(0, 0, 0, 0.4)"
             onChangeText={onChangeText}
+            onBlur={() => handleFocus()}
+            onFocus={() => handleFocus()}
             value={value}
             keyboardType={keyboardType || 'default'}
             secureTextEntry={!!secureTextEntry}
