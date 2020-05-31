@@ -44,15 +44,11 @@ export default function Login({ navigation }) {
   const dispatch = useDispatch();
   const login = useSelector(state => state.login);
 
-  React.useEffect(() => {
-    dispatch(LoginActions.loginLogout());
-  }, []);
-
   return (
     <ScrollView
       contentContainerStyle={{
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#f1f1f1',
         paddingHorizontal: 20,
         alignContent: 'center',
         justifyContent: 'center',
@@ -79,8 +75,8 @@ export default function Login({ navigation }) {
         </View>
         <Formik
           initialValues={{
-            email: 'test@user.com',
-            password: 'teste123',
+            email: 'anilton.veigaa@gmail.com',
+            password: '123mudar',
           }}
           validationSchema={yup.object().shape({
             email: yup
@@ -150,7 +146,6 @@ export default function Login({ navigation }) {
             style={{
               color: colors.secundary,
               fontSize: 17,
-              fontWeight: 'bold',
             }}
           >
             FAZER CADASTRO

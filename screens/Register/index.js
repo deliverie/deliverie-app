@@ -6,8 +6,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
-  SafeAreaView,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import FlashMessage, {
@@ -30,116 +28,152 @@ import { colors } from '../../styles';
 import Input from '../../components/Input';
 import ButtonFill from '../../components/ButtonFill';
 import H1 from '../../components/H1';
-import H3 from '../../components/H3';
 
 /** Components Ends */
 
 /** REDUX */
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as LocationsActions } from '../../store/ducks/locations';
+import { Creators as RegisterActions } from '../../store/ducks/register';
 /** REDUX END */
 
-const schema = () =>
-  yup.object().shape({
-    email: yup
-      .string()
-      .email('Digite um e-mail valido')
-      .required('Digite um e-mail'),
-    senha: yup.string().required('Digite sua senha'),
-  });
-
 export default function Register({ navigation }) {
-  const locationSheet = React.useRef();
   const [loading, setLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    console.log(locationSheet.current);
-  }, []);
+  const dispatch = useDispatch();
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flex: 1,
-        backgroundColor: 'white',
-        paddingHorizontal: 20,
-        alignContent: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <SafeAreaView>
-        <H1
-          color={colors.primary}
-          text="Faça seu cadastro"
-          align="center"
-        />
-
-        <Formik
-          key="login"
-          initialValues={{ email: '', senha: '' }}
-          onSubmit={(values) => saveAddres(values)}
-          validationSchema={schema}
-        >
-          {({
-            values,
-            handleChange,
-            handleSubmit,
-            errors,
-            isValid,
-          }) => (
-            <ScrollView contentContainerStyle={styles.container}>
-              <View style={{ alignItems: 'center' }}>
-                <Input
-                  name="Nome"
-                  placeholder="Digite seu e-mail"
-                  value={values.numero}
-                  onChangeText={handleChange('numero')}
-                  msg={errors.numero ? errors.numero : null}
-                />
-                <Input
-                  name="E-mail"
-                  placeholder="Digite seu e-mail"
-                  value={values.numero}
-                  onChangeText={handleChange('numero')}
-                  msg={errors.numero ? errors.numero : null}
-                />
-                <Input
-                  name="Telefone"
-                  placeholder="Digite seu e-mail"
-                  value={values.numero}
-                  onChangeText={handleChange('numero')}
-                  msg={errors.numero ? errors.numero : null}
-                />
-                <Input
-                  name="Senha"
-                  placeholder="Digite sua senha"
-                  value={values.complemento}
-                  onChangeText={handleChange('complemento')}
-                  msg={errors.complemento ? errors.complemento : null}
-                  secureTextEntry
-                />
-              </View>
-              <ButtonFill
-                title={'Entrar'}
-                fontColor={colors.darker}
-                disabled={!isValid}
+    <ScrollView style={{ padding: 20 }}>
+      <Formik
+        key="register"
+        initialValues={{
+          name: 'Anilton Veiga',
+          email: 'anilton.veigaa@gmail.com',
+          phone: '41997308176',
+          cpf: '39520696844',
+          password: '123mudar',
+          password_confirmation: '123mudar',
+        }}
+        onSubmit={values =>
+          dispatch(RegisterActions.registerRequest(values))
+        }
+        validationSchema={yup.object().shape({
+          email: yup
+            .string()
+            .email('Digite um e-mail válido')
+            .required('Campo obrigatório'),
+          password: yup.string().required('Campo obrigatório'),
+        })}
+      >
+        {({
+          values,
+          handleChange,
+          handleSubmit,
+          errors,
+          isValid,
+          setFieldTouched,
+        }) => (
+          <View style={{ borderWidht: 1 }}>
+            <View style={{ paddingTop: 35 }}>
+              <H1
                 color={colors.primary}
-                loading={loading}
-                onPress={() => handleSubmit()}
+                text="Faça seu cadastro"
+                align="center"
               />
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <Input
+                icon="account-outline"
+                name="Nome"
+                placeholder="Digite seu e-mail"
+                value={values.name}
+                onChangeText={handleChange('name')}
+                onBlur={() => setFieldTouched('name')}
+                msg={errors.name ? errors.name : null}
+              />
+              <Input
+                icon="email-outline"
+                name="E-mail"
+                placeholder="Digite seu e-mail"
+                value={values.email}
+                onChangeText={handleChange('email')}
+                msg={errors.email ? errors.email : null}
+              />
+              <Input
+                mask="cpf"
+                icon="card-text-outline"
+                name="Cpf"
+                placeholder="Digite seu e-mail"
+                value={values.cpf}
+                onChangeText={handleChange('cpf')}
+                msg={errors.cpf ? errors.cpf : null}
+              />
+              <Input
+                icon="phone-in-talk"
+                mask="cel-phone"
+                name="Telefone"
+                placeholder="Digite seu telefone"
+                value={values.phone}
+                onChangeText={handleChange('phone')}
+                onBlur={() => setFieldTouched('phone')}
+                msg={errors.phone ? errors.phone : null}
+              />
+              <Input
+                icon="lock-outline"
+                name="Senha"
+                placeholder="Digite sua senha"
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={() => setFieldTouched('password')}
+                msg={errors.password ? errors.password : null}
+                secureTextEntry
+              />
+              <Input
+                icon="lock-outline"
+                name="Confirme sua senha"
+                placeholder="Confirme sua senha"
+                value={values.password_confirmation}
+                onChangeText={handleChange('password_confirmation')}
+                msg={
+                  errors.password_confirmation
+                    ? errors.password_confirmation
+                    : null
+                }
+                secureTextEntry
+              />
+            </View>
+            <ButtonFill
+              title={'Atualizar'}
+              fontColor={colors.white}
+              disabled={!isValid}
+              color={colors.primary}
+              onPress={() => handleSubmit()}
+            />
 
-              <KeyboardSpacer topSpacing={-40} />
-            </ScrollView>
-          )}
-        </Formik>
-
-        <ButtonFill
-          title={'Voltar para o Login'}
-          fontColor={colors.white}
-          color={colors.secundary}
-          loading={loading}
-          onPress={() => navigation.goBack()}
-        />
-      </SafeAreaView>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={23}
+                color={colors.secundary}
+              />
+              <Text
+                style={{
+                  color: colors.secundary,
+                  fontSize: 17,
+                }}
+              >
+                LOGIN
+              </Text>
+            </TouchableOpacity>
+            <KeyboardSpacer topSpacing={40} />
+          </View>
+        )}
+      </Formik>
     </ScrollView>
   );
 }

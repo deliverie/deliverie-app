@@ -63,17 +63,11 @@ export default function Company({ navigation, route: { params } }) {
   }
 
   const [cart, setCart] = useState(true);
-  const [qtd, setQtd] = useState(1);
-  const [attr, setAttr] = useState({});
+  const [qtd, setQtd] = useState(null);
+  const [attr, setAttr] = useState(null);
 
   const { width: wWidth } = Dimensions.get('window');
   const [showInfo, setShowInfo] = useState(false);
-
-  // to clean current state for diferent products
-  useEffect(() => {
-    // check if data already exists on cart reducer
-    console.tron.log('globalCart', globalCart);
-  }, [currentProduct]);
 
   useEffect(() => {
     dispatch(CompanyActions.getCompanyById(item));

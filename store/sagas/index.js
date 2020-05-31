@@ -5,6 +5,8 @@ import loginSagas from './login';
 import locationSagas from './location';
 import companySagas from './company';
 import productsSagas from './products';
+import registerSagas from './register';
+import profileSagas from './profile';
 
 export default function* rootSaga() {
   return yield all([
@@ -12,5 +14,7 @@ export default function* rootSaga() {
     loginSagas(),
     locationSagas(),
     productsSagas(),
+    registerSagas(),
+    profileSagas(),
   ]);
 }

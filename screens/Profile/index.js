@@ -2,10 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import { RectButton, ScrollView } from 'react-native-gesture-handler';
+import {
+  RectButton,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as LoginActions } from '../../store/ducks/login';
+import { Creators as ProfileActions } from '../../store/ducks/profile';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -22,9 +26,7 @@ import { colors } from '../../styles';
 export default function Profile() {
   const dispatch = useDispatch();
   const login = useSelector(state => state.login);
-  React.useEffect(() => {
-    console.tron.log(login);
-  }, []);
+  const [showPasswords, setShowPasswords] = React.useState(false);
   return (
     <View style={styles.container}>
       <SimpleHeader text={login.data.user.name} />
@@ -38,13 +40,15 @@ export default function Profile() {
               phone: `${login.data.user.phone_ddd}${login.data.user.phone_num}`,
               cpf: login.data.user.cpf,
             }}
-            onSubmit={values => saveAddres(values)}
+            onSubmit={values =>
+              dispatch(ProfileActions.profileUpdateRequest(values))
+            }
             validationSchema={yup.object().shape({
               email: yup
                 .string()
                 .email('Digite um e-mail válido')
                 .required('Campo obrigatório'),
-              password: yup.string().required('Campo obrigatório'),
+              password: yup.string(),
             })}
           >
             {({
@@ -76,6 +80,7 @@ export default function Profile() {
                     disabled
                   />
                   <Input
+                    mask="cpf"
                     icon="card-text-outline"
                     name="Cpf"
                     placeholder="Digite seu e-mail"
@@ -94,29 +99,38 @@ export default function Profile() {
                     onBlur={() => setFieldTouched('phone')}
                     msg={errors.phone ? errors.phone : null}
                   />
-                  <Input
-                    icon="lock-outline"
-                    name="Senha"
-                    placeholder="Digite sua senha"
-                    value={values.password}
-                    onChangeText={handleChange('password')}
-                    onBlur={() => setFieldTouched('password')}
-                    msg={errors.password ? errors.password : null}
-                    secureTextEntry
-                  />
-                  <Input
-                    icon="lock-outline"
-                    name="Confirme sua senha"
-                    placeholder="Confirme sua senha"
-                    value={values.password_confirm}
-                    onChangeText={handleChange('password_confirm')}
-                    msg={
-                      errors.password_confirm
-                        ? errors.password_confirm
-                        : null
-                    }
-                    secureTextEntry
-                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPasswords(!showPasswords)}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingTop: 20,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="lock-outline"
+                      size={22}
+                      color={colors.primary}
+                      style={{ paddingRight: 10 }}
+                    />
+                    <Text style={{ color: colors.darker }}>
+                      Alterar senha
+                    </Text>
+                  </TouchableOpacity>
+                  {showPasswords && (
+                    <View style={{ flex: 1, alignSelf: 'stretch' }}>
+                      <Input
+                        icon="lock-outline"
+                        name="Nova senha"
+                        placeholder="Digite sua nova senha senha"
+                        value={values.password}
+                        onChangeText={handleChange('password')}
+                        onBlur={() => setFieldTouched('password')}
+                        msg={errors.password ? errors.password : null}
+                        secureTextEntry
+                      />
+                    </View>
+                  )}
                 </View>
                 <ButtonFill
                   title={'Atualizar'}

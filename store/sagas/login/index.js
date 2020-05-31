@@ -1,4 +1,6 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
+import { AsyncStorage } from 'react-native';
+
 import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
 
@@ -11,7 +13,11 @@ function* login({ payload }) {
   console.tron.log('entrou na saga de login', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
-    console.tron.log('teste requisição', response);
+
+    yield AsyncStorage.setItem(
+      '@@DELIVERE@@:token',
+      response.data.token,
+    );
     yield put(LoginActions.loginSuccess(response.data));
   } catch (error) {
     console.tron.log('catch', error);
