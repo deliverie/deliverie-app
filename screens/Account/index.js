@@ -35,9 +35,7 @@ export default function Account({ navigation }) {
         <OptionButton
           icon="md-compass"
           label="Alterar endereço"
-          onPress={() =>
-            WebBrowser.openBrowserAsync('https://reactnavigation.org')
-          }
+          onPress={() => navigation.navigate('Address')}
         />
 
         <OptionButton
