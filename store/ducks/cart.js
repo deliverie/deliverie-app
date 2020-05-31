@@ -4,6 +4,7 @@ import { showToast } from '../../utils/toast';
 export const Types = {
   ADD_CART: 'CART/ADD_CART',
   UPDATE_CART: 'CART/UPDATE_CART',
+  REMOVE_CART: 'CART/REMOVE_CART',
 };
 
 const INITIAL_STATE = {
@@ -34,6 +35,14 @@ export default function cart(state = INITIAL_STATE, action) {
         ],
       };
     }
+    case Types.REMOVE_CART: {
+      return {
+        ...state,
+        cart: [
+          ...state.cart.filter(e => e.cart_id !== action.cart_id),
+        ],
+      };
+    }
     default:
       return state;
   }
@@ -48,5 +57,9 @@ export const Creators = {
     type: Types.UPDATE_CART,
     cart_id,
     payload,
+  }),
+  removeCart: cart_id => ({
+    type: Types.REMOVE_CART,
+    cart_id,
   }),
 };
