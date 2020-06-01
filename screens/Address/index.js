@@ -1,7 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import {
+  StyleSheet,
+  ActivityIndicator,
+  Text,
+  View,
+  SafeAreaView,
+  FlatList,
+  Alert,
+} from 'react-native';
 import {
   RectButton,
   ScrollView,
@@ -9,7 +17,7 @@ import {
 } from 'react-native-gesture-handler';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as ProfileActions } from '../../store/ducks/profile';
+import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -25,125 +33,110 @@ import { colors } from '../../styles';
 
 export default function Address() {
   const dispatch = useDispatch();
-  const login = useSelector(state => state.login);
+  const locations = useSelector(state => state.locations);
   const [showPasswords, setShowPasswords] = React.useState(false);
+
+  React.useEffect(() => {
+    dispatch(LocationsActions.getLocations());
+  }, []);
+  React.useEffect(() => {
+    console.tron.log('alterou o location', locations);
+  }, [locations]);
+
+  function handleAddress() {
+    Alert.alert(
+      'O que você desaja fazer?',
+      '',
+      [
+        {
+          text: 'Excluir',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Alterar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Tornar principal',
+          onPress: () => console.log('OK Pressed'),
+        },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  function renderLocations() {
+    return (
+      <FlatList
+        data={locations.locations}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 20,
+              }}
+              onPress={() => handleAddress()}
+            >
+              <View
+                style={{
+                  width: 28,
+                  height: 28,
+                  backgroundColor: '#ccc',
+                  borderRadius: 15,
+                  marginRight: 10,
+                  padding: 6,
+                }}
+              >
+                <View
+                  style={{
+                    width: 15,
+                    height: 15,
+                    backgroundColor: item.is_active
+                      ? colors.primary
+                      : '#ccc',
+                    borderRadius: 15,
+                    marginRight: 10,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  backgroundColor: colors.white,
+                  flex: 1,
+                  padding: 10,
+                  borderWidth: 2,
+                  borderColor: item.is_active
+                    ? colors.primary
+                    : '#ccc',
+                  borderRadius: 5,
+                }}
+              >
+                <Text>Rua: {item.street}</Text>
+                <Text>Número: {item.number}</Text>
+                <Text>Bairro: {item.district}</Text>
+                <Text>CEP: {item.zipcode}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+        keyExtractor={item => String(item.id)}
+      />
+    );
+  }
   return (
     <View style={styles.container}>
       <SimpleHeader text="Seus endereços" />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <SafeAreaView>
-          <Formik
-            key="login"
-            initialValues={{
-              name: login.data.user.name,
-              email: login.data.user.email,
-              phone: `${login.data.user.phone_ddd}${login.data.user.phone_num}`,
-              cpf: login.data.user.cpf,
-            }}
-            onSubmit={values =>
-              dispatch(ProfileActions.profileUpdateRequest(values))
-            }
-            validationSchema={yup.object().shape({
-              email: yup
-                .string()
-                .email('Digite um e-mail válido')
-                .required('Campo obrigatório'),
-              password: yup.string(),
-            })}
-          >
-            {({
-              values,
-              handleChange,
-              handleSubmit,
-              errors,
-              isValid,
-              setFieldTouched,
-            }) => (
-              <ScrollView>
-                <View style={{ alignItems: 'center' }}>
-                  <Input
-                    icon="account-outline"
-                    name="Nome"
-                    placeholder="Digite seu e-mail"
-                    value={values.name}
-                    onChangeText={handleChange('name')}
-                    onBlur={() => setFieldTouched('name')}
-                    msg={errors.name ? errors.name : null}
-                  />
-                  <Input
-                    icon="email-outline"
-                    name="E-mail"
-                    placeholder="Digite seu e-mail"
-                    value={values.email}
-                    onChangeText={handleChange('email')}
-                    msg={errors.email ? errors.email : null}
-                    disabled
-                  />
-                  <Input
-                    mask="cpf"
-                    icon="card-text-outline"
-                    name="Cpf"
-                    placeholder="Digite seu e-mail"
-                    value={values.cpf}
-                    onChangeText={handleChange('cpf')}
-                    msg={errors.cpf ? errors.cpf : null}
-                    disabled
-                  />
-                  <Input
-                    icon="phone-in-talk"
-                    mask="cel-phone"
-                    name="Telefone"
-                    placeholder="Digite seu telefone"
-                    value={values.phone}
-                    onChangeText={handleChange('phone')}
-                    onBlur={() => setFieldTouched('phone')}
-                    msg={errors.phone ? errors.phone : null}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowPasswords(!showPasswords)}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      paddingTop: 20,
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="lock-outline"
-                      size={22}
-                      color={colors.primary}
-                      style={{ paddingRight: 10 }}
-                    />
-                    <Text style={{ color: colors.darker }}>
-                      Alterar senha
-                    </Text>
-                  </TouchableOpacity>
-                  {showPasswords && (
-                    <View style={{ flex: 1, alignSelf: 'stretch' }}>
-                      <Input
-                        icon="lock-outline"
-                        name="Nova senha"
-                        placeholder="Digite sua nova senha senha"
-                        value={values.password}
-                        onChangeText={handleChange('password')}
-                        onBlur={() => setFieldTouched('password')}
-                        msg={errors.password ? errors.password : null}
-                        secureTextEntry
-                      />
-                    </View>
-                  )}
-                </View>
-                <ButtonFill
-                  title={'Atualizar'}
-                  fontColor={colors.white}
-                  disabled={!isValid}
-                  color={colors.primary}
-                  onPress={() => handleSubmit()}
-                />
-
-                <KeyboardSpacer topSpacing={-40} />
-              </ScrollView>
-            )}
-          </Formik>
+          {locations.loading ? (
+            <ActivityIndicator />
+          ) : (
+            renderLocations()
+          )}
         </SafeAreaView>
       </ScrollView>
     </View>

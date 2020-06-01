@@ -353,22 +353,26 @@ const Products = ({
                       >
                         {attribute.name}
                       </Text>
-                      <View
-                        style={{
-                          backgroundColor: colors.darker,
-                          borderRadius: 5,
-                          paddingVertical: 3,
-                          paddingHorizontal: 10,
-                          marginLeft: 10,
-                        }}
-                      >
-                        <Text
-                          style={{ fontSize: 10, color: 'white' }}
+
+                      {attribute.additionals.length === 0 && (
+                        <View
+                          style={{
+                            backgroundColor: colors.darker,
+                            borderRadius: 5,
+                            paddingVertical: 3,
+                            paddingHorizontal: 10,
+                            marginLeft: 10,
+                          }}
                         >
-                          OBRIGATÓRIO
-                        </Text>
-                      </View>
+                          <Text
+                            style={{ fontSize: 10, color: 'white' }}
+                          >
+                            OBRIGATÓRIO
+                          </Text>
+                        </View>
+                      )}
                     </View>
+                    {attribute.additionals.length > 0}
                     {attribute.values.map((opcoes, index) => {
                       return (
                         <View

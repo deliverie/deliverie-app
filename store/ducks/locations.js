@@ -1,5 +1,5 @@
 export const Types = {
-  GET_LOCATIONS_RESQUEST: 'LOCATION/GET_LOCATIONS_RESQUEST',
+  GET_LOCATIONS_REQUEST: 'LOCATION/GET_LOCATIONS_REQUEST',
   GET_LOCATIONS_SUCCESS: 'LOCATION/GET_LOCATIONS_SUCCESS',
   GET_LOCATIONS_FAIL: 'LOCATION/GET_LOCATIONS_FAIL',
   REMOVE_SINGLE_LOCATION: 'LOCATION/REMOVE_SINGLE_LOCATION',
@@ -15,13 +15,14 @@ const INITIAL_STATE = {
 
 export default function locations(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case Types.GET_LOCATIONS_RESQUEST:
+    case Types.GET_LOCATIONS_REQUEST:
       return { ...state, loading: true };
     case Types.GET_LOCATIONS_SUCCESS:
+      console.tron.log('action', action.payload);
       return {
         ...state,
-        locations: action.payload.data,
-        currentLocation: action.payload.data[0],
+        locations: action.payload,
+        currentLocation: action.payload[0],
         loading: false,
         error: false,
       };
@@ -43,7 +44,7 @@ export default function locations(state = INITIAL_STATE, action) {
 
 export const Creators = {
   getLocations: () => ({
-    type: Types.GET_LOCATIONS_RESQUEST,
+    type: Types.GET_LOCATIONS_REQUEST,
   }),
   getLocationsSuccess: payload => ({
     type: Types.GET_LOCATIONS_SUCCESS,

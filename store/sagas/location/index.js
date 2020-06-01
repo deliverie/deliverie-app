@@ -3,11 +3,26 @@ import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
 
 import {
-  Creators as LoginActions,
-  Types as LoginTypes,
-} from '../../ducks/login';
+  Creators as LocationsActions,
+  Types as LocationsTypes,
+} from '../../ducks/locations';
 
-function* location({ payload }) {
+function* allLocations() {
+  try {
+    const response = yield call(api.get, '/address');
+    yield put(LocationsActions.getLocationsSuccess(response.data));
+  } catch (error) {
+    console.tron.log('catch', error);
+    yield put(LocationsActions.getLocationsFail());
+    showToast(
+      'Ops',
+      'Houve um problema ao buscar seu endereços',
+      'danger',
+    );
+  }
+}
+
+function* addLocation({ payload }) {
   console.tron.log('entrou na saga de login', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
@@ -25,10 +40,16 @@ function* location({ payload }) {
   }
 }
 
-function* addLocation() {
-  yield takeLatest(LoginTypes.LOGIN_REQUEST, location);
-}
+// function* addLocationWatcher() {
+//   yield takeLatest(LoginTypes.LOGIN_REQUEST, addLocation);
+// }
 
+function* allLocationsWatcher() {
+  yield takeLatest(
+    LocationsTypes.GET_LOCATIONS_REQUEST,
+    allLocations,
+  );
+}
 export default function* rootSaga() {
-  yield all([fork(addLocation)]);
+  yield all([fork(allLocationsWatcher)]);
 }

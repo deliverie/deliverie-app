@@ -12,7 +12,7 @@ import { Creators as LoginActions } from '../../ducks/login';
 // eslint-disable-next-line require-yield
 function* profileUpdate({ payload }) {
   let data = {};
-  if (payload.password && payload.password_confirmation) {
+  if (payload.password) {
     data = {
       name: payload.name,
       email: payload.email,
