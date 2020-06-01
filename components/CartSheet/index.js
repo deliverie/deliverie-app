@@ -16,7 +16,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import AlertProvider, { setModal } from 'react-native-alert-utils';
+import AlertProvider, {
+  setModal,
+  popModal,
+} from 'react-native-alert-utils';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,14 +31,16 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
+import { SimpleLayout } from 'react-native-alert-utils/Layout';
 import SimpleHeader from '../SimpleHeader';
 
-import { SimpleLayout } from 'react-native-alert-utils/Layout';
 import Button from '../ButtonFill';
 import moto from '../../assets/images/motorcycle.png';
+import { baseURL } from '../../services/api';
 import product from '../../assets/images/product.png';
 import info from '../../assets/images/info.png';
 import { colors, metrics } from '../../styles';
+import { Creators as CartActions } from '../../store/ducks/cart';
 import { wpd } from '../../utils/scalling';
 import { monetize } from '../../utils';
 /** REDUX END */
@@ -52,8 +57,24 @@ const CartSheet = React.forwardRef((props, ref) => {
       return ref.current.close();
     }, 100);
   }
+
+  const cartNotEmpty = cart?.length > 0;
+
+  const calcPrice = () => {
+    const prices = cart.map(item => {
+      const selectedAttr = Object.values(item?.selectedAttr);
+      const pricesFilter = selectedAttr
+        .filter(e => e?.prices?.price)
+        .map(e => e?.prices?.price * item.qty);
+      return pricesFilter.reduce((ac, v) => ac + v);
+    });
+    return prices?.length ? prices.reduce((ac, v) => ac + v) : 0;
+  };
+
   const Products = () => {
-    const renderHidden = () => (
+    const dispatch = useDispatch();
+
+    const renderHidden = ({ item }) => (
       <View
         style={{
           flex: 1,
@@ -86,8 +107,54 @@ const CartSheet = React.forwardRef((props, ref) => {
           }}
           onPress={() =>
             setModal(
-              <SimpleLayout>
-                <Text>Deseja remover este item do carrinho?</Text>
+              <SimpleLayout container={{ height: 250 }}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flex: 1,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: 'roboto-light',
+                      fontSize: 18,
+                    }}
+                  >
+                    Deseja remover este item do carrinho?
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <Button
+                      fontColor={colors.white}
+                      onPress={() => {
+                        popModal();
+                        dispatch(
+                          CartActions.removeCart(item.cart_id),
+                        );
+                      }}
+                      color={colors.success}
+                      style={{
+                        flex: 1,
+                        marginRight: metrics.baseMargin,
+                      }}
+                      title="SIM"
+                    />
+                    <Button
+                      fontColor={colors.white}
+                      onPress={() => popModal()}
+                      color={colors.danger}
+                      style={{ flex: 1 }}
+                      title="NÃO"
+                    />
+                  </View>
+                </View>
               </SimpleLayout>,
             )
           }
@@ -99,9 +166,13 @@ const CartSheet = React.forwardRef((props, ref) => {
 
     function renderContent(productItem) {
       const { item } = productItem;
-      const hasAttributes = Object.entries(item.selectedAttr).map(
-        e => e[1],
-      );
+      const selectedAttr = Object.values(item?.selectedAttr);
+      const pricesFilter = selectedAttr
+        .filter(e => e?.prices?.price)
+        .map(e => e?.prices?.price);
+      const price = pricesFilter?.length
+        ? pricesFilter.reduce((ac, v) => ac + v) * item.qty
+        : 0;
       return (
         <View
           style={{
@@ -144,8 +215,7 @@ const CartSheet = React.forwardRef((props, ref) => {
                 />
                 <Image
                   source={{
-                    uri:
-                      'https://www.itambe.com.br/portal/Images/Produto/110119leiteuhtsemidesnatado1lt_medium.png',
+                    uri: `${baseURL}/${item?.image?.path}`,
                   }}
                   style={{
                     width: 75,
@@ -177,9 +247,9 @@ const CartSheet = React.forwardRef((props, ref) => {
                 >
                   {item.desc}
                 </Text>
-                {hasAttributes.length > 0 && (
+                {selectedAttr.length > 0 && (
                   <View>
-                    {hasAttributes.map(attr => {
+                    {selectedAttr.map(attr => {
                       return (
                         <Text
                           style={{
@@ -187,7 +257,10 @@ const CartSheet = React.forwardRef((props, ref) => {
                             fontSize: 13,
                           }}
                         >
-                          {attr.name} - (R$ 123123)
+                          {attr.name}
+                          {attr?.prices?.price
+                            ? ` (${monetize(attr.prices.price)})`
+                            : ''}
                         </Text>
                       );
                     })}
@@ -233,7 +306,7 @@ const CartSheet = React.forwardRef((props, ref) => {
                 }}
               >
                 <Text style={{ color: colors.primary }}>
-                  {monetize(parseFloat(item.price) * item.qty)}
+                  {monetize(price)}
                 </Text>
                 <Text style={{ fontSize: 16 }}>{item.qty} un.</Text>
               </View>
@@ -243,8 +316,14 @@ const CartSheet = React.forwardRef((props, ref) => {
       );
     }
 
-    if (cart.length === 0) {
-      return <View>Seu carrinho esta vazio</View>;
+    if (!cartNotEmpty) {
+      return (
+        <View>
+          <Text style={{ textAlign: 'center' }}>
+            Seu carrinho esta vazio
+          </Text>
+        </View>
+      );
     }
 
     return (
@@ -304,293 +383,303 @@ const CartSheet = React.forwardRef((props, ref) => {
                   }}
                 >
                   <View />
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Text
-                        style={{
-                          fontSize: 22,
-                          fontWeight: '300',
-                          marginRight: 20,
-                          width: 120,
-                          color: colors.dark,
-                        }}
-                      >
-                        Subtotal
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 22,
-                          fontWeight: '400',
-                          color: colors.darker,
-                        }}
-                      >
-                        R$ 27,90
-                      </Text>
+                  {cartNotEmpty && (
+                    <View>
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text
+                          style={{
+                            fontSize: 22,
+                            fontWeight: '300',
+                            marginRight: 20,
+                            width: 120,
+                            color: colors.dark,
+                          }}
+                        >
+                          Subtotal
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 22,
+                            fontWeight: '400',
+                            color: colors.darker,
+                          }}
+                        >
+                          {monetize(calcPrice())}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
+                  )}
                 </View>
               </View>
             </View>
-            <View
-              style={{
-                marginBottom: metrics.baseMargin * 6,
-              }}
-            >
-              <View
-                style={{
-                  borderColor: colors.primary,
-                  borderBottomWidth: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                }}
-              >
-                <Animated.Image
-                  source={moto}
-                  style={{
-                    transform: [{ translateX }],
-                  }}
-                />
-                <Animated.Text
-                  style={{
-                    fontFamily: 'roboto-light',
-                    fontSize: 18,
-                    padding: 15,
-                    opacity,
-                  }}
-                >
-                  PAGAMENTO E ENTREGA
-                </Animated.Text>
-              </View>
-              <View
-                style={{
-                  marginTop: metrics.baseMargin,
-                  borderRadius: 10,
-                  padding: 15,
-                  marginHorizontal: metrics.baseMargin,
-                  marginBottom: 5,
-                  backgroundColor: colors.secundary,
-                  shadowColor: 'rgba(0,0,0,0.4)',
-                  shadowOffset: {
-                    width: 0,
-                    height: 3,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: 'roboto',
-                    color: colors.light,
-                    fontSize: 16,
-                  }}
-                >
-                  Seu endereço:{'\n'}
-                </Text>
+            {cartNotEmpty && (
+              <View>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-around',
-                    marginBottom: metrics.baseMargin,
+                    marginBottom: metrics.baseMargin * 6,
                   }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: 'roboto-light',
-                      color: colors.light,
-                    }}
-                  >
-                    Rua amazonas, 378, Vila São Francisco
-                  </Text>
-                  <Button
-                    color={colors.primaryLight}
-                    fontColor={colors.primaryDark}
-                    title="ALTERAR"
-                  />
-                </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button
-                    color={colors.success}
-                    fontColor={colors.white}
-                    title="R$ 10,00"
-                  />
-                </View>
-              </View>
-            </View>
-            <View
-              style={{
-                marginBottom: metrics.baseMargin * 4,
-              }}
-            >
-              <View
-                style={{
-                  borderColor: colors.primary,
-                  borderBottomWidth: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                }}
-              >
-                <Image source={info} />
-                <Text
-                  style={{
-                    fontFamily: 'roboto-light',
-                    fontSize: 18,
-                    padding: 15,
-                  }}
-                >
-                  INFORMAÇÕES ADICIONAIS
-                </Text>
-              </View>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  marginBottom: metrics.baseMargin,
-                }}
-              >
-                <View
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: metrics.baseMargin,
-                    borderRadius: 10,
-                    padding: 15,
-                    marginHorizontal: metrics.baseMargin,
-                    marginBottom: 5,
-                    backgroundColor: colors.light,
-                    shadowColor: 'rgba(0,0,0,0.4)',
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: 'roboto-light',
-                      color: colors.darker,
-                      fontSize: 16,
-                    }}
-                  >
-                    Tempo de entrega
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'roboto',
-                      color: colors.darker,
-                      fontSize: 16,
-                    }}
-                  >
-                    40-60min
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: metrics.baseMargin,
-                    borderRadius: 10,
-                    padding: 15,
-                    marginHorizontal: metrics.baseMargin,
-                    marginBottom: 5,
-                    backgroundColor: colors.light,
-                    shadowColor: 'rgba(0,0,0,0.4)',
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: 'roboto-light',
-                      color: colors.darker,
-                      fontSize: 16,
-                    }}
-                  >
-                    Tempo de entrega
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'roboto',
-                      color: colors.darker,
-                      fontSize: 16,
-                    }}
-                  >
-                    40-60min
-                  </Text>
-                </View>
-              </View>
-              <View style={{ marginBottom: metrics.baseMargin * 3 }}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    fontFamily: 'roboto',
-                    color: colors.darker,
-                    fontSize: 16,
-                  }}
-                >
-                  Houve algum problema? {'\n'}Ligue no telefone:
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      color: colors.primaryLight,
-                    }}
-                  >
-                    {' '}
-                    (13) 1234-5678
-                  </Text>
-                </Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: metrics.baseMargin * 4,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() =>
-                    animation.start(() => {
-                      setSuccess(true);
-                    })
-                  }
                 >
                   <View
                     style={{
-                      backgroundColor: success
-                        ? colors.success
-                        : colors.primaryLight,
-                      borderRadius: 50,
-                      padding: metrics.basePadding,
+                      borderColor: colors.primary,
+                      borderBottomWidth: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
                     }}
                   >
-                    {console.log(success)}
-                    <Feather
-                      name="check"
-                      size={23}
-                      color={success ? colors.light : colors.darker}
+                    <Animated.Image
+                      source={moto}
+                      style={{
+                        transform: [{ translateX }],
+                      }}
                     />
+                    <Animated.Text
+                      style={{
+                        fontFamily: 'roboto-light',
+                        fontSize: 18,
+                        padding: 15,
+                        opacity,
+                      }}
+                    >
+                      PAGAMENTO E ENTREGA
+                    </Animated.Text>
                   </View>
-                </TouchableOpacity>
+                  <View
+                    style={{
+                      marginTop: metrics.baseMargin,
+                      borderRadius: 10,
+                      padding: 15,
+                      marginHorizontal: metrics.baseMargin,
+                      marginBottom: 5,
+                      backgroundColor: colors.secundary,
+                      shadowColor: 'rgba(0,0,0,0.4)',
+                      shadowOffset: {
+                        width: 0,
+                        height: 3,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+
+                      elevation: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: 'roboto',
+                        color: colors.light,
+                        fontSize: 16,
+                      }}
+                    >
+                      Seu endereço:{'\n'}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-around',
+                        marginBottom: metrics.baseMargin,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          color: colors.light,
+                        }}
+                      >
+                        Rua amazonas, 378, Vila São Francisco
+                      </Text>
+                      <Button
+                        color={colors.primaryLight}
+                        fontColor={colors.primaryDark}
+                        title="ALTERAR"
+                      />
+                    </View>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Button
+                        color={colors.success}
+                        fontColor={colors.white}
+                        title="R$ 10,00"
+                      />
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    marginBottom: metrics.baseMargin * 4,
+                  }}
+                >
+                  <View
+                    style={{
+                      borderColor: colors.primary,
+                      borderBottomWidth: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    <Image source={info} />
+                    <Text
+                      style={{
+                        fontFamily: 'roboto-light',
+                        fontSize: 18,
+                        padding: 15,
+                      }}
+                    >
+                      INFORMAÇÕES ADICIONAIS
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      marginBottom: metrics.baseMargin,
+                    }}
+                  >
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: metrics.baseMargin,
+                        borderRadius: 10,
+                        padding: 15,
+                        marginHorizontal: metrics.baseMargin,
+                        marginBottom: 5,
+                        backgroundColor: colors.light,
+                        shadowColor: 'rgba(0,0,0,0.4)',
+                        shadowOffset: {
+                          width: 0,
+                          height: 3,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 5,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          color: colors.darker,
+                          fontSize: 16,
+                        }}
+                      >
+                        Tempo de entrega
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto',
+                          color: colors.darker,
+                          fontSize: 16,
+                        }}
+                      >
+                        40-60min
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: metrics.baseMargin,
+                        borderRadius: 10,
+                        padding: 15,
+                        marginHorizontal: metrics.baseMargin,
+                        marginBottom: 5,
+                        backgroundColor: colors.light,
+                        shadowColor: 'rgba(0,0,0,0.4)',
+                        shadowOffset: {
+                          width: 0,
+                          height: 3,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 5,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          color: colors.darker,
+                          fontSize: 16,
+                        }}
+                      >
+                        Tempo de entrega
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto',
+                          color: colors.darker,
+                          fontSize: 16,
+                        }}
+                      >
+                        40-60min
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{ marginBottom: metrics.baseMargin * 3 }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontFamily: 'roboto',
+                        color: colors.darker,
+                        fontSize: 16,
+                      }}
+                    >
+                      Houve algum problema? {'\n'}Ligue no telefone:
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          color: colors.primaryLight,
+                        }}
+                      >
+                        {' '}
+                        (13) 1234-5678
+                      </Text>
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: metrics.baseMargin * 4,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() =>
+                        animation.start(() => {
+                          setSuccess(true);
+                        })
+                      }
+                    >
+                      <View
+                        style={{
+                          backgroundColor: success
+                            ? colors.success
+                            : colors.primaryLight,
+                          borderRadius: 50,
+                          padding: metrics.basePadding,
+                        }}
+                      >
+                        {console.log(success)}
+                        <Feather
+                          name="check"
+                          size={23}
+                          color={
+                            success ? colors.light : colors.darker
+                          }
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-            </View>
+            )}
           </ScrollView>
         </View>
         <FlashMessage position="top" />
