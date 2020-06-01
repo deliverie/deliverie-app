@@ -141,7 +141,7 @@ export default function Register({ navigation }) {
               />
             </View>
             <ButtonFill
-              title={'Atualizar'}
+              title={'Cadastrar'}
               fontColor={colors.white}
               disabled={!isValid}
               color={colors.primary}

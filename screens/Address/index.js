@@ -1,5 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
-import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import {
   StyleSheet,
@@ -21,7 +19,7 @@ import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
@@ -31,7 +29,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import { colors } from '../../styles';
 
-export default function Address() {
+export default function Address({ navigation }) {
   const dispatch = useDispatch();
   const locations = useSelector(state => state.locations);
   const [showPasswords, setShowPasswords] = React.useState(false);
@@ -132,6 +130,43 @@ export default function Address() {
       <SimpleHeader text="Seus endereços" />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <SafeAreaView>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Zipcode')}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name="md-pin"
+                size={22}
+                color={colors.secundary}
+              />
+              <View>
+                <Text
+                  style={{
+                    color: colors.secundary,
+                    fontSize: 17,
+                    marginLeft: 12,
+                  }}
+                >
+                  Adicionar novo endereço
+                </Text>
+                <Text
+                  style={{
+                    color: colors.darker,
+                    fontSize: 15,
+                    marginLeft: 12,
+                  }}
+                >
+                  Insira seu CEP
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
           {locations.loading ? (
             <ActivityIndicator />
           ) : (
