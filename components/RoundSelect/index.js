@@ -1,0 +1,50 @@
+import React from 'react';
+import { View, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { colors } from '../../styles';
+
+// import { Container } from './styles';
+
+const RoundSelect = ({ selected, text, style, onPress }) => {
+  return (
+    <View
+      style={[
+        { justifyContent: 'center', alignItems: 'center' },
+        style,
+      ]}
+    >
+      <TouchableOpacity onPress={onPress}>
+        <View
+          style={{
+            width: 28,
+            height: 28,
+            backgroundColor: '#ccc',
+            borderRadius: 15,
+            marginRight: 10,
+            padding: 6,
+          }}
+        >
+          <View
+            style={{
+              width: 15,
+              height: 15,
+              backgroundColor: selected ? colors.primary : '#ccc',
+              borderRadius: 15,
+              marginRight: 10,
+            }}
+          />
+        </View>
+        <Text>{text}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+RoundSelect.defaultProps = {
+  selected: false,
+  text: '',
+  style: {},
+  onPress: () => {},
+};
+
+export default RoundSelect;

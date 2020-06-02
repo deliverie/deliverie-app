@@ -6,10 +6,14 @@ export const Types = {
   ADD_LOCATION_SUCCESS: 'LOCATION/ADD_LOCATION_SUCCESS',
   REMOVE_SINGLE_LOCATION: 'LOCATION/REMOVE_SINGLE_LOCATION',
   SET_LOCATION: 'LOCATION/SET_LOCATION',
+  CALC_SHIPMENT_REQUEST: 'LOCATION/CALC_SHIPMENT_REQUEST',
+  CALC_SHIPMENT_SUCCESS: 'LOCATION/CALC_SHIPMENT_SUCCESS',
+  CALC_SHIPMENT_FAIL: 'LOCATION/CALC_SHIPMENT_FAIL',
 };
 
 const INITIAL_STATE = {
   locations: [],
+  shipment: null,
   currentLocation: null,
   loading: false,
   error: true,
@@ -48,6 +52,25 @@ export default function locations(state = INITIAL_STATE, action) {
         loading: false,
         error: false,
       };
+    case Types.CALC_SHIPMENT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case Types.CALC_SHIPMENT_SUCCESS:
+      return {
+        ...state,
+        ...action.payload,
+        loading: false,
+        error: false,
+      };
+    case Types.CALC_SHIPMENT_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+      };
     default:
       return state;
   }
@@ -79,5 +102,16 @@ export const Creators = {
   setLocation: payload => ({
     type: Types.SET_LOCATION,
     payload,
+  }),
+  calcShipment: payload => ({
+    type: Types.CALC_SHIPMENT_REQUEST,
+    payload,
+  }),
+  calcShipmentSuccess: payload => ({
+    type: Types.CALC_SHIPMENT_SUCCESS,
+    payload,
+  }),
+  calcShipmentFail: () => ({
+    type: Types.CALC_SHIPMENT_FAIL,
   }),
 };

@@ -22,7 +22,43 @@ function* allLocations() {
   }
 }
 
-function* addLocation({ payload, navigation }) {
+function* calcShipment({ payload }) {
+  try {
+    const { status, data } = yield call(
+      api.post,
+      '/shipment',
+      payload,
+    );
+    if (status === 200) {
+      yield put(
+        LocationsActions.calcShipmentSuccess({ shipment: data }),
+      );
+    } else {
+      showToast(
+        'Ops',
+        'Houve um problema ao calcular valor de entregar',
+        'danger',
+      );
+      yield put(LocationsActions.calcShipmentFail());
+    }
+  } catch (error) {
+    alert(
+      'Ops',
+      error?.response?.data?.message ||
+        'Houve um problema ao calcular valor de entregar',
+    );
+    // showToast(
+    //   'Ops',
+    //   error?.response?.data?.message ||
+    //     'Houve um problema ao calcular valor de entregar',
+    //   'danger',
+    // );
+    yield put(LocationsActions.calcShipmentFail());
+  }
+}
+
+function* addLocation({ payload }) {
+  console.tron.log('entrou na saga de login', payload);
   try {
     yield call(api.post, '/address', {
       ...payload,
@@ -50,6 +86,18 @@ function* allLocationsWatcher() {
     allLocations,
   );
 }
+
+function* calcShipmentWatcher() {
+  yield takeLatest(
+    LocationsTypes.CALC_SHIPMENT_REQUEST,
+    calcShipment,
+  );
+}
+
 export default function* rootSaga() {
-  yield all([fork(allLocationsWatcher), fork(addLocationWatcher)]);
+  yield all([
+    fork(allLocationsWatcher),
+    fork(addLocationWatcher),
+    fork(calcShipmentWatcher),
+  ]);
 }
