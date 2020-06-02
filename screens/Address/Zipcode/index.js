@@ -38,19 +38,16 @@ import { colors } from '../../../styles';
 export default function Zipcode({ navigation }) {
   const dispatch = useDispatch();
   const locations = useSelector(state => state.locations);
-  const [keyboardHeight] = useKeyboard();
 
   const [onlyCep, setOnlyCep] = React.useState(true);
   const [cepResponse, setCepResponse] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
-  React.useEffect(() => {
-    console.tron.log('tamanho do teclado', keyboardHeight);
-    dispatch(LocationsActions.getLocations());
-  }, []);
-  React.useEffect(() => {
-    console.tron.log('alterou o location', locations);
-  }, [locations]);
+  // React.useEffect(() => {
+  //   if (locations.redirectTo === true) {
+  //     return navigation.goBack();
+  //   }
+  // }, [locations]);
 
   async function checkCep(values) {
     setLoading(true);
@@ -65,7 +62,6 @@ export default function Zipcode({ navigation }) {
           'danger',
         );
       } else {
-        console.tron.log(response.data);
         setCepResponse(response.data);
         setTimeout(() => {
           setOnlyCep(false);
@@ -77,97 +73,44 @@ export default function Zipcode({ navigation }) {
         );
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
     setLoading(false);
   }
 
-  function handleAddress() {
+  function saveAddress(values, active) {
+    dispatch(
+      LocationsActions.addLocation(
+        {
+          ...values,
+          is_active: active,
+        },
+        navigation,
+      ),
+    );
+  }
+
+  function confirmActiveAddress(values) {
     Alert.alert(
-      'O que você desaja fazer?',
-      '',
+      'Endereço principal',
+      'Você deseja receber seus pedidos nesse endereço?',
       [
         {
-          text: 'Excluir',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'Sim',
+          onPress: () => saveAddress(values, true),
           style: 'cancel',
         },
         {
-          text: 'Alterar',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Tornar principal',
-          onPress: () => console.log('OK Pressed'),
+          text: 'Não',
+          onPress: () => saveAddress(values, false),
+          style: 'default',
         },
       ],
       { cancelable: false },
     );
   }
 
-  function renderLocations() {
-    return (
-      <FlatList
-        data={locations.locations}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 20,
-              }}
-              onPress={() => handleAddress()}
-            >
-              <View
-                style={{
-                  width: 28,
-                  height: 28,
-                  backgroundColor: '#ccc',
-                  borderRadius: 15,
-                  marginRight: 10,
-                  padding: 6,
-                }}
-              >
-                <View
-                  style={{
-                    width: 15,
-                    height: 15,
-                    backgroundColor: item.is_active
-                      ? colors.primary
-                      : '#ccc',
-                    borderRadius: 15,
-                    marginRight: 10,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  backgroundColor: colors.white,
-                  flex: 1,
-                  padding: 10,
-                  borderWidth: 2,
-                  borderColor: item.is_active
-                    ? colors.primary
-                    : '#ccc',
-                  borderRadius: 5,
-                }}
-              >
-                <Text>Rua: {item.street}</Text>
-                <Text>Número: {item.number}</Text>
-                <Text>Bairro: {item.district}</Text>
-                <Text>CEP: {item.zipcode}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-        keyExtractor={item => String(item.id)}
-      />
-    );
-  }
   return (
     <View style={styles.container}>
       <SimpleHeader
@@ -228,7 +171,7 @@ export default function Zipcode({ navigation }) {
       {cepResponse && !onlyCep && (
         <Formik
           initialValues={{
-            cep: cepResponse?.cep,
+            zipcode: cepResponse?.cep,
             street: cepResponse?.logradouro,
             number: cepResponse?.numero,
             district: cepResponse?.bairro,
@@ -242,9 +185,8 @@ export default function Zipcode({ navigation }) {
             district: yup.string().required('Campo obrigatório'),
             city: yup.string().required('Campo obrigatório'),
             state: yup.string().required('Campo obrigatório'),
-            complement: yup.string().required('Campo obrigatório'),
           })}
-          onSubmit={values => checkCep(values.cep)}
+          onSubmit={values => confirmActiveAddress(values)}
         >
           {({
             values,
@@ -264,10 +206,14 @@ export default function Zipcode({ navigation }) {
                   icon="home-outline"
                   placeholder="Ex: 17730-123"
                   keyboardType="email-address"
-                  value={values.cep}
-                  onChangeText={handleChange('cep')}
-                  onBlur={() => setFieldTouched('cep')}
-                  msg={touched.cep && errors.cep ? errors.cep : null}
+                  value={values.zipcode}
+                  onChangeText={handleChange('zipcode')}
+                  onBlur={() => setFieldTouched('zipcode')}
+                  msg={
+                    touched.zipcode && errors.zipcode
+                      ? errors.zipcode
+                      : null
+                  }
                   disabled={!onlyCep ? true : false}
                 />
                 <Input

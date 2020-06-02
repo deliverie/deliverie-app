@@ -22,27 +22,27 @@ function* allLocations() {
   }
 }
 
-function* addLocation({ payload }) {
-  console.tron.log('entrou na saga de login', payload);
+function* addLocation({ payload, navigation }) {
   try {
-    const response = yield call(api.post, '/users/login', payload);
-    console.tron.log('teste requisição', response);
-    yield put(LoginActions.loginSuccess(response.data));
+    yield call(api.post, '/address', {
+      ...payload,
+      lat: '-24.4881',
+      lng: '-47.8348',
+    });
+    yield put(LocationsActions.getLocations());
+    navigation.goBack();
   } catch (error) {
-    console.tron.log('catch', error);
-    yield put(LoginActions.loginFail());
-
     showToast(
       'Ops',
-      'Erro ao realizar login. Verifique suas credenciais e tente novamente',
+      'Não foi possível adicionar seu endereço, tente novamente',
       'danger',
     );
   }
 }
 
-// function* addLocationWatcher() {
-//   yield takeLatest(LoginTypes.LOGIN_REQUEST, addLocation);
-// }
+function* addLocationWatcher() {
+  yield takeLatest(LocationsTypes.ADD_LOCATION_REQUEST, addLocation);
+}
 
 function* allLocationsWatcher() {
   yield takeLatest(
@@ -51,5 +51,5 @@ function* allLocationsWatcher() {
   );
 }
 export default function* rootSaga() {
-  yield all([fork(allLocationsWatcher)]);
+  yield all([fork(allLocationsWatcher), fork(addLocationWatcher)]);
 }

@@ -19,7 +19,11 @@ import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  AntDesign,
+} from '@expo/vector-icons';
 
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
@@ -71,54 +75,73 @@ export default function Address({ navigation }) {
         data={locations.locations}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity
+            <View
               style={{
                 flexDirection: 'row',
+                justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: 20,
               }}
-              onPress={() => handleAddress()}
             >
               <View
                 style={{
-                  width: 28,
-                  height: 28,
-                  backgroundColor: '#ccc',
-                  borderRadius: 15,
-                  marginRight: 10,
-                  padding: 6,
-                }}
-              >
-                <View
-                  style={{
-                    width: 15,
-                    height: 15,
-                    backgroundColor: item.is_active
-                      ? colors.primary
-                      : '#ccc',
-                    borderRadius: 15,
-                    marginRight: 10,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  backgroundColor: colors.white,
-                  flex: 1,
-                  padding: 10,
                   borderWidth: 2,
+                  padding: 10,
                   borderColor: item.is_active
                     ? colors.primary
                     : '#ccc',
                   borderRadius: 5,
+                  flexDirection: 'row',
+                  flex: 1,
                 }}
               >
-                <Text>Rua: {item.street}</Text>
-                <Text>Número: {item.number}</Text>
-                <Text>Bairro: {item.district}</Text>
-                <Text>CEP: {item.zipcode}</Text>
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 28,
+                      height: 28,
+                      backgroundColor: '#ccc',
+                      borderRadius: 15,
+                      marginRight: 10,
+                      padding: 6,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 15,
+                        height: 15,
+                        backgroundColor: item.is_active
+                          ? colors.primary
+                          : '#ccc',
+                        borderRadius: 15,
+                        marginRight: 10,
+                      }}
+                    />
+                  </View>
+                  <View style={{}}>
+                    <Text>Rua: {item.street}</Text>
+                    <Text>Número: {item.number}</Text>
+                    <Text>Bairro: {item.district}</Text>
+                    <Text>CEP: {item.zipcode}</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+
+              <Ionicons
+                name="md-trash"
+                size={22}
+                color={colors.secundary}
+                style={{ paddingLeft: 20 }}
+                onPress={() => console.log('Apagar')}
+              />
+            </View>
           );
         }}
         keyExtractor={item => String(item.id)}
@@ -129,87 +152,61 @@ export default function Address({ navigation }) {
     <View style={styles.container}>
       <SimpleHeader text="Seus endereços" />
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <SafeAreaView>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Zipcode')}
-          >
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <Ionicons
-                name="md-pin"
-                size={22}
-                color={colors.secundary}
-              />
-              <View>
-                <Text
-                  style={{
-                    color: colors.secundary,
-                    fontSize: 17,
-                    marginLeft: 12,
-                  }}
-                >
-                  Adicionar novo endereço
-                </Text>
-                <Text
-                  style={{
-                    color: colors.darker,
-                    fontSize: 15,
-                    marginLeft: 12,
-                  }}
-                >
-                  Insira seu CEP
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+        {locations.loading ? (
+          <ActivityIndicator />
+        ) : (
+          renderLocations()
+        )}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Zipcode')}
+          style={{
+            borderTopWidth: 1,
+            borderTopColor: '#ccc',
+            paddingTop: 10,
+            flexDirection: 'row',
+            flex: 1,
 
-          {locations.loading ? (
-            <ActivityIndicator />
-          ) : (
-            renderLocations()
-          )}
-        </SafeAreaView>
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+
+              flex: 1,
+            }}
+          >
+            <Ionicons
+              name="md-pin"
+              size={22}
+              color={colors.secundary}
+            />
+            <View>
+              <Text
+                style={{
+                  color: colors.secundary,
+                  fontSize: 17,
+                  marginLeft: 12,
+                }}
+              >
+                Adicionar novo endereço
+              </Text>
+              <Text
+                style={{
+                  color: colors.darker,
+                  fontSize: 15,
+                  marginLeft: 12,
+                }}
+              >
+                Insira seu CEP
+              </Text>
+            </View>
+          </View>
+          <AntDesign name="plus" size={24} color={colors.primary} />
+        </TouchableOpacity>
       </ScrollView>
     </View>
-  );
-}
-
-function OptionButton({
-  icon,
-  label,
-  onPress,
-  isLastOption,
-  colorIcon,
-}) {
-  return (
-    <RectButton
-      style={[styles.option, isLastOption && styles.lastOption]}
-      onPress={onPress}
-    >
-      <View style={{ flexDirection: 'row' }}>
-        <View style={styles.optionIconContainer}>
-          <Ionicons
-            name={icon}
-            size={22}
-            color={colorIcon ? colorIcon : 'rgba(0,0,0,0.35)'}
-          />
-        </View>
-        <View style={styles.optionTextContainer}>
-          <Text
-            style={[
-              styles.optionText,
-              colorIcon ? { color: colorIcon } : {},
-            ]}
-          >
-            {label}
-          </Text>
-        </View>
-      </View>
-    </RectButton>
   );
 }
 
