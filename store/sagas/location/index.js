@@ -76,6 +76,20 @@ function* addLocation({ payload }) {
   }
 }
 
+function* removeLocation({ payload }) {
+  try {
+    yield call(api.delete, `/address/${payload}`);
+    yield put(LocationsActions.getLocations());
+    showToast('Pronto', 'Seu endereço foi removido', 'success');
+  } catch (error) {
+    showToast(
+      'Ops',
+      'Não foi possível adicionar seu endereço, tente novamente',
+      'danger',
+    );
+  }
+}
+
 function* addLocationWatcher() {
   yield takeLatest(LocationsTypes.ADD_LOCATION_REQUEST, addLocation);
 }
@@ -94,9 +108,17 @@ function* calcShipmentWatcher() {
   );
 }
 
+function* removeLocationWatcher() {
+  yield takeLatest(
+    LocationsTypes.REMOVE_LOCATION_REQUEST,
+    removeLocation,
+  );
+}
+
 export default function* rootSaga() {
   yield all([
     fork(allLocationsWatcher),
+    fork(removeLocationWatcher),
     fork(addLocationWatcher),
     fork(calcShipmentWatcher),
   ]);

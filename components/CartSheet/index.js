@@ -44,7 +44,7 @@ import mastercard from '../../assets/images/payments/mastercard.png';
 import amex from '../../assets/images/payments/amex.png';
 import cash from '../../assets/images/payments/cash.png';
 import diners from '../../assets/images/payments/diners.png';
-import elo from '../../assets/images/payments/elo.png';
+import elo from '../../assets/images/payments/Elo.png';
 import hipercard from '../../assets/images/payments/hipercard.png';
 import visa from '../../assets/images/payments/visa.png';
 import info from '../../assets/images/info.png';

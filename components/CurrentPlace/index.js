@@ -87,13 +87,13 @@ export default function CurrentPlace({ open, close }) {
         >
           <Text style={styles.addressText}>
             {currentLocation
-              ? `${currentLocation.logradouro}, ${
-                  currentLocation.numero
-                    ? `${currentLocation.numero},`
+              ? `${currentLocation.street}, ${
+                  currentLocation.number
+                    ? `${currentLocation.number},`
                     : ''
                 } ${
-                  currentLocation.localidade
-                    ? `${currentLocation.localidade}`
+                  currentLocation.city
+                    ? `${currentLocation.city}`
                     : ''
                 }`
               : 'Adicione um endereço'}

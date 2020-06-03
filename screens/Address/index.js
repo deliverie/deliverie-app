@@ -139,7 +139,9 @@ export default function Address({ navigation }) {
                 size={22}
                 color={colors.secundary}
                 style={{ paddingLeft: 20 }}
-                onPress={() => console.log('Apagar')}
+                onPress={() =>
+                  dispatch(LocationsActions.removeLocation(item.id))
+                }
               />
             </View>
           );
