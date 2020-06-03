@@ -14,6 +14,7 @@ import {
   Dimensions,
   TouchableOpacity,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AlertProvider, {
@@ -51,18 +52,24 @@ import info from '../../assets/images/info.png';
 import { colors, metrics } from '../../styles';
 import { Creators as CartActions } from '../../store/ducks/cart';
 import { Creators as LocationActions } from '../../store/ducks/locations';
+import { Creators as OrderActions } from '../../store/ducks/order';
 import { wpd } from '../../utils/scalling';
 import { monetize } from '../../utils';
 import { showToast } from '../../utils/toast';
+import Input from '../Input';
 /** REDUX END */
 
 const CartSheet = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [paymentType, setPaymentType] = useState(null);
+  const [change, setChange] = useState(null);
   const { cart } = useSelector(state => state.cart);
   const { company } = useSelector(state => state.company);
   const { loading, shipment, currentLocation } = useSelector(
     state => state.locations,
+  );
+  const { loading: orderLoading, cart: orderCart } = useSelector(
+    state => state.order,
   );
   const [deliveryType, setDeliveryType] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -86,6 +93,14 @@ const CartSheet = React.forwardRef((props, ref) => {
       return ref.current.close();
     }, 100);
   }
+
+  const isLoading = loading || orderLoading;
+
+  const isDisabled = () => {
+    if (!deliveryType) return true;
+    if (deliveryType === 'delivery' && !paymentType) return true;
+    return false;
+  };
 
   const cartNotEmpty = cart?.length > 0;
 
@@ -158,11 +173,11 @@ const CartSheet = React.forwardRef((props, ref) => {
             color: colors.darker,
           }}
         >
-          Você optou por pagar via cartão de crédito/débito
+          Você optou por pagar via cartão de crédito
         </Text>
       );
     }
-    if (paymentType === 'money') {
+    if (paymentType === 'debitcard') {
       return (
         <Text
           style={{
@@ -170,8 +185,28 @@ const CartSheet = React.forwardRef((props, ref) => {
             color: colors.darker,
           }}
         >
-          Você optou por pagar por dinheiro
+          Você optou por pagar via cartão de débito
         </Text>
+      );
+    }
+    if (paymentType === 'money') {
+      return (
+        <View>
+          <Text
+            style={{
+              fontFamily: 'roboto',
+              color: colors.darker,
+            }}
+          >
+            Você optou por pagar por dinheiro, deseja troco?
+          </Text>
+          <Input
+            placeholder="Valor"
+            keyboardType="numeric"
+            onChangeText={text => setChange(text)}
+            icon="cash"
+          />
+        </View>
       );
     }
     return null;
@@ -531,6 +566,27 @@ const CartSheet = React.forwardRef((props, ref) => {
     outputRange: [1, 0],
   });
 
+  const submit = () => {
+    animation.start(() => {
+      setSuccess(true);
+    });
+    const variations = [];
+    cart.forEach(({ id: product_id, qty, selectedAttr }) => {
+      const attributes = Object.values(selectedAttr).map(
+        ({ attribute_id: id, id: value }) => ({
+          id,
+          value,
+        }),
+      );
+      const obj = { product_id, qty, attributes };
+      variations.push(obj);
+    });
+    const data = { variations };
+    dispatch(
+      OrderActions.createOrder(data, currentLocation.id, paymentType),
+    );
+  };
+
   return (
     <RBSheet
       ref={ref}
@@ -552,7 +608,7 @@ const CartSheet = React.forwardRef((props, ref) => {
     >
       <SafeAreaView>
         <SimpleHeader text="Carrinho" goBack={closeCart} />
-        {loading ? (
+        {isLoading ? (
           <ActivityIndicator />
         ) : (
           <View style={{ marginTop: metrics.baseMargin }}>
@@ -772,6 +828,7 @@ const CartSheet = React.forwardRef((props, ref) => {
                           style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
+                            alignItems: 'center',
                             flex: 1,
                           }}
                         >
@@ -788,7 +845,17 @@ const CartSheet = React.forwardRef((props, ref) => {
                             onPress={() =>
                               setPaymentType('creditcard')
                             }
-                            text="Cartão"
+                            style={{
+                              marginRight: metrics.baseMargin * 2,
+                            }}
+                            text={`Cartão de${'\n'}crédito`}
+                          />
+                          <RoundSelect
+                            selected={paymentType === 'debitcard'}
+                            onPress={() =>
+                              setPaymentType('debitcard')
+                            }
+                            text={`Cartão de${'\n'}débito`}
                           />
                         </View>
                         <View
@@ -954,40 +1021,35 @@ const CartSheet = React.forwardRef((props, ref) => {
                         </Text>
                       </Text>
                     </View>
-                    <View
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: metrics.baseMargin * 4,
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() =>
-                          animation.start(() => {
-                            setSuccess(true);
-                          })
-                        }
+                    {!isDisabled() && (
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: metrics.baseMargin * 4,
+                        }}
                       >
-                        <View
-                          style={{
-                            backgroundColor: success
-                              ? colors.success
-                              : colors.primaryLight,
-                            borderRadius: 50,
-                            padding: metrics.basePadding,
-                          }}
-                        >
-                          {console.log(success)}
-                          <Feather
-                            name="check"
-                            size={23}
-                            color={
-                              success ? colors.light : colors.darker
-                            }
-                          />
-                        </View>
-                      </TouchableOpacity>
-                    </View>
+                        <TouchableOpacity onPress={submit}>
+                          <View
+                            style={{
+                              backgroundColor: success
+                                ? colors.success
+                                : colors.primaryLight,
+                              borderRadius: 50,
+                              padding: metrics.basePadding,
+                            }}
+                          >
+                            <Feather
+                              name="check"
+                              size={23}
+                              color={
+                                success ? colors.light : colors.darker
+                              }
+                            />
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   </View>
                 </View>
               )}

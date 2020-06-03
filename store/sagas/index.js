@@ -7,6 +7,7 @@ import companySagas from './company';
 import productsSagas from './products';
 import registerSagas from './register';
 import profileSagas from './profile';
+import orderSagas from './order';
 
 export default function* rootSaga() {
   return yield all([
@@ -16,5 +17,6 @@ export default function* rootSaga() {
     productsSagas(),
     registerSagas(),
     profileSagas(),
+    orderSagas(),
   ]);
 }

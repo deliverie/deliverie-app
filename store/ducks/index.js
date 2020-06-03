@@ -7,6 +7,7 @@ import products from './products';
 import cart from './cart';
 import register from './register';
 import profile from './profile';
+import order from './order';
 
 const rootReducer = combineReducers({
   login,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   cart,
   register,
   profile,
+  order,
 });
 
 export default rootReducer;

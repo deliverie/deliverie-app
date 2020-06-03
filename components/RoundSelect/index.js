@@ -13,7 +13,10 @@ const RoundSelect = ({ selected, text, style, onPress }) => {
         style,
       ]}
     >
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        style={{ justifyContent: 'center', alignItems: 'center' }}
+        onPress={onPress}
+      >
         <View
           style={{
             width: 28,
@@ -34,7 +37,7 @@ const RoundSelect = ({ selected, text, style, onPress }) => {
             }}
           />
         </View>
-        <Text>{text}</Text>
+        <Text style={{ textAlign: 'center' }}>{text}</Text>
       </TouchableOpacity>
     </View>
   );
