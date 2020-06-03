@@ -43,7 +43,6 @@ function* calcShipment({ payload }) {
     }
   } catch (error) {
     alert(
-      'Ops',
       error?.response?.data?.message ||
         'Houve um problema ao calcular valor de entregar',
     );
