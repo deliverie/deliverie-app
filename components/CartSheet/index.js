@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Ionicons,
   Feather,
+  AntDesign,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 
@@ -166,7 +167,133 @@ const CartSheet = React.forwardRef((props, ref) => {
     return null;
   };
 
-  const renderAddress = `${currentLocation?.street}, ${currentLocation?.number}, ${currentLocation?.district}`;
+  const renderDeliveryType2 = () => {
+    if (company?.order_delivery_type === 'delivery') {
+      return (
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            padding: 10,
+            borderRadius: 5,
+            borderColor:
+              deliveryType === 'delivery' ? colors.primary : '#ccc',
+          }}
+          onPress={() => setDeliveryType('delivery')}
+        >
+          <Text
+            style={{
+              color:
+                deliveryType === 'delivery' ? colors.primary : '#ccc',
+            }}
+          >
+            Delivery
+          </Text>
+        </TouchableOpacity>
+        // <RoundSelect
+        //   selected={deliveryType === 'delivery'}
+        //   onPress={() => setDeliveryType('delivery')}
+        //   text="Delivery"
+        // />
+      );
+    }
+    if (company?.order_delivery_type === 'withdraw') {
+      return (
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            padding: 10,
+            borderRadius: 5,
+            borderColor:
+              deliveryType === 'withdraw' ? colors.primary : '#ccc',
+          }}
+          onPress={() => setDeliveryType('withdraw')}
+        >
+          <Text
+            style={{
+              color:
+                deliveryType === 'withdraw' ? colors.primary : '#ccc',
+            }}
+          >
+            Retirar na loja
+          </Text>
+        </TouchableOpacity>
+        // <RoundSelect
+        //   selected={deliveryType === 'withdraw'}
+        //   onPress={() => setDeliveryType('withdraw')}
+        //   text="Retirar"
+        // />
+      );
+    }
+    if (company?.order_delivery_type === 'both') {
+      return (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            flex: 1,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => setDeliveryType('delivery')}
+            style={{
+              borderWidth: 1,
+              padding: 10,
+              borderRadius: 5,
+              borderColor:
+                deliveryType === 'delivery' ? colors.primary : '#ccc',
+            }}
+          >
+            <Text
+              style={{
+                color:
+                  deliveryType === 'delivery'
+                    ? colors.primary
+                    : '#ccc',
+              }}
+            >
+              Delivery
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setDeliveryType('withdraw')}
+            style={{
+              borderWidth: 1,
+              padding: 10,
+              borderRadius: 5,
+              marginLeft: 8,
+              borderColor:
+                deliveryType === 'withdraw' ? colors.primary : '#ccc',
+            }}
+          >
+            <Text
+              style={{
+                color:
+                  deliveryType === 'withdraw'
+                    ? colors.primary
+                    : '#ccc',
+              }}
+            >
+              Retirar
+            </Text>
+          </TouchableOpacity>
+          {/* <RoundSelect
+            selected={deliveryType === 'delivery'}
+            onPress={() => setDeliveryType('delivery')}
+            style={{ marginRight: metrics.baseMargin * 2 }}
+            text="Delivery"
+          />
+          <RoundSelect
+            selected={deliveryType === 'withdraw'}
+            onPress={() => setDeliveryType('withdraw')}
+            text="Retirar"
+          /> */}
+        </View>
+      );
+    }
+    return null;
+  };
+
+  const renderAddress = `${currentLocation?.street}, ${currentLocation?.number}, \n${currentLocation?.district}`;
 
   const renderCity = `${currentLocation?.city}, ${currentLocation?.state}`;
 
@@ -677,117 +804,90 @@ const CartSheet = React.forwardRef((props, ref) => {
                 </View>
               </View>
               {cartNotEmpty && (
-                <View>
+                <View style={{}}>
                   <View
                     style={{
-                      marginBottom: metrics.baseMargin * 6,
+                      marginBottom: metrics.baseMargin * 2,
                     }}
                   >
                     <View
                       style={{
-                        borderColor: colors.primary,
-                        borderBottomWidth: 5,
-                        justifyContent: 'center',
+                        borderColor: '#ccc',
+                        borderBottomWidth: 1,
+                        justifyContent: 'space-between',
                         alignItems: 'center',
                         flexDirection: 'row',
-                      }}
-                    >
-                      <Animated.Image
-                        source={moto}
-                        style={{
-                          transform: [{ translateX }],
-                        }}
-                      />
-                      <Animated.Text
-                        style={{
-                          fontFamily: 'roboto-light',
-                          fontSize: 18,
-                          padding: 15,
-                          opacity,
-                        }}
-                      >
-                        ENTREGA
-                      </Animated.Text>
-                    </View>
-                    <View
-                      style={{
-                        marginTop: metrics.baseMargin * 2,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      {renderDeliveryType()}
-                    </View>
-                    {deliveryType === 'delivery' && (
-                      <View
-                        style={{
-                          marginTop: metrics.baseMargin,
-                          borderRadius: 10,
-                          padding: 15,
-                          marginHorizontal: metrics.baseMargin,
-                          marginBottom: 5,
-                          backgroundColor: colors.secundary,
-                          shadowColor: 'rgba(0,0,0,0.4)',
-                          shadowOffset: {
-                            width: 0,
-                            height: 3,
-                          },
-                          shadowOpacity: 0.25,
-                          shadowRadius: 3.84,
 
-                          elevation: 5,
-                        }}
-                      >
+                        paddingHorizontal: 15,
+                      }}
+                    >
+                      <View>
                         <Text
                           style={{
-                            fontFamily: 'roboto',
-                            color: colors.light,
-                            fontSize: 16,
+                            fontFamily: 'roboto-light',
+                            fontSize: 18,
+                            color: colors.darker,
                           }}
                         >
-                          Seu endereço:{'\n'}
+                          ENTREGA
                         </Text>
+                      </View>
+                      <View style={{ paddingVertical: 10 }}>
+                        {renderDeliveryType2()}
+                      </View>
+                    </View>
+
+                    {deliveryType === 'delivery' && (
+                      <View style={{ marginHorizontal: 15 }}>
                         <View
                           style={{
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            marginBottom: metrics.baseMargin,
+                            marginTop: 15,
+                            backgroundColor: '#f1f1f1',
+                            padding: 10,
+                            borderRadius: 7,
                           }}
                         >
                           <Text
                             style={{
+                              color: colors.darker,
+                              fontFamily: 'roboto',
+                            }}
+                          >
+                            Seu endereço
+                          </Text>
+                          <Text
+                            style={{
+                              color: colors.darker,
                               fontFamily: 'roboto-light',
-                              color: colors.light,
                             }}
                           >
                             {renderAddress}
-                          </Text>
-                          <Text
-                            style={{
-                              fontFamily: 'roboto',
-                              color: colors.light,
-                            }}
-                          >
+                            {'\n'}
                             {renderCity}
                           </Text>
-                        </View>
-                        {shipment?.price && (
                           <View
                             style={{
-                              alignItems: 'center',
+                              alignItems: 'flex-end',
+                              justifyContent: 'flex-end',
+                              flexDirection: 'row',
+                              padding: 10,
                             }}
                           >
-                            <Button
-                              color={colors.success}
-                              fontColor={colors.white}
-                              title={
-                                shipment?.price === 0
-                                  ? 'GRÁTIS'
-                                  : monetize(shipment?.price)
-                              }
+                            <AntDesign
+                              name="edit"
+                              size={16}
+                              color={colors.darker}
                             />
+                            <Text
+                              style={{
+                                color: colors.darker,
+                                fontSize: 15,
+                              }}
+                            >
+                              Alterar
+                            </Text>
                           </View>
-                        )}
+                        </View>
                       </View>
                     )}
                     <View style={{ marginTop: metrics.baseMargin }}>
@@ -807,37 +907,35 @@ const CartSheet = React.forwardRef((props, ref) => {
                   {deliveryType === 'delivery' && (
                     <View
                       style={{
-                        marginBottom: metrics.baseMargin * 6,
+                        marginBottom: metrics.baseMargin * 2,
                       }}
                     >
                       <View
                         style={{
-                          borderColor: colors.primary,
-                          borderBottomWidth: 5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexDirection: 'row',
+                          borderColor: '#ccc',
+                          borderBottomWidth: 1,
+                          paddingHorizontal: 15,
+                          paddingBottom: 10,
                         }}
                       >
-                        <Animated.Image
-                          source={cash}
-                          resizeMode="contain"
-                          style={{
-                            width: 32,
-                            height: 32,
-                            transform: [{ translateX }],
-                          }}
-                        />
-                        <Animated.Text
+                        <Text
                           style={{
                             fontFamily: 'roboto-light',
                             fontSize: 18,
-                            padding: 15,
-                            opacity,
+                            color: colors.darker,
                           }}
                         >
                           PAGAMENTO
-                        </Animated.Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: 'roboto-light',
+                            fontSize: 14,
+                            color: colors.dark,
+                          }}
+                        >
+                          Selecione uma forma de pagamento
+                        </Text>
                       </View>
                       <View
                         style={{
@@ -849,12 +947,88 @@ const CartSheet = React.forwardRef((props, ref) => {
                         <View
                           style={{
                             flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            flex: 1,
+                            alignSelf: 'stretch',
+                            marginHorizontal: 15,
                           }}
                         >
-                          <RoundSelect
+                          <TouchableOpacity
+                            style={{
+                              borderWidth: 1,
+                              padding: 10,
+                              borderRadius: 5,
+                              borderColor:
+                                paymentType === 'money'
+                                  ? colors.primary
+                                  : '#ccc',
+                            }}
+                            onPress={() => setPaymentType('money')}
+                          >
+                            <Text
+                              style={{
+                                color:
+                                  paymentType === 'money'
+                                    ? colors.primary
+                                    : '#ccc',
+                              }}
+                            >
+                              Dinheiro
+                            </Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={{
+                              borderWidth: 1,
+                              padding: 10,
+                              borderRadius: 5,
+                              marginHorizontal: 8,
+                              borderColor:
+                                paymentType === 'creditcard'
+                                  ? colors.primary
+                                  : '#ccc',
+                            }}
+                            onPress={() =>
+                              setPaymentType('creditcard')
+                            }
+                          >
+                            <Text
+                              style={{
+                                color:
+                                  paymentType === 'creditcard'
+                                    ? colors.primary
+                                    : '#ccc',
+                              }}
+                            >
+                              Crédito
+                            </Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={{
+                              borderWidth: 1,
+                              padding: 10,
+                              borderRadius: 5,
+                              borderColor:
+                                paymentType === 'debitcard'
+                                  ? colors.primary
+                                  : '#ccc',
+                            }}
+                            onPress={() =>
+                              setPaymentType('debitcard')
+                            }
+                          >
+                            <Text
+                              style={{
+                                color:
+                                  paymentType === 'debitcard'
+                                    ? colors.primary
+                                    : '#ccc',
+                              }}
+                            >
+                              Débito
+                            </Text>
+                          </TouchableOpacity>
+
+                          {/* <RoundSelect
                             selected={paymentType === 'money'}
                             onPress={() => setPaymentType('money')}
                             style={{
@@ -878,7 +1052,7 @@ const CartSheet = React.forwardRef((props, ref) => {
                               setPaymentType('debitcard')
                             }
                             text={`Cartão de${'\n'}débito`}
-                          />
+                          /> */}
                         </View>
                         <View
                           style={{ marginTop: metrics.baseMargin }}
