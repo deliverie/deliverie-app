@@ -104,10 +104,27 @@ const CartSheet = React.forwardRef((props, ref) => {
   const calcPrice = () => {
     const prices = cart.map(item => {
       const selectedAttr = Object.values(item?.selectedAttr);
-      const pricesFilter = selectedAttr
-        .filter(e => e?.prices?.price)
-        .map(e => e?.prices?.price * item.qty);
-      return pricesFilter.reduce((ac, v) => ac + v);
+      let price = 0;
+      if (!selectedAttr.length) {
+        price = item.price;
+      } else {
+        selectedAttr.forEach(f => {
+          if (f.length) {
+            if (f.length > 1) {
+              price += f.reduce((ac, v) => ac.price + v.price);
+            } else {
+              price += f[0].price;
+            }
+          } else {
+            price += f?.prices?.price;
+          }
+        });
+      }
+      // const pricesFilter = selectedAttr
+      //   .filter(e => e?.prices?.price)
+      //   .map(e => e?.prices?.price * item.qty);
+      // return pricesFilter.reduce((ac, v) => ac + v);
+      return price;
     });
     return prices?.length ? prices.reduce((ac, v) => ac + v) : 0;
   };
@@ -115,7 +132,6 @@ const CartSheet = React.forwardRef((props, ref) => {
   const isDisabled = () => {
     if (!deliveryType) return true;
     if (deliveryType === 'delivery' && !paymentType) return true;
-    console.tron.log(calcPrice() + shipment?.price);
     if (
       paymentType === 'money' &&
       (!change || change <= (calcPrice() + shipment?.price || 0))
@@ -517,12 +533,28 @@ const CartSheet = React.forwardRef((props, ref) => {
     function renderContent(productItem) {
       const { item } = productItem;
       const selectedAttr = Object.values(item?.selectedAttr);
-      const pricesFilter = selectedAttr
-        .filter(e => e?.prices?.price)
-        .map(e => e?.prices?.price);
-      const price = pricesFilter?.length
-        ? pricesFilter.reduce((ac, v) => ac + v) * item.qty
-        : 0;
+      let price = 0;
+      if (!selectedAttr.length) {
+        price = item.price;
+      } else {
+        selectedAttr.forEach(f => {
+          if (f.length) {
+            if (f.length > 1) {
+              price += f.reduce((ac, v) => ac.price + v.price);
+            } else {
+              price += f[0].price;
+            }
+          } else {
+            price += f?.prices?.price;
+          }
+        });
+      }
+      // const pricesFilter = selectedAttr
+      //   .filter(e => e?.prices?.price)
+      //   .map(e => e?.prices?.price);
+      // const price = pricesFilter?.length
+      //   ? pricesFilter.reduce((ac, v) => ac + v) * item.qty
+      //   : 0;
       return (
         <View
           style={{
@@ -600,6 +632,19 @@ const CartSheet = React.forwardRef((props, ref) => {
                 {selectedAttr.length > 0 && (
                   <View>
                     {selectedAttr.map(attr => {
+                      if (attr.length) {
+                        return attr.map(e => (
+                          <Text
+                            style={{
+                              fontFamily: 'roboto-light',
+                              fontSize: 13,
+                              color: colors.danger,
+                            }}
+                          >
+                            + {e.name} ({monetize(e.price)})
+                          </Text>
+                        ));
+                      }
                       return (
                         <Text
                           style={{
@@ -609,31 +654,13 @@ const CartSheet = React.forwardRef((props, ref) => {
                         >
                           {attr.name}
                           {attr?.prices?.price
-                            ? ` (${monetize(attr.prices.price)})`
+                            ? ` (${monetize(attr?.prices?.price)})`
                             : ''}
                         </Text>
                       );
                     })}
                   </View>
                 )}
-
-                <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: 4 }}
-                >
-                  <Text
-                    style={{
-                      color: colors.primary,
-                      marginRight: 5,
-                    }}
-                  >
-                    Ver adicionais
-                  </Text>
-                  <Ionicons
-                    name="ios-arrow-down"
-                    size={19}
-                    color={colors.primary}
-                  />
-                </TouchableOpacity>
                 {/* <View style={{ flexDirection: 'row', marginTop: 3 }}>
                 <View
                   style={{
@@ -714,12 +741,9 @@ const CartSheet = React.forwardRef((props, ref) => {
       const obj = { product_id, qty, attributes };
       variations.push(obj);
     });
-    const data = {
-      variations,
-    };
     dispatch(
       OrderActions.createOrder(
-        data,
+        variations,
         currentLocation.id,
         paymentType,
         change,
