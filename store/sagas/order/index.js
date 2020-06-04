@@ -1,4 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
+import { Alert } from 'react-native';
 import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
 
@@ -23,43 +24,34 @@ function* addItem(payload) {
   return null;
 }
 
-function* createOrder({ payload, addressId, paymentType }) {
+function* createOrder({ payload, addressId, paymentType, change }) {
   try {
-    const cartId = yield call(addItem, payload);
-    if (cartId) {
-      const orderPayload = {
-        cart_id: cartId,
-        address_id: addressId,
-        payment_type: paymentType,
-      };
-      const { data: order, status } = yield call(
-        api.post,
-        '/orders',
-        orderPayload,
-      );
-      if (status === 200) {
-        yield put(OrderActions.createOrderSuccess({ order }));
-        alert('Pedido feito com sucesso!');
-      } else {
-        yield put(OrderActions.createOrderFail());
-        alert('Houve um problema ao realizar pedido.');
-        // showToast(
-        //   'Ops',
-        //   'Houve um problema ao realizar pedido.',
-        //   'danger',
-        // );
-      }
+    const orderPayload = {
+      variations: payload,
+      address_id: addressId,
+      payment_type: paymentType,
+      ...(paymentType === 'money' && { change }),
+    };
+    const { data: order, status } = yield call(
+      api.post,
+      '/orders',
+      orderPayload,
+    );
+    if (status === 200) {
+      yield put(OrderActions.createOrderSuccess({ order }));
+      Alert.alert('Erro', 'Pedido feito com sucesso!');
     } else {
-      alert('Houve um problema ao adicionar os items ao carrinho.');
+      yield put(OrderActions.createOrderFail());
+      Alert.alert('Erro', 'Houve um problema ao realizar pedido.');
       // showToast(
       //   'Ops',
-      //   'Houve um problema ao adicionar os items ao carrinho.',
+      //   'Houve um problema ao realizar pedido.',
       //   'danger',
       // );
     }
   } catch (error) {
     yield put(OrderActions.createOrderFail());
-    alert('Houve um problema ao realizar pedido.');
+    Alert.alert('Erro', 'Houve um problema ao realizar pedido.');
     // showToast(
     //   'Ops',
     //   'Houve um problema ao realizar pedido.',

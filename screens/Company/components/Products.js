@@ -463,22 +463,6 @@ const Products = ({
                         </View>
                       );
                     })}
-                    {attribute.additionals.length > 0 && (
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 23,
-                            fontWeight: '300',
-                            color: colors.darker,
-                          }}
-                        >
-                          Adicionais
-                        </Text>
-                        {attribute.additionals.map(add => {
-                          return <Text>{JSON.stringify(add)}</Text>;
-                        })}
-                      </View>
-                    )}
                   </View>
                 );
               })}

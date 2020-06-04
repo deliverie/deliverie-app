@@ -74,11 +74,12 @@ export const Creators = {
   addItemFail: () => ({
     type: Types.ADD_ITEM_FAIL,
   }),
-  createOrder: (payload, addressId, paymentType) => ({
+  createOrder: (payload, addressId, paymentType, change) => ({
     type: Types.CREATE_ORDER,
     payload,
     addressId,
     paymentType,
+    change,
   }),
   createOrderSuccess: payload => ({
     type: Types.CREATE_ORDER_SUCCESS,

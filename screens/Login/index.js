@@ -23,6 +23,7 @@ import * as yup from 'yup';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 /** Internal Imports */
+import { useDispatch, useSelector } from 'react-redux';
 import { colors } from '../../styles';
 /** Internal Imports Ends */
 
@@ -36,7 +37,6 @@ import logo from '../../assets/images/logo-colored-small.png';
 /** Components Ends */
 
 /** REDUX */
-import { useDispatch, useSelector } from 'react-redux';
 import { Creators as LoginActions } from '../../store/ducks/login';
 /** REDUX END */
 
@@ -126,8 +126,8 @@ export default function Login({ navigation }) {
               <ButtonFill
                 title="ENTRAR"
                 color={colors.primary}
-                // disabled={loading}
-                // loading={login.loading}
+                disabled={login.loading}
+                loading={login.loading}
                 onPress={handleSubmit}
                 fontColor={colors.white}
               />

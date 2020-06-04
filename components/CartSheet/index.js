@@ -45,7 +45,7 @@ import mastercard from '../../assets/images/payments/mastercard.png';
 import amex from '../../assets/images/payments/amex.png';
 import cash from '../../assets/images/payments/cash.png';
 import diners from '../../assets/images/payments/diners.png';
-import elo from '../../assets/images/payments/Elo.png';
+import elo from '../../assets/images/payments/elo.png';
 import hipercard from '../../assets/images/payments/hipercard.png';
 import visa from '../../assets/images/payments/visa.png';
 import info from '../../assets/images/info.png';
@@ -96,12 +96,6 @@ const CartSheet = React.forwardRef((props, ref) => {
 
   const isLoading = loading || orderLoading;
 
-  const isDisabled = () => {
-    if (!deliveryType) return true;
-    if (deliveryType === 'delivery' && !paymentType) return true;
-    return false;
-  };
-
   const cartNotEmpty = cart?.length > 0;
 
   const calcPrice = () => {
@@ -113,6 +107,18 @@ const CartSheet = React.forwardRef((props, ref) => {
       return pricesFilter.reduce((ac, v) => ac + v);
     });
     return prices?.length ? prices.reduce((ac, v) => ac + v) : 0;
+  };
+
+  const isDisabled = () => {
+    if (!deliveryType) return true;
+    if (deliveryType === 'delivery' && !paymentType) return true;
+    console.tron.log(calcPrice() + shipment?.price);
+    if (
+      paymentType === 'money' &&
+      (!change || change <= (calcPrice() + shipment?.price || 0))
+    )
+      return true;
+    return false;
   };
 
   const renderDeliveryType = () => {
@@ -190,6 +196,14 @@ const CartSheet = React.forwardRef((props, ref) => {
       );
     }
     if (paymentType === 'money') {
+      let msg;
+      if (!change) {
+        msg = 'Digite o valor do troco.';
+      }
+      if (change <= (calcPrice() + shipment?.price || 0)) {
+        msg = 'O valor para troco deve ser maior que o total.';
+      }
+
       return (
         <View>
           <Text
@@ -205,6 +219,7 @@ const CartSheet = React.forwardRef((props, ref) => {
             keyboardType="numeric"
             onChangeText={text => setChange(text)}
             icon="cash"
+            msg={msg}
           />
         </View>
       );
@@ -581,9 +596,16 @@ const CartSheet = React.forwardRef((props, ref) => {
       const obj = { product_id, qty, attributes };
       variations.push(obj);
     });
-    const data = { variations };
+    const data = {
+      variations,
+    };
     dispatch(
-      OrderActions.createOrder(data, currentLocation.id, paymentType),
+      OrderActions.createOrder(
+        data,
+        currentLocation.id,
+        paymentType,
+        change,
+      ),
     );
   };
 
