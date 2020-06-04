@@ -28,13 +28,30 @@ export const Cart = () => {
 
   const getAllPrice = () => {
     const cartMap = cart.map(e => {
-      const findPrice = Object.values(e.selectedAttr).find(
-        f => f.prices.price,
-      );
-      if (findPrice) {
-        return findPrice.prices.price * e.qty;
+      const values = Object.values(e.selectedAttr);
+      if (!values.length) {
+        return e.price;
       }
-      return e.price;
+      let price = 0;
+      values.forEach(f => {
+        if (f.length) {
+          if (f.length > 1) {
+            price += f.reduce((ac, v) => ac.price + v.price);
+          } else {
+            price += f[0].price;
+          }
+        } else {
+          price += f?.prices?.price;
+        }
+      });
+      // const findPrice = Object.values(e.selectedAttr).find(
+      //   f => f.prices.price,
+      // );
+      // if (findPrice) {
+      //   return findPrice.prices.price * e.qty;
+      // }
+      // return e.price;
+      return price;
     });
     const soma = cartMap.reduce((ac, cv) => ac + cv);
     return monetize(soma);

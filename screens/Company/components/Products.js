@@ -40,10 +40,20 @@ const Products = ({
     return productSheetRef.current.close();
   }
 
-  function isSelected(opcoes) {
-    return Object.values(attr).find(e => e.id === opcoes.id)
-      ? colors.darker
-      : '#f1f1f1';
+  function isSelected(opcoes, isAdditional) {
+    const values = Object.values(attr);
+    if (isAdditional) {
+      let find;
+      values.forEach(e => {
+        if (e.length) {
+          if (e.find(f => f.id === opcoes.id)) find = true;
+        }
+      });
+      if (find) return colors.success;
+      return '#f1f1f1';
+    }
+    if (values.find(e => e.id === opcoes.id)) return colors.darker;
+    return '#f1f1f1';
   }
 
   function haveSameProduct(productId, values) {
@@ -104,7 +114,19 @@ const Products = ({
 
   function priceAll() {
     if (Object.keys(attr).length) {
-      const prices = Object.values(attr).map(e => e.prices.price);
+      const prices = Object.values(attr).map(e => {
+        if (e?.prices?.price) {
+          return e?.prices?.price;
+        }
+        if (e.length > 1) {
+          const addRed = e.reduce((ac, v) => ac?.price + v?.price);
+          return addRed;
+        }
+        if (e.length === 1) {
+          return e[0].price;
+        }
+        return 0;
+      });
       const reduce = prices.reduce((ac, v) => ac + v);
 
       if (reduce) {
@@ -354,7 +376,7 @@ const Products = ({
                         {attribute.name}
                       </Text>
 
-                      {attribute.additionals.length === 0 && (
+                      {attribute.is_mandatory === 1 && (
                         <View
                           style={{
                             backgroundColor: colors.darker,
@@ -372,7 +394,10 @@ const Products = ({
                         </View>
                       )}
                     </View>
-                    {attribute.values.map((opcoes, index) => {
+                    {(attribute.is_additional
+                      ? attribute.additionals
+                      : attribute.values
+                    )?.map((opcoes, index) => {
                       return (
                         <View
                           style={{
@@ -401,7 +426,32 @@ const Products = ({
                             <TouchableOpacity
                               onPress={() => {
                                 const newAttr = { ...attr };
-                                newAttr[attribute.id] = opcoes;
+                                if (attribute.is_additional) {
+                                  if (newAttr[attribute.id]) {
+                                    const find = newAttr[
+                                      attribute.id
+                                    ].find(e => e.id === opcoes.id);
+                                    if (find) {
+                                      const filter = newAttr[
+                                        attribute.id
+                                      ].filter(
+                                        e => e.id !== opcoes.id,
+                                      );
+                                      newAttr[attribute.id] = [
+                                        ...filter,
+                                      ];
+                                    } else {
+                                      newAttr[attribute.id] = [
+                                        ...newAttr[attribute.id],
+                                        opcoes,
+                                      ];
+                                    }
+                                  } else {
+                                    newAttr[attribute.id] = [opcoes];
+                                  }
+                                } else {
+                                  newAttr[attribute.id] = opcoes;
+                                }
                                 setAttr(newAttr);
                               }}
                               style={{
@@ -421,7 +471,9 @@ const Products = ({
                                   style={{
                                     width: 26,
                                     height: 26,
-                                    borderRadius: 20,
+                                    borderRadius: attribute.is_additional
+                                      ? 0
+                                      : 20,
                                     backgroundColor: '#f1f1f1',
                                     marginRight: 10,
                                     padding: 5,
@@ -431,9 +483,12 @@ const Products = ({
                                     style={{
                                       width: 16,
                                       height: 16,
-                                      borderRadius: 20,
+                                      borderRadius: attribute.is_additional
+                                        ? 0
+                                        : 20,
                                       backgroundColor: isSelected(
                                         opcoes,
+                                        attribute.is_additional,
                                       ),
                                       marginRight: 10,
                                     }}
@@ -456,7 +511,12 @@ const Products = ({
                                   fontSize: 16,
                                 }}
                               >
-                                {monetize(opcoes?.prices.price)}
+                                {attribute.is_additional ? '+' : ''}
+                                {monetize(
+                                  attribute.is_additional
+                                    ? opcoes?.price
+                                    : opcoes?.prices?.price,
+                                )}
                               </Text>
                             </TouchableOpacity>
                           </View>

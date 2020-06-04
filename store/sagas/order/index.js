@@ -39,7 +39,7 @@ function* createOrder({ payload, addressId, paymentType, change }) {
     );
     if (status === 200) {
       yield put(OrderActions.createOrderSuccess({ order }));
-      Alert.alert('Erro', 'Pedido feito com sucesso!');
+      Alert.alert('Sucesso', 'Pedido feito com sucesso!');
     } else {
       yield put(OrderActions.createOrderFail());
       Alert.alert('Erro', 'Houve um problema ao realizar pedido.');
