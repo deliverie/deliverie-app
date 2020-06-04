@@ -7,6 +7,8 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 
+import { TextInputMask } from 'react-native-masked-text';
+
 import {
   Image,
   View,
@@ -276,17 +278,6 @@ const CartSheet = React.forwardRef((props, ref) => {
               Retirar
             </Text>
           </TouchableOpacity>
-          {/* <RoundSelect
-            selected={deliveryType === 'delivery'}
-            onPress={() => setDeliveryType('delivery')}
-            style={{ marginRight: metrics.baseMargin * 2 }}
-            text="Delivery"
-          />
-          <RoundSelect
-            selected={deliveryType === 'withdraw'}
-            onPress={() => setDeliveryType('withdraw')}
-            text="Retirar"
-          /> */}
         </View>
       );
     }
@@ -339,7 +330,7 @@ const CartSheet = React.forwardRef((props, ref) => {
               color: colors.darker,
             }}
           >
-            Você optou por pagar por dinheiro, deseja troco?
+            Você optou por pagar por dinheiro, deseja troco par?
           </Text>
           <Input
             placeholder="Valor"
@@ -934,7 +925,9 @@ const CartSheet = React.forwardRef((props, ref) => {
                             color: colors.dark,
                           }}
                         >
-                          Selecione uma forma de pagamento
+                          {paymentType === 'money'
+                            ? 'O valor para troco deve ser maior que o valor do pedido'
+                            : 'Selecione uma forma de pagamento'}
                         </Text>
                       </View>
                       <View
@@ -954,25 +947,53 @@ const CartSheet = React.forwardRef((props, ref) => {
                           <TouchableOpacity
                             style={{
                               borderWidth: 1,
-                              padding: 10,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+
                               borderRadius: 5,
+                              flexDirection: 'row',
                               borderColor:
                                 paymentType === 'money'
-                                  ? colors.primary
+                                  ? '#4caf50'
                                   : '#ccc',
                             }}
                             onPress={() => setPaymentType('money')}
                           >
                             <Text
                               style={{
+                                paddingHorizontal: 10,
                                 color:
                                   paymentType === 'money'
-                                    ? colors.primary
+                                    ? '#4caf50'
                                     : '#ccc',
                               }}
                             >
                               Dinheiro
                             </Text>
+                            {paymentType === 'money' && (
+                              <TextInputMask
+                                type="money"
+                                options={{
+                                  precision: 2,
+                                  separator: ',',
+                                  delimiter: '.',
+                                  unit: 'R$ ',
+                                  suffixUnit: '',
+                                }}
+                                underlineColorAndroid="rgba(0, 0, 0, 0)"
+                                placeholderTextColor="rgba(0, 0, 0, 0.4)"
+                                placeholder="Troco para"
+                                keyboardType="numeric"
+                                onChangeText={text => setChange(text)}
+                                value={change}
+                                style={{
+                                  width: 100,
+                                  borderLeftWidth: 1,
+                                  borderColor: '#4caf50',
+                                  padding: 10,
+                                }}
+                              />
+                            )}
                           </TouchableOpacity>
 
                           <TouchableOpacity
@@ -1027,37 +1048,6 @@ const CartSheet = React.forwardRef((props, ref) => {
                               Débito
                             </Text>
                           </TouchableOpacity>
-
-                          {/* <RoundSelect
-                            selected={paymentType === 'money'}
-                            onPress={() => setPaymentType('money')}
-                            style={{
-                              marginRight: metrics.baseMargin * 2,
-                            }}
-                            text="Dinheiro"
-                          />
-                          <RoundSelect
-                            selected={paymentType === 'creditcard'}
-                            onPress={() =>
-                              setPaymentType('creditcard')
-                            }
-                            style={{
-                              marginRight: metrics.baseMargin * 2,
-                            }}
-                            text={`Cartão de${'\n'}crédito`}
-                          />
-                          <RoundSelect
-                            selected={paymentType === 'debitcard'}
-                            onPress={() =>
-                              setPaymentType('debitcard')
-                            }
-                            text={`Cartão de${'\n'}débito`}
-                          /> */}
-                        </View>
-                        <View
-                          style={{ marginTop: metrics.baseMargin }}
-                        >
-                          {renderPayOptions()}
                         </View>
                       </View>
                     </View>
