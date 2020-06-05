@@ -56,31 +56,17 @@ const Products = ({
     return '#f1f1f1';
   }
 
-  function haveSameProduct(productId, values) {
-    const filter = cart.filter(e => e.id === productId);
-    if (filter?.length) {
-      const find = filter.filter(e => {
-        const attrFind = Object.values(e.selectedAttr).map(f => f.id);
-        return (
-          _.difference(attrFind.sort(), values.sort()).length === 0
-        );
-      });
-      return find.length ? find[0] : null;
-    }
-    return null;
-  }
-
-  function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      // eslint-disable-next-line func-names
-      function(c) {
-        // eslint-disable-next-line no-bitwise
-        const r = (Math.random() * 16) | 0;
-        const v = c == 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      },
-    );
+  function haveSameProduct(product) {
+    let finded = null;
+    cart.forEach(e => {
+      const newE = { ...e };
+      delete newE.cart_id;
+      delete newE.qty;
+      if (_.isEqual(newE, product)) {
+        finded = e;
+      }
+    });
+    return finded;
   }
 
   function addToCart() {
@@ -93,18 +79,13 @@ const Products = ({
       return;
     }
     const product = { ...currentProduct };
-    const same = haveSameProduct(
-      product.id,
-      Object.values(attr).map(e => e.id),
-    );
-
+    product.selectedAttr = attr;
+    const same = haveSameProduct(product);
     if (same) {
       product.qty = same.qty + qtd;
-      product.selectedAttr = attr;
       dispatch(CartActions.updateCart(same.cart_id, product));
     } else {
       product.qty = qtd || 1;
-      product.selectedAttr = attr;
       product.cart_id = cart.length + 1;
       dispatch(CartActions.addCart(product));
     }

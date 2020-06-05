@@ -30,18 +30,18 @@ export const Cart = () => {
     const cartMap = cart.map(e => {
       const values = Object.values(e.selectedAttr);
       if (!values.length) {
-        return e.price;
+        return e.price * e.qty;
       }
       let price = 0;
       values.forEach(f => {
         if (f.length) {
           if (f.length > 1) {
-            price += f.reduce((ac, v) => ac.price + v.price);
+            price += f.reduce((ac, v) => ac.price + v.price) * e.qty;
           } else {
-            price += f[0].price;
+            price += f[0].price * e.qty;
           }
         } else {
-          price += f?.prices?.price;
+          price += f?.prices?.price * e.qty;
         }
       });
       // const findPrice = Object.values(e.selectedAttr).find(
@@ -92,7 +92,7 @@ export const Cart = () => {
               fontWeight: 'roboto-light',
             }}
           >
-            {cart.length} itens no valor de {getAllPrice()}
+            Carrinho no valor de {getAllPrice()}
           </Text>
         )}
       </View>
