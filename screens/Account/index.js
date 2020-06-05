@@ -17,101 +17,133 @@ import logo from '../../assets/images/logo-colored-small.png';
 import { wpd } from '../../utils/scalling';
 
 import H1 from '../../components/H1';
-import { metrics } from '../../styles';
+import { metrics, colors } from '../../styles';
 
 export default function Account({ navigation }) {
   const dispatch = useDispatch();
   const { data } = useSelector(state => state.login);
 
+  function shortName() {
+    const res = data?.user?.name
+      .replace(/ da | de | do | das | dos /g, ' ')
+      .split(' ', 2);
+    if (res)
+      return `${res[0]?.charAt(0)}${res[1]?.charAt(0)}`.replace(
+        'undefined',
+        '',
+      );
+    return null;
+  }
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          flex: 1,
-        }}
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
       >
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
+        <SafeAreaView style={{ flex: 1 }}>
           <View
             style={{
               flex: 2,
               alignItems: 'center',
             }}
           >
-            <Image style={{ width: 64, height: 64 }} source={logo} />
+            <View
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                backgroundColor: colors.primary,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 25,
+                  fontFamily: 'roboto-bold',
+                  color: '#fff',
+                }}
+              >
+                {shortName()}
+              </Text>
+            </View>
             {data && (
-              <View style={{ margin: 10 }}>
+              <View
+                style={{
+                  alignSelf: 'stretch',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 15,
+                }}
+              >
                 <H1 text={`Olá, ${data?.user?.name}`} />
+
+                <Text>{data?.user?.email}</Text>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignSelf: 'stretch',
+                    justifyContent: 'space-around',
+                    marginTop: 23,
+                  }}
+                >
+                  <View
+                    style={{
+                      alignContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text style={{ fontSize: 19 }}>
+                      {data &&
+                        moment(data?.user?.created_at).format(
+                          'DD/MM/YYYY',
+                        )}
+                    </Text>
+                    <Text>Entrou em</Text>
+                  </View>
+                  <View
+                    style={{
+                      alignContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text style={{ fontSize: 19 }}>10</Text>
+                    <Text>Pedidos realizados</Text>
+                  </View>
+                </View>
               </View>
             )}
           </View>
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <View
-                style={{
-                  marginBottom: 5,
-                  width: wpd(80),
-                  backgroundColor: 'white',
-                  shadowColor: 'rgba(0,0,0,0.4)',
-                  shadowOffset: {
-                    width: 0,
-                    height: 3,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                  elevation: 5,
-                  padding: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: 'roboto-bold',
-                    textAlign: 'center',
-                    marginBottom: metrics.baseMargin,
-                  }}
-                >
-                  {data?.user?.email?.toUpperCase()}
-                </Text>
-                <Text>
-                  Registrado desde:{' '}
-                  {data &&
-                    moment(data?.user?.created_at).format(
-                      'DD/MM/YYYY',
-                    )}
-                </Text>
-                <Text>Pedidos realizados: 10</Text>
-              </View>
-            </View>
-            <View style={{ marginTop: metrics.baseMargin * 3 }}>
-              <OptionButton
-                icon="md-person"
-                label="Alterar perfil"
-                onPress={() => navigation.navigate('Profile')}
-              />
-              <OptionButton
-                icon="md-compass"
-                label="Alterar endereço"
-                onPress={() => navigation.navigate('Address')}
-              />
-              <OptionButton
-                icon="md-log-out"
-                label="Sair"
-                onPress={() => dispatch(LoginActions.loginLogout())}
-                isLastOption
-                colorIcon="#e42618"
-              />
-            </View>
+        </SafeAreaView>
+        <View style={{ flex: 1 }}>
+          <View style={{ marginTop: metrics.baseMargin * 3 }}>
+            <OptionButton
+              icon="md-person"
+              label="Alterar perfil"
+              onPress={() => navigation.navigate('Profile')}
+            />
+            <OptionButton
+              icon="md-compass"
+              label="Alterar endereço"
+              onPress={() => navigation.navigate('Address')}
+            />
+            <OptionButton
+              icon="md-log-out"
+              label="Sair"
+              onPress={() => dispatch(LoginActions.loginLogout())}
+              isLastOption
+              colorIcon="#e42618"
+            />
           </View>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

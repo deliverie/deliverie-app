@@ -366,7 +366,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={mastercard}
         />
       );
@@ -375,7 +375,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={visa}
         />
       );
@@ -384,7 +384,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={amex}
         />
       );
@@ -393,7 +393,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={cash}
         />
       );
@@ -402,7 +402,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={diners}
         />
       );
@@ -411,7 +411,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={elo}
         />
       );
@@ -420,7 +420,7 @@ const CartSheet = React.forwardRef((props, ref) => {
       return (
         <Image
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
           source={hipercard}
         />
       );
@@ -1083,14 +1083,12 @@ const CartSheet = React.forwardRef((props, ref) => {
                   >
                     <View
                       style={{
-                        borderColor: colors.primary,
-                        borderBottomWidth: 5,
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        borderColor: '#ccc',
+                        borderBottomWidth: 1,
+
                         flexDirection: 'row',
                       }}
                     >
-                      <Image source={info} />
                       <Text
                         style={{
                           fontFamily: 'roboto-light',
@@ -1106,6 +1104,7 @@ const CartSheet = React.forwardRef((props, ref) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginBottom: metrics.baseMargin,
+                        flexDirection: 'row',
                       }}
                     >
                       <View
@@ -1117,17 +1116,19 @@ const CartSheet = React.forwardRef((props, ref) => {
                           padding: 15,
                           marginHorizontal: metrics.baseMargin,
                           marginBottom: 5,
-                          backgroundColor: colors.light,
-                          shadowColor: 'rgba(0,0,0,0.4)',
-                          shadowOffset: {
-                            width: 0,
-                            height: 3,
-                          },
-                          shadowOpacity: 0.25,
-                          shadowRadius: 3.84,
-                          elevation: 5,
                         }}
                       >
+                        <Text
+                          style={{
+                            fontFamily: 'roboto',
+                            color: colors.darker,
+                            fontSize: 25,
+                          }}
+                        >
+                          {company?.has_delivery_time
+                            ? `${company?.min_delivery_time}-${company?.max_delivery_time}min`
+                            : 'Mesmo dia'}
+                        </Text>
                         <Text
                           style={{
                             fontFamily: 'roboto-light',
@@ -1136,17 +1137,6 @@ const CartSheet = React.forwardRef((props, ref) => {
                           }}
                         >
                           Tempo de entrega
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto',
-                            color: colors.darker,
-                            fontSize: 16,
-                          }}
-                        >
-                          {company?.has_delivery_time
-                            ? `${company?.min_delivery_time}-${company?.max_delivery_time}min`
-                            : 'Mesmo dia'}
                         </Text>
                       </View>
                       <View
@@ -1158,26 +1148,8 @@ const CartSheet = React.forwardRef((props, ref) => {
                           padding: 15,
                           marginHorizontal: metrics.baseMargin,
                           marginBottom: 5,
-                          backgroundColor: colors.light,
-                          shadowColor: 'rgba(0,0,0,0.4)',
-                          shadowOffset: {
-                            width: 0,
-                            height: 3,
-                          },
-                          shadowOpacity: 0.25,
-                          shadowRadius: 3.84,
-                          elevation: 5,
                         }}
                       >
-                        <Text
-                          style={{
-                            fontFamily: 'roboto-light',
-                            color: colors.darker,
-                            fontSize: 16,
-                          }}
-                        >
-                          Métodos de pagamento aceitos
-                        </Text>
                         <View
                           style={{
                             flexDirection: 'row',
@@ -1195,6 +1167,15 @@ const CartSheet = React.forwardRef((props, ref) => {
                               ),
                             )}
                         </View>
+                        <Text
+                          style={{
+                            fontFamily: 'roboto-light',
+                            color: colors.darker,
+                            fontSize: 16,
+                          }}
+                        >
+                          Métodos de pagamento
+                        </Text>
                       </View>
                     </View>
                     <View
