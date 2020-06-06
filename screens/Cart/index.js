@@ -20,7 +20,6 @@ import {
   SafeAreaView,
   TextInput,
 } from 'react-native';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import AlertProvider, {
   setModal,
   popModal,
@@ -38,10 +37,10 @@ import Animated, {
 
 import { SimpleLayout } from 'react-native-alert-utils/Layout';
 import { ActivityIndicator } from 'react-native-paper';
-import SimpleHeader from '../SimpleHeader';
+import SimpleHeader from '../../components/SimpleHeader';
 
-import Button from '../ButtonFill';
-import RoundSelect from '../RoundSelect';
+import Button from '../../components/ButtonFill';
+import RoundSelect from '../../components/RoundSelect';
 import moto from '../../assets/images/motorcycle.png';
 import { baseURL } from '../../services/api';
 import product from '../../assets/images/product.png';
@@ -60,15 +59,16 @@ import { Creators as OrderActions } from '../../store/ducks/order';
 import { wpd } from '../../utils/scalling';
 import { monetize } from '../../utils';
 import { showToast } from '../../utils/toast';
-import Input from '../Input';
+import Input from '../../components/Input';
 /** REDUX END */
 
-const CartSheet = React.forwardRef((props, ref) => {
+function Cart({ navigation }) {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const [paymentType, setPaymentType] = useState(null);
   const [change, setChange] = useState(null);
+  const [needChange, setNeedChange] = useState(false);
+
   const { cart } = useSelector(state => state.cart);
   const { company } = useSelector(state => state.company);
   const { loading, shipment, currentLocation } = useSelector(
@@ -96,7 +96,7 @@ const CartSheet = React.forwardRef((props, ref) => {
 
   function closeCart() {
     setTimeout(() => {
-      return ref.current.close();
+      return navigation.goBack();
     }, 100);
   }
 
@@ -136,8 +136,11 @@ const CartSheet = React.forwardRef((props, ref) => {
   const isDisabled = () => {
     if (!deliveryType) return true;
     if (deliveryType === 'delivery' && !paymentType) return true;
+    if (paymentType === 'money' && needChange === true) return true;
+
     if (
       paymentType === 'money' &&
+      needChange === false &&
       (!change || change <= (calcPrice() + shipment?.price || 0))
     )
       return true;
@@ -307,63 +310,6 @@ const CartSheet = React.forwardRef((props, ref) => {
   const renderAddress = `${currentLocation?.street}, ${currentLocation?.number}, \n${currentLocation?.district}`;
 
   const renderCity = `${currentLocation?.city}, ${currentLocation?.state}`;
-
-  const renderPayOptions = () => {
-    if (paymentType === 'creditcard') {
-      return (
-        <Text
-          style={{
-            fontFamily: 'roboto',
-            color: colors.darker,
-          }}
-        >
-          Você optou por pagar via cartão de crédito
-        </Text>
-      );
-    }
-    if (paymentType === 'debitcard') {
-      return (
-        <Text
-          style={{
-            fontFamily: 'roboto',
-            color: colors.darker,
-          }}
-        >
-          Você optou por pagar via cartão de débito
-        </Text>
-      );
-    }
-    if (paymentType === 'money') {
-      let msg;
-      if (!change) {
-        msg = 'Digite o valor do troco.';
-      }
-      if (change <= (calcPrice() + shipment?.price || 0)) {
-        msg = 'O valor para troco deve ser maior que o total.';
-      }
-
-      return (
-        <View>
-          <Text
-            style={{
-              fontFamily: 'roboto',
-              color: colors.darker,
-            }}
-          >
-            Você optou por pagar por dinheiro, deseja troco par?
-          </Text>
-          <Input
-            placeholder="Valor"
-            keyboardType="numeric"
-            onChangeText={text => setChange(text)}
-            icon="cash"
-            msg={msg}
-          />
-        </View>
-      );
-    }
-    return null;
-  };
 
   const parsePaymentMethod = name => {
     if (name === 'Mastercard') {
@@ -665,20 +611,6 @@ const CartSheet = React.forwardRef((props, ref) => {
                     })}
                   </View>
                 )}
-                {/* <View style={{ flexDirection: 'row', marginTop: 3 }}>
-                <View
-                  style={{
-                    backgroundColor: colors.dark,
-                    paddingVertical: 3,
-                    paddingHorizontal: 6,
-                    borderRadius: 5,
-                  }}
-                >
-                  <Text style={{ fontSize: 13, color: colors.white }}>
-                    bacon + R$ 1,30
-                  </Text>
-                </View>
-              </View> */}
               </View>
               <View
                 style={{
@@ -760,149 +692,247 @@ const CartSheet = React.forwardRef((props, ref) => {
   };
 
   return (
-    <RBSheet
-      ref={ref}
-      closeOnPressMask={false}
-      height={Dimensions.get('window').height + getStatusBarHeight()}
-      customStyles={{
-        wrapper: {
-          backgroundColor: 'rgba(0,0,0,0.4)',
-        },
-        draggableIcon: {
-          backgroundColor: colors.primary,
-        },
-        container: {
-          backgroundColor: 'white',
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-        },
+    <SafeAreaView
+      style={{
+        backgroundColor: 'white',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
       }}
     >
-      <SafeAreaView>
-        <SimpleHeader text="Carrinho" goBack={closeCart} />
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <View style={{ marginTop: metrics.baseMargin }}>
-            <ScrollView>
-              <View style={{ marginBottom: metrics.baseMargin * 4 }}>
-                <Products />
+      <SimpleHeader text="Carrinho" goBack={closeCart} />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <View style={{ marginTop: metrics.baseMargin }}>
+          <ScrollView>
+            <View style={{ marginBottom: metrics.baseMargin * 4 }}>
+              <Products />
+              <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
                 <View
-                  style={{ marginHorizontal: 20, paddingTop: 20 }}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
                 >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <View />
-                    {cartNotEmpty && (
+                  <View />
+                  {cartNotEmpty && (
+                    <View>
                       <View>
-                        <View>
-                          <View style={{ flexDirection: 'row' }}>
-                            <Text
-                              style={{
-                                fontSize: 18,
-                                fontWeight: '300',
-                                marginRight: 20,
-                                width: 120,
-                                color: colors.dark,
-                                textAlign: 'right',
-                              }}
-                            >
-                              Subtotal
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 18,
-                                fontWeight: '400',
-                                color: colors.dark,
-                              }}
-                            >
-                              {monetize(calcPrice())}
-                            </Text>
-                          </View>
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: '300',
+                              marginRight: 20,
+                              width: 120,
+                              color: colors.dark,
+                              textAlign: 'right',
+                            }}
+                          >
+                            Subtotal
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: '400',
+                              color: colors.dark,
+                            }}
+                          >
+                            {monetize(calcPrice())}
+                          </Text>
                         </View>
-                        <View>
-                          {deliveryType === 'delivery' && (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                borderBottomWidth: 1,
-                                borderBottomColor: '#f1f1f1',
-                                borderBottomStyle: 'dotted',
-                                paddingBottom: 5,
-                                marginBottom: 5,
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 18,
-                                  fontWeight: '300',
-                                  marginRight: 20,
-                                  width: 120,
-                                  color: colors.dark,
-                                  textAlign: 'right',
-                                }}
-                              >
-                                Frete
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 18,
-                                  fontWeight: '400',
-                                  color: colors.dark,
-                                  textAlign: 'right',
-                                }}
-                              >
-                                {monetize(shipment.price)}
-                              </Text>
-                            </View>
-                          )}
-                        </View>
-                        <View>
+                      </View>
+                      <View>
+                        {deliveryType === 'delivery' && (
                           <View
                             style={{
                               flexDirection: 'row',
-                              alignItems: 'center',
+                              borderBottomWidth: 1,
+                              borderBottomColor: '#f1f1f1',
+                              borderBottomStyle: 'dotted',
+                              paddingBottom: 5,
+                              marginBottom: 5,
                             }}
                           >
                             <Text
                               style={{
-                                fontSize: 22,
+                                fontSize: 18,
                                 fontWeight: '300',
                                 marginRight: 20,
                                 width: 120,
-                                color: colors.darker,
+                                color: colors.dark,
                                 textAlign: 'right',
                               }}
                             >
-                              Total
+                              Frete
                             </Text>
                             <Text
                               style={{
                                 fontSize: 18,
                                 fontWeight: '400',
-                                color: colors.darker,
+                                color: colors.dark,
                                 textAlign: 'right',
                               }}
                             >
-                              {monetize(
-                                deliveryType === 'delivery'
-                                  ? calcPrice() + shipment.price
-                                  : calcPrice(),
-                              )}
+                              {monetize(shipment.price)}
                             </Text>
                           </View>
+                        )}
+                      </View>
+                      <View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 22,
+                              fontWeight: '300',
+                              marginRight: 20,
+                              width: 120,
+                              color: colors.darker,
+                              textAlign: 'right',
+                            }}
+                          >
+                            Total
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: '400',
+                              color: colors.darker,
+                              textAlign: 'right',
+                            }}
+                          >
+                            {monetize(
+                              deliveryType === 'delivery'
+                                ? calcPrice() + shipment.price
+                                : calcPrice(),
+                            )}
+                          </Text>
                         </View>
                       </View>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </View>
+            {cartNotEmpty && (
+              <View style={{}}>
+                <View
+                  style={{
+                    marginBottom: metrics.baseMargin * 2,
+                  }}
+                >
+                  <View
+                    style={{
+                      borderColor: '#ccc',
+                      borderBottomWidth: 1,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+
+                      paddingHorizontal: 15,
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          fontSize: 18,
+                          color: colors.darker,
+                        }}
+                      >
+                        ENTREGA
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          fontSize: 14,
+                          color: colors.dark,
+                        }}
+                      >
+                        Selecione o tipo de entrega
+                      </Text>
+                    </View>
+                    <View style={{ paddingVertical: 10 }}>
+                      {renderDeliveryType2()}
+                    </View>
+                  </View>
+
+                  {deliveryType === 'delivery' && (
+                    <View style={{ marginHorizontal: 15 }}>
+                      <View
+                        style={{
+                          marginTop: 15,
+                          backgroundColor: '#f1f1f1',
+                          padding: 10,
+                          borderRadius: 7,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: colors.darker,
+                            fontFamily: 'roboto',
+                          }}
+                        >
+                          Seu endereço
+                        </Text>
+                        <Text
+                          style={{
+                            color: colors.darker,
+                            fontFamily: 'roboto-light',
+                          }}
+                        >
+                          {renderAddress}
+                          {'\n'}
+                          {renderCity}
+                        </Text>
+                        <TouchableOpacity
+                          style={{
+                            alignItems: 'flex-end',
+                            justifyContent: 'flex-end',
+                            flexDirection: 'row',
+                            padding: 10,
+                          }}
+                          onPress={() =>
+                            navigation.navigate('Address')
+                          }
+                        >
+                          <AntDesign
+                            name="edit"
+                            size={16}
+                            color={colors.darker}
+                          />
+                          <Text
+                            style={{
+                              color: colors.darker,
+                              fontSize: 15,
+                            }}
+                          >
+                            Alterar
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                  <View style={{ marginTop: metrics.baseMargin }}>
+                    {deliveryType === 'withdraw' && (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontFamily: 'roboto',
+                        }}
+                      >
+                        Você escolheu retirar seu pedido no
+                        estabelecimento.
+                      </Text>
                     )}
                   </View>
                 </View>
-              </View>
-              {cartNotEmpty && (
-                <View style={{}}>
+                {deliveryType === 'delivery' && (
                   <View
                     style={{
                       marginBottom: metrics.baseMargin * 2,
@@ -912,184 +942,73 @@ const CartSheet = React.forwardRef((props, ref) => {
                       style={{
                         borderColor: '#ccc',
                         borderBottomWidth: 1,
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexDirection: 'row',
-
                         paddingHorizontal: 15,
+                        paddingBottom: 10,
                       }}
                     >
-                      <View>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto-light',
-                            fontSize: 18,
-                            color: colors.darker,
-                          }}
-                        >
-                          ENTREGA
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto-light',
-                            fontSize: 14,
-                            color: colors.dark,
-                          }}
-                        >
-                          Selecione o tipo de entrega
-                        </Text>
-                      </View>
-                      <View style={{ paddingVertical: 10 }}>
-                        {renderDeliveryType2()}
-                      </View>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          fontSize: 18,
+                          color: colors.darker,
+                        }}
+                      >
+                        PAGAMENTO
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          fontSize: 14,
+                          color: colors.dark,
+                        }}
+                      >
+                        {paymentType === 'money'
+                          ? 'O valor para troco deve ser maior que o valor do pedido'
+                          : 'Selecione uma forma de pagamento'}
+                      </Text>
                     </View>
-
-                    {deliveryType === 'delivery' && (
-                      <View style={{ marginHorizontal: 15 }}>
-                        <View
-                          style={{
-                            marginTop: 15,
-                            backgroundColor: '#f1f1f1',
-                            padding: 10,
-                            borderRadius: 7,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: colors.darker,
-                              fontFamily: 'roboto',
-                            }}
-                          >
-                            Seu endereço
-                          </Text>
-                          <Text
-                            style={{
-                              color: colors.darker,
-                              fontFamily: 'roboto-light',
-                            }}
-                          >
-                            {renderAddress}
-                            {'\n'}
-                            {renderCity}
-                          </Text>
-                          <TouchableOpacity
-                            style={{
-                              alignItems: 'flex-end',
-                              justifyContent: 'flex-end',
-                              flexDirection: 'row',
-                              padding: 10,
-                            }}
-                            onPress={() =>
-                              navigation.navigate('Company')
-                            }
-                          >
-                            <AntDesign
-                              name="edit"
-                              size={16}
-                              color={colors.darker}
-                            />
-                            <Text
-                              style={{
-                                color: colors.darker,
-                                fontSize: 15,
-                              }}
-                            >
-                              Alterar
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    )}
-                    <View style={{ marginTop: metrics.baseMargin }}>
-                      {deliveryType === 'withdraw' && (
-                        <Text
-                          style={{
-                            textAlign: 'center',
-                            fontFamily: 'roboto',
-                          }}
-                        >
-                          Você escolheu retirar seu pedido no
-                          estabelecimento.
-                        </Text>
-                      )}
-                    </View>
-                  </View>
-                  {deliveryType === 'delivery' && (
                     <View
                       style={{
-                        marginBottom: metrics.baseMargin * 2,
+                        marginTop: metrics.baseMargin * 2,
+                        justifyContent: 'center',
+                        alignItems: 'center',
                       }}
                     >
                       <View
                         style={{
-                          borderColor: '#ccc',
-                          borderBottomWidth: 1,
-                          paddingHorizontal: 15,
-                          paddingBottom: 10,
+                          flexDirection: 'row',
+                          alignSelf: 'stretch',
+                          marginHorizontal: 15,
                         }}
                       >
-                        <Text
+                        <TouchableOpacity
                           style={{
-                            fontFamily: 'roboto-light',
-                            fontSize: 18,
-                            color: colors.darker,
-                          }}
-                        >
-                          PAGAMENTO
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto-light',
-                            fontSize: 14,
-                            color: colors.dark,
-                          }}
-                        >
-                          {paymentType === 'money'
-                            ? 'O valor para troco deve ser maior que o valor do pedido'
-                            : 'Selecione uma forma de pagamento'}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          marginTop: metrics.baseMargin * 2,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignSelf: 'stretch',
-                            marginHorizontal: 15,
-                          }}
-                        >
-                          <TouchableOpacity
-                            style={{
-                              borderWidth: 1,
-                              justifyContent: 'center',
-                              alignItems: 'center',
+                            borderWidth: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
 
-                              borderRadius: 5,
-                              flexDirection: 'row',
-                              borderColor:
+                            borderRadius: 5,
+                            flexDirection: 'row',
+                            borderColor:
+                              paymentType === 'money'
+                                ? '#4caf50'
+                                : '#ccc',
+                          }}
+                          onPress={() => setPaymentType('money')}
+                        >
+                          <Text
+                            style={{
+                              paddingHorizontal: 10,
+                              color:
                                 paymentType === 'money'
                                   ? '#4caf50'
                                   : '#ccc',
                             }}
-                            onPress={() => setPaymentType('money')}
                           >
-                            <Text
-                              style={{
-                                paddingHorizontal: 10,
-                                color:
-                                  paymentType === 'money'
-                                    ? '#4caf50'
-                                    : '#ccc',
-                              }}
-                            >
-                              Dinheiro
-                            </Text>
-                            {paymentType === 'money' && (
+                            Dinheiro
+                          </Text>
+                          {paymentType === 'money' &&
+                            needChange === true && (
                               <TextInputMask
                                 type="money"
                                 options={{
@@ -1113,213 +1032,224 @@ const CartSheet = React.forwardRef((props, ref) => {
                                 }}
                               />
                             )}
-                          </TouchableOpacity>
+                        </TouchableOpacity>
 
-                          <TouchableOpacity
+                        <TouchableOpacity
+                          style={{
+                            borderWidth: 1,
+                            padding: 10,
+                            borderRadius: 5,
+                            marginHorizontal: 8,
+                            borderColor:
+                              paymentType === 'creditcard'
+                                ? colors.primary
+                                : '#ccc',
+                          }}
+                          onPress={() => setPaymentType('creditcard')}
+                        >
+                          <Text
                             style={{
-                              borderWidth: 1,
-                              padding: 10,
-                              borderRadius: 5,
-                              marginHorizontal: 8,
-                              borderColor:
+                              color:
                                 paymentType === 'creditcard'
                                   ? colors.primary
                                   : '#ccc',
                             }}
-                            onPress={() =>
-                              setPaymentType('creditcard')
-                            }
                           >
-                            <Text
-                              style={{
-                                color:
-                                  paymentType === 'creditcard'
-                                    ? colors.primary
-                                    : '#ccc',
-                              }}
-                            >
-                              Crédito
-                            </Text>
-                          </TouchableOpacity>
+                            Crédito
+                          </Text>
+                        </TouchableOpacity>
 
-                          <TouchableOpacity
+                        <TouchableOpacity
+                          style={{
+                            borderWidth: 1,
+                            padding: 10,
+                            borderRadius: 5,
+                            borderColor:
+                              paymentType === 'debitcard'
+                                ? colors.primary
+                                : '#ccc',
+                          }}
+                          onPress={() => setPaymentType('debitcard')}
+                        >
+                          <Text
                             style={{
-                              borderWidth: 1,
-                              padding: 10,
-                              borderRadius: 5,
-                              borderColor:
+                              color:
                                 paymentType === 'debitcard'
                                   ? colors.primary
                                   : '#ccc',
                             }}
-                            onPress={() =>
-                              setPaymentType('debitcard')
-                            }
                           >
-                            <Text
-                              style={{
-                                color:
-                                  paymentType === 'debitcard'
-                                    ? colors.primary
-                                    : '#ccc',
-                              }}
-                            >
-                              Débito
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
+                            Débito
+                          </Text>
+                        </TouchableOpacity>
                       </View>
+                      {paymentType === 'money' && (
+                        <View
+                          style={{
+                            alignSelf: 'stretch',
+                            padding: 15,
+                            flexDirection: 'row',
+                          }}
+                        >
+                          <RoundSelect
+                            selected={needChange === true}
+                            onPress={() => setNeedChange(!needChange)}
+                            text="Preciso de troco"
+                            money
+                          />
+                        </View>
+                      )}
                     </View>
-                  )}
+                  </View>
+                )}
+                <View
+                  style={{
+                    marginBottom: metrics.baseMargin * 4,
+                  }}
+                >
                   <View
                     style={{
-                      marginBottom: metrics.baseMargin * 4,
+                      borderColor: '#ccc',
+                      borderBottomWidth: 1,
+
+                      flexDirection: 'row',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: 'roboto-light',
+                        fontSize: 18,
+                        padding: 15,
+                      }}
+                    >
+                      INFORMAÇÕES ADICIONAIS
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: metrics.baseMargin,
+                      flexDirection: 'row',
                     }}
                   >
                     <View
                       style={{
-                        borderColor: '#ccc',
-                        borderBottomWidth: 1,
-
-                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: metrics.baseMargin,
+                        borderRadius: 10,
+                        padding: 15,
+                        marginHorizontal: metrics.baseMargin,
+                        marginBottom: 5,
                       }}
                     >
                       <Text
                         style={{
-                          fontFamily: 'roboto-light',
-                          fontSize: 18,
-                          padding: 15,
+                          fontFamily: 'roboto',
+                          color: colors.darker,
+                          fontSize: 25,
                         }}
                       >
-                        INFORMAÇÕES ADICIONAIS
+                        {company?.has_delivery_time
+                          ? `${company?.min_delivery_time}-${company?.max_delivery_time}min`
+                          : 'Mesmo dia'}
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: 'roboto-light',
+                          color: colors.darker,
+                          fontSize: 16,
+                        }}
+                      >
+                        Tempo de entrega
                       </Text>
                     </View>
                     <View
                       style={{
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginBottom: metrics.baseMargin,
-                        flexDirection: 'row',
+                        marginTop: metrics.baseMargin,
+                        borderRadius: 10,
+                        padding: 15,
+                        marginHorizontal: metrics.baseMargin,
+                        marginBottom: 5,
                       }}
                     >
                       <View
                         style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginTop: metrics.baseMargin,
-                          borderRadius: 10,
-                          padding: 15,
-                          marginHorizontal: metrics.baseMargin,
-                          marginBottom: 5,
+                          flexDirection: 'row',
                         }}
                       >
-                        <Text
-                          style={{
-                            fontFamily: 'roboto',
-                            color: colors.darker,
-                            fontSize: 25,
-                          }}
-                        >
-                          {company?.has_delivery_time
-                            ? `${company?.min_delivery_time}-${company?.max_delivery_time}min`
-                            : 'Mesmo dia'}
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto-light',
-                            color: colors.darker,
-                            fontSize: 16,
-                          }}
-                        >
-                          Tempo de entrega
-                        </Text>
+                        {company?.payment_methods &&
+                          JSON.parse(company.payment_methods).map(
+                            e => (
+                              <View
+                                key={e}
+                                style={{ paddingHorizontal: 3 }}
+                              >
+                                {parsePaymentMethod(e)}
+                              </View>
+                            ),
+                          )}
                       </View>
-                      <View
+                      <Text
                         style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginTop: metrics.baseMargin,
-                          borderRadius: 10,
-                          padding: 15,
-                          marginHorizontal: metrics.baseMargin,
-                          marginBottom: 5,
+                          fontFamily: 'roboto-light',
+                          color: colors.darker,
+                          fontSize: 16,
                         }}
                       >
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                          }}
-                        >
-                          {company?.payment_methods &&
-                            JSON.parse(company.payment_methods).map(
-                              e => (
-                                <View
-                                  key={e}
-                                  style={{ paddingHorizontal: 3 }}
-                                >
-                                  {parsePaymentMethod(e)}
-                                </View>
-                              ),
-                            )}
-                        </View>
-                        <Text
-                          style={{
-                            fontFamily: 'roboto-light',
-                            color: colors.darker,
-                            fontSize: 16,
-                          }}
-                        >
-                          Métodos de pagamento
-                        </Text>
-                      </View>
+                        Métodos de pagamento
+                      </Text>
                     </View>
+                  </View>
 
-                    {!isDisabled() && (
-                      <View
+                  {!isDisabled() && (
+                    <View
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: metrics.baseMargin * 4,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={submit}
                         style={{
-                          justifyContent: 'center',
+                          flexDirection: 'row',
                           alignItems: 'center',
-                          marginBottom: metrics.baseMargin * 4,
+                          backgroundColor: '#4caf50',
+                          borderRadius: 50,
+                          padding: metrics.basePadding,
                         }}
                       >
-                        <TouchableOpacity
-                          onPress={submit}
+                        <Feather
+                          name="check"
+                          size={27}
+                          color={colors.white}
+                        />
+                        <Text
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            backgroundColor: '#4caf50',
-                            borderRadius: 50,
-                            padding: metrics.basePadding,
+                            marginLeft: 10,
+                            fontSize: 23,
+                            color: colors.white,
                           }}
                         >
-                          <Feather
-                            name="check"
-                            size={27}
-                            color={colors.white}
-                          />
-                          <Text
-                            style={{
-                              marginLeft: 10,
-                              fontSize: 23,
-                              color: colors.white,
-                            }}
-                          >
-                            Finalizar Pedido
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                  </View>
+                          Finalizar Pedido
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
-              )}
-            </ScrollView>
-          </View>
-        )}
-        <AlertProvider />
-        <FlashMessage position="top" />
-      </SafeAreaView>
-    </RBSheet>
+              </View>
+            )}
+          </ScrollView>
+        </View>
+      )}
+      <AlertProvider />
+      <FlashMessage position="top" />
+    </SafeAreaView>
   );
-});
+}
 
-export default CartSheet;
+export default Cart;

@@ -33,6 +33,7 @@ export const Tabs = ({ categories }) => {
     <View
       style={{
         backgroundColor: colors.lighter,
+        marginBottom: 10,
       }}
     >
       <View style={{ marginHorizontal: 20, marginVertical: 10 }}>

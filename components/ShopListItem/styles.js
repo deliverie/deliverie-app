@@ -22,11 +22,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     borderRadius: 5,
-    marginHorizontal: 10,
   },
   image: {
-    width: 65,
-    backgroundColor: 'blue',
+    width: 75,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },

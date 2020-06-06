@@ -25,6 +25,7 @@ export default function ShopListItem({ item }) {
           <Image
             style={styles.image}
             source={{ uri: `${baseURL}/${item.photo}` }}
+            resizeMode="contain"
           />
         ) : (
           <View style={styles.image} />

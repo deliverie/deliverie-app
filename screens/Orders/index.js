@@ -84,7 +84,44 @@ export default function Orders({ navigation }) {
               </Text>
             </View>
             <View style={styles.cardItem}>
-              <Text>Pedido</Text>
+              <View style={styles.cardItemHeader}>
+                <View style={styles.cardItemLogo} />
+                <View>
+                  <Text style={styles.cardItemCompanyText}>
+                    Chapão Burger
+                  </Text>
+                  <Text style={styles.cardItemCompanyDescription}>
+                    Entregue em 06/06/2020 às 23:23
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: colors.darker,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  #21343
+                </Text>
+              </View>
+              <View style={styles.cardItemsContainer}>
+                <View style={styles.cardItemsSingleContainer}>
+                  <Text style={styles.cardItemsSingleQty}>143</Text>
+                  <Text style={styles.cardItemsSingleText}>
+                    X BACON
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -126,5 +163,50 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  cardItemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#f1f1f1',
+    paddingBottom: 15,
+  },
+  cardItemLogo: {
+    width: 45,
+    height: 45,
+    borderRadius: 45,
+    backgroundColor: 'red',
+  },
+  cardItemCompanyText: {
+    color: colors.darker,
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 10,
+  },
+  cardItemCompanyDescription: {
+    color: colors.dark,
+    fontSize: 14,
+    fontWeight: '300',
+    marginLeft: 10,
+  },
+  cardItemsContainer: {
+    borderBottomWidth: 1,
+    borderColor: '#f1f1f1',
+    paddingVertical: 15,
+  },
+  cardItemsSingleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardItemsSingleQty: {
+    borderWidth: 1,
+    padding: 4,
+    borderRadius: 4,
+    borderColor: colors.light,
+    color: colors.dark,
+  },
+  cardItemsSingleText: {
+    color: colors.darker,
+    marginLeft: 10,
   },
 });

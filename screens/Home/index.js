@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import pluralize from 'pluralize';
 
 import { useDispatch, useSelector } from 'react-redux';
 import SkeletonContent from 'react-native-skeleton-content';
@@ -109,7 +110,12 @@ export default function Home() {
           }}
         />
       ) : (
-        <H1 text={`${total} estabelecimentos`} margin />
+        <View style={{ marginBottom: 15 }}>
+          <H1
+            text={`${total} ${pluralize('estabelecimento', total)}`}
+            margin
+          />
+        </View>
       )}
       <LocationSheet ref={locationSheet} />
       {loading ? (

@@ -460,7 +460,7 @@ export default function Company({ navigation, route: { params } }) {
           containerStyle={{ backgroundColor: 'transparent' }}
         >
           <TouchableOpacity
-            onPress={() => cartSheetRef.current.open()}
+            onPress={() => navigation.navigate('Cart')}
           >
             <Cart />
           </TouchableOpacity>

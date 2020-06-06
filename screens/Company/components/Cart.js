@@ -14,15 +14,6 @@ import { useSelector } from 'react-redux';
 import { colors } from '../../../styles';
 import { monetize } from '../../../utils';
 
-const config = {
-  damping: 15,
-  mass: 1,
-  stiffness: 150,
-  overshootClamping: false,
-  restSpeedThreshold: 0.1,
-  restDisplacementThreshold: 0.1,
-};
-
 export const Cart = () => {
   const { cart } = useSelector(state => state.cart);
 
