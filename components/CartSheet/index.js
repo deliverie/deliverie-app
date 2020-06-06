@@ -733,12 +733,16 @@ const CartSheet = React.forwardRef((props, ref) => {
     });
     const variations = [];
     cart.forEach(({ id: product_id, qty, selectedAttr }) => {
-      const attributes = Object.values(selectedAttr).map(
-        ({ attribute_id: id, id: value }) => ({
-          id,
-          value,
-        }),
-      );
+      const attributes = Object.values(selectedAttr).map(e => {
+        if (!e.length) {
+          return { id: e.attribute_id, value: e.id };
+        }
+        const attributeId = e[0].pivot.attribute_id;
+        return {
+          id: attributeId,
+          increments: e.map(({ id }) => ({ id, qty: 1 })),
+        };
+      });
       const obj = { product_id, qty, attributes };
       variations.push(obj);
     });
