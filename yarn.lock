@@ -7542,6 +7542,11 @@ rimraf@~2.2.6:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
 
+rn-animated-tabs@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/rn-animated-tabs/-/rn-animated-tabs-1.0.4.tgz#101566c9e59f9e2dd2ef5f7494f672351037d5ec"
+  integrity sha512-FfQ94b3+HmaRkdtJ+nV1yCvxCmo+Jko7WAh6KaEyVW4VT3fT2n6BNWfyW6BXeNkxjvpJ/+Qvp42Py5VOrMwb6Q==
+
 rn-host-detect@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.2.0.tgz#8b0396fc05631ec60c1cb8789e5070cdb04d0da0"

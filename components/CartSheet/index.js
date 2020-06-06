@@ -847,6 +847,15 @@ const CartSheet = React.forwardRef((props, ref) => {
                         >
                           ENTREGA
                         </Text>
+                        <Text
+                          style={{
+                            fontFamily: 'roboto-light',
+                            fontSize: 14,
+                            color: colors.dark,
+                          }}
+                        >
+                          Selecione o tipo de entrega
+                        </Text>
                       </View>
                       <View style={{ paddingVertical: 10 }}>
                         {renderDeliveryType2()}
@@ -1179,40 +1188,7 @@ const CartSheet = React.forwardRef((props, ref) => {
                         </Text>
                       </View>
                     </View>
-                    <View
-                      style={{ marginBottom: metrics.baseMargin * 3 }}
-                    >
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontFamily: 'roboto',
-                          color: colors.darker,
-                          fontSize: 16,
-                        }}
-                      >
-                        Houve algum problema? {'\n'}Ligue no telefone:
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            color: colors.primaryLight,
-                          }}
-                        >
-                          {' '}
-                          ({company?.phone_ddd}) {company?.phone_num}
-                        </Text>
-                        {'\n'} Ou pelo whatsapp:
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            color: colors.primaryLight,
-                          }}
-                        >
-                          {' '}
-                          ({company?.whatsapp_ddd}){' '}
-                          {company?.whatsapp_num}
-                        </Text>
-                      </Text>
-                    </View>
+
                     {!isDisabled() && (
                       <View
                         style={{
@@ -1221,24 +1197,30 @@ const CartSheet = React.forwardRef((props, ref) => {
                           marginBottom: metrics.baseMargin * 4,
                         }}
                       >
-                        <TouchableOpacity onPress={submit}>
-                          <View
+                        <TouchableOpacity
+                          onPress={submit}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor: '#4caf50',
+                            borderRadius: 50,
+                            padding: metrics.basePadding,
+                          }}
+                        >
+                          <Feather
+                            name="check"
+                            size={27}
+                            color={colors.white}
+                          />
+                          <Text
                             style={{
-                              backgroundColor: success
-                                ? colors.success
-                                : colors.primaryLight,
-                              borderRadius: 50,
-                              padding: metrics.basePadding,
+                              marginLeft: 10,
+                              fontSize: 23,
+                              color: colors.white,
                             }}
                           >
-                            <Feather
-                              name="check"
-                              size={23}
-                              color={
-                                success ? colors.light : colors.darker
-                              }
-                            />
-                          </View>
+                            Finalizar Pedido
+                          </Text>
                         </TouchableOpacity>
                       </View>
                     )}

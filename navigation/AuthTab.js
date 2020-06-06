@@ -6,6 +6,7 @@ import LinksScreen from '../screens/LinksScreen';
 import { useDispatch, useSelector } from 'react-redux';
 import HomeStack from './stacks/Home';
 import AccountStack from './stacks/account';
+import OrderstStack from './stacks/orders';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -38,7 +39,7 @@ export default function AuthTab({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Packages"
-        component={LinksScreen}
+        component={OrderstStack}
         options={{
           title: 'Pedidos',
           tabBarIcon: ({ focused }) => (
