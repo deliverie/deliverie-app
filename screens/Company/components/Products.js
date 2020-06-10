@@ -453,7 +453,7 @@ const Products = ({
                                     width: 26,
                                     height: 26,
                                     borderRadius: attribute.is_additional
-                                      ? 0
+                                      ? 5
                                       : 20,
                                     backgroundColor: '#f1f1f1',
                                     marginRight: 10,
@@ -465,7 +465,7 @@ const Products = ({
                                       width: 16,
                                       height: 16,
                                       borderRadius: attribute.is_additional
-                                        ? 0
+                                        ? 4
                                         : 20,
                                       backgroundColor: isSelected(
                                         opcoes,
@@ -519,7 +519,6 @@ const Products = ({
               <View
                 style={{
                   flexDirection: 'row',
-
                   paddingBottom: 5,
                   alignContent: 'center',
                   alignItems: 'center',
