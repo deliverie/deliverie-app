@@ -120,7 +120,7 @@ function Cart({ navigation }) {
               price += f[0].price * item.qty;
             }
           } else {
-            price += f?.prices?.price * item.qty;
+            price += f?.prices[0]?.price * item.qty;
           }
         });
       }

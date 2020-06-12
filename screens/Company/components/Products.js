@@ -96,8 +96,8 @@ const Products = ({
   function priceAll() {
     if (Object.keys(attr).length) {
       const prices = Object.values(attr).map(e => {
-        if (e?.prices?.price) {
-          return e?.prices?.price;
+        if (e?.prices?.length) {
+          return e?.prices[0]?.price;
         }
         if (e.length > 1) {
           const addRed = e.reduce((ac, v) => ac?.price + v?.price);
@@ -496,7 +496,7 @@ const Products = ({
                                 {monetize(
                                   attribute.is_additional
                                     ? opcoes?.price
-                                    : opcoes?.prices?.price,
+                                    : opcoes?.prices[0]?.price,
                                 )}
                               </Text>
                             </TouchableOpacity>
