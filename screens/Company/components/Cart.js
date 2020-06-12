@@ -32,7 +32,7 @@ export const Cart = () => {
             price += f[0].price * e.qty;
           }
         } else {
-          price += f?.prices?.price * e.qty;
+          price += f?.prices[0]?.price * e.qty;
         }
       });
       // const findPrice = Object.values(e.selectedAttr).find(
