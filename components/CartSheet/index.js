@@ -109,15 +109,15 @@ const CartSheet = React.forwardRef((props, ref) => {
       const selectedAttr = Object.values(item?.selectedAttr);
       let price = 0;
       if (!selectedAttr.length) {
-        price = item.price * item.qty;
+        price = item?.price * item.qty;
       } else {
         selectedAttr.forEach(f => {
           if (f.length) {
             if (f.length > 1) {
               price +=
-                f.reduce((ac, v) => ac.price + v.price) * item.qty;
+                f.reduce((ac, v) => ac?.price + v?.price) * item.qty;
             } else {
-              price += f[0].price * item.qty;
+              price += f[0]?.price * item.qty;
             }
           } else {
             price += f?.prices[0]?.price * item.qty;
@@ -130,7 +130,6 @@ const CartSheet = React.forwardRef((props, ref) => {
       // return pricesFilter.reduce((ac, v) => ac + v);
       return price;
     });
-    console.tron.log(`PRICE ${price}`);
     return prices?.length ? prices.reduce((ac, v) => ac + v) : 0;
   };
 

@@ -117,7 +117,7 @@ function Cart({ navigation }) {
               price +=
                 f.reduce((ac, v) => ac.price + v.price) * item.qty;
             } else {
-              price += f[0].price * item.qty;
+              price += f[0]?.price * item.qty;
             }
           } else {
             price += f?.prices[0]?.price * item.qty;
