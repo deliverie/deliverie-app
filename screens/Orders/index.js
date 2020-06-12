@@ -4,7 +4,7 @@ import {
   ActivityIndicator,
   Text,
   View,
-  SafeAreaView,
+  Image,
   FlatList,
   Alert,
 } from 'react-native';
@@ -14,8 +14,11 @@ import {
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 
+import moment from 'moment';
+moment.locale('pt-br', require('moment/locale/pt-br'));
+
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as LocationsActions } from '../../store/ducks/locations';
+import { Creators as OrdersActions } from '../../store/ducks/order';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -32,100 +35,180 @@ import SimpleHeader from '../../components/SimpleHeader';
 import RNAnimatedTabs from 'rn-animated-tabs';
 
 import { colors } from '../../styles';
+
 const DATA = ['Top Tab 1 Content', 'Extra Stuff for Top Tab 2'];
 
 export default function Orders({ navigation }) {
   const dispatch = useDispatch();
-  const locations = useSelector(state => state.locations);
+
+  const { orders, loading } = useSelector(state => state.order);
+
   const [currentTab, setCurrentTab] = React.useState(0);
 
   React.useEffect(() => {
-    dispatch(LocationsActions.getLocations());
+    dispatch(OrdersActions.getOrders());
   }, []);
 
   function handleTabs(value) {
     setCurrentTab(value);
   }
 
-  return (
-    <View style={styles.container}>
-      <SimpleHeader text="Seus pedidos" />
-      <RNAnimatedTabs
-        tabTitles={['EM ANDAMENTO', 'ANTERIORES']}
-        onChangeTab={handleTabs}
-        containerStyle={styles.tabContainerStyle}
-        tabButtonStyle={styles.tabButtonStyle}
-        tabTextStyle={styles.tabTextStyle}
-        activeTabIndicatorColor={colors.primary}
-        height={50}
-      />
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.content}>
-          <View style={{ marginBottom: 20 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginBottom: 15,
-              }}
-            >
-              <Feather
-                name="calendar"
-                size={17}
-                color={colors.darker}
-              />
-              <Text
-                style={{
-                  fontWeight: '500',
-                  color: colors.dark,
-                  marginLeft: 10,
-                }}
-              >
-                05 de junho de 2020{' '}
+  function renderBadge(status) {
+    const colors = {
+      pending: 'red',
+      on_way: 'blue',
+      done: 'green',
+    };
+
+    const statusPtBr = {
+      pending: 'Pendente',
+      on_way: 'A caminho',
+      done: 'Finalizado',
+    };
+
+    return (
+      <View
+        style={{
+          backgroundColor: colors[status],
+          borderRadius: 5,
+          alignSelf: 'baseline',
+          paddingHorizontal: 5,
+          paddingVertical: 3,
+          marginLeft: 10,
+        }}
+      >
+        <Text
+          style={[
+            styles.cardItemCompanyDescription,
+            { color: 'white' },
+          ]}
+        >
+          {statusPtBr[status]}
+        </Text>
+      </View>
+    );
+  }
+
+  function renderItem(variations) {
+    return (
+      <FlatList
+        data={variations}
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.cardItemsSingleContainer}>
+              <Text style={styles.cardItemsSingleQty}>
+                {item.pivot.qty} x
+              </Text>
+              <Text style={styles.cardItemsSingleText}>
+                {item.product.name}
               </Text>
             </View>
-            <View style={styles.cardItem}>
-              <View style={styles.cardItemHeader}>
-                <View style={styles.cardItemLogo} />
-                <View>
-                  <Text style={styles.cardItemCompanyText}>
-                    Chapão Burger
-                  </Text>
-                  <Text style={styles.cardItemCompanyDescription}>
-                    Entregue em 06/06/2020 às 23:23
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  borderRadius: 4,
-                  paddingHorizontal: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 13,
-                    color: colors.darker,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  #21343
-                </Text>
-              </View>
-              <View style={styles.cardItemsContainer}>
-                <View style={styles.cardItemsSingleContainer}>
-                  <Text style={styles.cardItemsSingleQty}>143</Text>
-                  <Text style={styles.cardItemsSingleText}>
-                    X BACON
-                  </Text>
-                </View>
-              </View>
-            </View>
+          );
+        }}
+        keyExtractor={item => String(item.id)}
+      />
+    );
+  }
+
+  function renderOrders() {
+    return (
+      <>
+        <SimpleHeader text={`Seus pedidos`} />
+        <RNAnimatedTabs
+          tabTitles={['EM ANDAMENTO', 'ANTERIORES']}
+          onChangeTab={handleTabs}
+          containerStyle={styles.tabContainerStyle}
+          tabButtonStyle={styles.tabButtonStyle}
+          tabTextStyle={styles.tabTextStyle}
+          activeTabIndicatorColor={colors.primary}
+          height={50}
+        />
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <View style={styles.content}>
+            <FlatList
+              data={orders}
+              renderItem={({ item }) => {
+                return (
+                  <View style={{ marginBottom: 20 }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginBottom: 15,
+                      }}
+                    >
+                      <Feather
+                        name="calendar"
+                        size={17}
+                        color={colors.darker}
+                      />
+                      <Text
+                        style={{
+                          fontWeight: '500',
+                          color: colors.dark,
+                          marginLeft: 10,
+                        }}
+                      >
+                        {/* 05 de junho de 2020{' '} */}
+                        {moment(item.created_at)
+                          .subtract(3, 'hours')
+                          .format('D [de] MMMM [de] YYYY [às] H:mm ')}
+                      </Text>
+                    </View>
+                    <View style={styles.cardItem}>
+                      <View style={styles.cardItemHeader}>
+                        <Image
+                          resizeMode="cover"
+                          style={styles.cardItemLogo}
+                          source={{ uri: item.company.imageUrl }}
+                        />
+
+                        <View>
+                          <Text style={styles.cardItemCompanyText}>
+                            {item.company.name}
+                          </Text>
+
+                          {renderBadge(item.order_status)}
+
+                          {/* Entregue em 06/06/2020 às 23:23 */}
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: 10,
+                          right: 10,
+                          borderRadius: 4,
+                          paddingHorizontal: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            color: colors.darker,
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          #{item.id}
+                        </Text>
+                      </View>
+                      <View style={styles.cardItemsContainer}>
+                        {renderItem(item.variations)}
+                      </View>
+                    </View>
+                  </View>
+                );
+              }}
+              keyExtractor={item => String(item.id)}
+            />
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {loading === true ? <ActivityIndicator /> : renderOrders()}
     </View>
   );
 }
@@ -135,9 +218,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f9f9f9',
   },
-  contentContainer: {
-    flex: 1,
-  },
+  contentContainer: {},
   content: {
     margin: 20,
   },
@@ -175,7 +256,8 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 45,
-    backgroundColor: 'red',
+    borderWidth: 1,
+    borderColor: '#f1f1f1',
   },
   cardItemCompanyText: {
     color: colors.darker,
@@ -185,9 +267,8 @@ const styles = StyleSheet.create({
   },
   cardItemCompanyDescription: {
     color: colors.dark,
-    fontSize: 14,
-    fontWeight: '300',
-    marginLeft: 10,
+    fontSize: 12,
+    fontWeight: '500',
   },
   cardItemsContainer: {
     borderBottomWidth: 1,

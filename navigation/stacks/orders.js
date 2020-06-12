@@ -8,8 +8,8 @@ const Stack = createStackNavigator();
 export default function OrdersStack() {
   return (
     <Stack.Navigator headerMode="none">
-      <Stack.Screen name="OrderDetail" component={OrderDetail} />
       <Stack.Screen name="Orders" component={Orders} />
+      <Stack.Screen name="OrderDetail" component={OrderDetail} />
     </Stack.Navigator>
   );
 }
