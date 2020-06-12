@@ -1,7 +1,7 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
-import { showToast } from '../../utils/toast';
-
 export const Types = {
+  GET_ORDERS: 'ORDER/GET_ORDERS',
+  GET_ORDERS_SUCCESS: 'ORDER/GET_ORDERS_SUCCESS',
+  GET_ORDERS_FAIL: 'ORDER/GET_ORDERS_FAIL',
   ADD_ITEM: 'ORDER/ADD_ITEM',
   ADD_ITEM_SUCCESS: 'ORDER/ADD_ITEM_SUCCESS',
   ADD_ITEM_FAIL: 'ORDER/ADD_ITEM_FAIL',
@@ -19,12 +19,32 @@ const INITIAL_STATE = {
 
 export default function cart(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case Types.GET_ORDERS:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case Types.GET_ORDERS_SUCCESS:
+      return {
+        ...state,
+        orders: action.payload,
+        loading: false,
+        error: null,
+      };
+    case Types.GET_ORDERS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+      };
     case Types.ADD_ITEM:
       return {
         ...state,
         loading: true,
         error: null,
       };
+
     case Types.ADD_ITEM_SUCCESS:
       return {
         ...state,
@@ -63,6 +83,16 @@ export default function cart(state = INITIAL_STATE, action) {
 }
 
 export const Creators = {
+  getOrders: () => ({
+    type: Types.GET_ORDERS,
+  }),
+  getOrdersSuccess: payload => ({
+    type: Types.GET_ORDERS_SUCCESS,
+    payload,
+  }),
+  getOrdersFail: () => ({
+    type: Types.GET_ORDERS_FAIL,
+  }),
   addItem: payload => ({
     type: Types.ADD_ITEM,
     payload,

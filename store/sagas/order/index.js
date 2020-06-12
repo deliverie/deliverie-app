@@ -39,24 +39,42 @@ function* createOrder({ payload, addressId, paymentType, change }) {
     );
     if (status === 200) {
       yield put(OrderActions.createOrderSuccess({ order }));
-      Alert.alert('Sucesso', 'Pedido feito com sucesso!');
+      showToast(
+        'Só aguardar',
+        'Seu pedido foi feito com sucess',
+        'success',
+      );
     } else {
       yield put(OrderActions.createOrderFail());
-      Alert.alert('Erro', 'Houve um problema ao realizar pedido.');
-      // showToast(
-      //   'Ops',
-      //   'Houve um problema ao realizar pedido.',
-      //   'danger',
-      // );
+      showToast(
+        'Ops',
+        'Houve um problema ao realizar pedido, tente novamente',
+        'danger',
+      );
     }
   } catch (error) {
     yield put(OrderActions.createOrderFail());
-    Alert.alert('Erro', 'Houve um problema ao realizar pedido.');
-    // showToast(
-    //   'Ops',
-    //   'Houve um problema ao realizar pedido.',
-    //   'danger',
-    // );
+    showToast(
+      'Ops',
+      'Houve um problema ao realizar pedido, tente novamente',
+      'danger',
+    );
+  }
+}
+
+function* getOrders() {
+  try {
+    const response = yield call(api.get, '/orders');
+    if (response.status === 200) {
+      yield put(OrderActions.getOrdersSuccess(response.data.data));
+      showToast('Sucesso', '', 'success');
+    } else {
+      yield put(OrderActions.getOrdersFail());
+      showToast('Erro', '', 'danger');
+    }
+  } catch (error) {
+    yield put(OrderActions.getOrdersFail());
+    showToast('Erro', '', 'danger');
   }
 }
 
@@ -64,6 +82,10 @@ function* createOrderWatcher() {
   yield takeLatest(OrderTypes.CREATE_ORDER, createOrder);
 }
 
+function* getOrdersWatcher() {
+  yield takeLatest(OrderTypes.GET_ORDERS, getOrders);
+}
+
 export default function* rootSaga() {
-  yield all([fork(createOrderWatcher)]);
+  yield all([fork(createOrderWatcher), fork(getOrdersWatcher)]);
 }
