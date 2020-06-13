@@ -9,6 +9,7 @@ import {
   Dimensions,
   SafeAreaView,
 } from 'react-native';
+import { Notifications } from 'expo';
 import { ScrollView } from 'react-native-gesture-handler';
 import FlashMessage, {
   showMessage,
@@ -43,6 +44,16 @@ import { Creators as LoginActions } from '../../store/ducks/login';
 export default function Login({ navigation }) {
   const dispatch = useDispatch();
   const login = useSelector(state => state.login);
+
+  const submit = async values => {
+    const expo_token = await Notifications.getExpoPushTokenAsync();
+    dispatch(
+      LoginActions.loginRequest({
+        expo_token,
+        ...values,
+      }),
+    );
+  };
 
   return (
     <ScrollView
@@ -85,9 +96,7 @@ export default function Login({ navigation }) {
               .required('Campo obrigatório'),
             password: yup.string().required('Campo obrigatório'),
           })}
-          onSubmit={values =>
-            dispatch(LoginActions.loginRequest(values))
-          }
+          onSubmit={submit}
         >
           {({
             values,
