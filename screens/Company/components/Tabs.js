@@ -17,17 +17,27 @@ export const Tabs = ({ categories }) => {
   const dispatch = useDispatch();
 
   const [tab, setTab] = useState(categories[0]);
-  useEffect(() => {
-    console.tron.log(tab);
-  }, [tab]);
+  const [subTab, setSubtab] = useState(null);
 
   useEffect(() => {
+    console.tron.log('Teste', tab);
     if (tab) {
       dispatch(
         ProductsActions.getProductsRequest({ category: tab.id }),
       );
     }
   }, [tab]);
+
+  useEffect(() => {
+    if (subTab) {
+      dispatch(
+        ProductsActions.getProductsRequest({
+          category: tab.id,
+          subcategory: subTab.id,
+        }),
+      );
+    }
+  }, [subTab]);
 
   return (
     <View
@@ -58,7 +68,10 @@ export const Tabs = ({ categories }) => {
               borderRadius: 100,
             }}
             key={e}
-            onPress={() => setTab(e)}
+            onPress={() => {
+              setTab(e);
+              setSubtab(null);
+            }}
           >
             <Text
               style={{
@@ -66,7 +79,7 @@ export const Tabs = ({ categories }) => {
                 fontWeight: e === tab ? 'bold' : '300',
               }}
             >
-              {e.name}
+              {e.name} - {e.id}
             </Text>
           </TouchableOpacity>
         ))}
@@ -85,7 +98,7 @@ export const Tabs = ({ categories }) => {
                 flexDirection: 'row',
               }}
               key={e}
-              onPress={() => setTab(e)}
+              onPress={() => setSubtab(e)}
             >
               <Ionicons
                 name="ios-arrow-forward"
@@ -99,7 +112,7 @@ export const Tabs = ({ categories }) => {
                   marginLeft: 7,
                 }}
               >
-                {e.name}
+                {e.name} - {e.id}
               </Text>
             </TouchableOpacity>
           ))}

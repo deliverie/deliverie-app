@@ -20,7 +20,11 @@ function* getProducts({ payload }) {
   try {
     const response = yield call(
       api.get,
-      `/products?company=${companyId}&category=${payload.category}`,
+      `/products?company=${companyId}&category=${
+        payload.category
+      }&subcategory=${
+        payload.subcategory ? payload.subcategory : ''
+      }`,
     );
     if (response.status === 200) {
       const { page, total, lastPage } = response.data;
