@@ -8,6 +8,7 @@ import cart from './cart';
 import register from './register';
 import profile from './profile';
 import order from './order';
+import notifications from './notifications';
 
 const rootReducer = combineReducers({
   login,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   register,
   profile,
   order,
+  notifications,
 });
 
 export default rootReducer;

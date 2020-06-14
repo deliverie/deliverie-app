@@ -7,7 +7,7 @@ export const baseURL = 'http://206.189.219.178';
 const API_VERSION = 'v1';
 
 async function getToken() {
-  const token = await AsyncStorage.getItem('@@DELIVERE@@:token');
+  const token = await AsyncStorage.getItem('@@DELIVERIE@@:token');
   return token;
 }
 

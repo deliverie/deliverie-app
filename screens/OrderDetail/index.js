@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   ActivityIndicator,
@@ -15,7 +15,6 @@ import {
 } from 'react-native-gesture-handler';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { monetize } from '../../utils/index';
 
@@ -23,10 +22,11 @@ import moment from 'moment';
 moment.locale('pt-br', require('moment/locale/pt-br'));
 import { Ionicons, Feather } from '@expo/vector-icons';
 
+import RNAnimatedTabs from 'rn-animated-tabs';
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
 
-import RNAnimatedTabs from 'rn-animated-tabs';
+import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { colors } from '../../styles';
 

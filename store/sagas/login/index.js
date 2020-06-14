@@ -10,13 +10,16 @@ import {
 } from '../../ducks/login';
 
 function* login({ payload }) {
-  console.tron.log('entrou na saga de login', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
 
     yield AsyncStorage.setItem(
-      '@@DELIVERE@@:token',
+      '@@DELIVERIE@@:token',
       response.data.token,
+    );
+    yield AsyncStorage.setItem(
+      '@@DELIVERIE@@:refreshToken',
+      response.data.refreshToken,
     );
     yield put(LoginActions.loginSuccess(response.data));
   } catch (error) {
@@ -31,10 +34,39 @@ function* login({ payload }) {
   }
 }
 
+function* refreshLogin({ payload }) {
+  try {
+    const { status, data } = yield call(
+      api.post,
+      '/users/login',
+      payload,
+    );
+
+    if (status === 200) {
+      yield AsyncStorage.setItem('@@DELIVERIE@@:token', data.token);
+      yield AsyncStorage.setItem(
+        '@@DELIVERIE@@:refreshToken',
+        data.refreshToken,
+      );
+      yield put(LoginActions.refreshLoginSuccess(data));
+    } else {
+      yield put(LoginActions.refreshLoginFail());
+      showToast('Ops', 'Erro ao verificar login.', 'danger');
+    }
+  } catch (error) {
+    yield put(LoginActions.refreshLoginFail());
+    showToast('Ops', 'Erro ao verificar login.', 'danger');
+  }
+}
+
 function* loginWatcher() {
   yield takeLatest(LoginTypes.LOGIN_REQUEST, login);
 }
 
+function* refreshLoginWatcher() {
+  yield takeLatest(LoginTypes.REFRESH_LOGIN_REQUEST, refreshLogin);
+}
+
 export default function* rootSaga() {
-  yield all([fork(loginWatcher)]);
+  yield all([fork(loginWatcher), fork(refreshLoginWatcher)]);
 }
