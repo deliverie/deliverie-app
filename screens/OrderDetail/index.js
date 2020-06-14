@@ -4,7 +4,7 @@ import {
   ActivityIndicator,
   Text,
   View,
-  SafeAreaView,
+  Image,
   FlatList,
   Alert,
 } from 'react-native';
@@ -17,14 +17,11 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Creators as LocationsActions } from '../../store/ducks/locations';
 
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  AntDesign,
-  Feather,
-} from '@expo/vector-icons';
+import { monetize } from '../../utils/index';
+
+import moment from 'moment';
+moment.locale('pt-br', require('moment/locale/pt-br'));
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
@@ -32,79 +29,212 @@ import SimpleHeader from '../../components/SimpleHeader';
 import RNAnimatedTabs from 'rn-animated-tabs';
 
 import { colors } from '../../styles';
-const DATA = ['Top Tab 1 Content', 'Extra Stuff for Top Tab 2'];
 
-export default function OrderDetail({ navigation }) {
+export default function OrderDetail({ navigation, route }) {
   const dispatch = useDispatch();
+  const { order } = route.params;
+
+  function parsePrice(variation) {
+    if (variation) {
+      if (variation.choices?.length) {
+        const findChoice = variation?.choices?.find(
+          e => e.value?.prices,
+        );
+        if (findChoice?.value?.prices?.length) {
+          return findChoice.value.prices[0].price.toFixed(2);
+        }
+      }
+      return variation.product?.price;
+    }
+    return '';
+  }
+
+  function renderItem(variations) {
+    return (
+      <FlatList
+        data={variations}
+        renderItem={({ item }) => {
+          return (
+            <View
+              style={{
+                marginBottom: 4,
+                paddingBottom: 4,
+                borderBottomWidth: 1,
+                borderColor: '#f1f1f1',
+              }}
+            >
+              <View style={styles.cardItemsSingleContainer}>
+                <Text style={styles.cardItemsSingleQty}>
+                  {item.pivot.qty}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+
+                    flex: 1,
+                  }}
+                >
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.cardItemsSingleText}>
+                      {item.product.name}
+                    </Text>
+                    {item.choices?.length ? (
+                      <View>
+                        {item.choices.map(f => (
+                          <Text style={styles.cardItemsSingleText}>
+                            ({f.value?.name})
+                          </Text>
+                        ))}
+                      </View>
+                    ) : null}
+                  </View>
+                  <Text style={styles.cardItemsSingleText}>
+                    R$ {parsePrice(item)}
+                  </Text>
+                </View>
+              </View>
+              <View>
+                {item.increments?.length ? (
+                  <>
+                    <View style={styles.cardItemsSingleContainer}>
+                      {item.increments.map(f => (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            flex: 1,
+                            alignItems: 'center',
+                          }}
+                        >
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: colors.dark,
+                                marginRight: 10,
+                              }}
+                            >
+                              +{f.qty}
+                            </Text>
+                            <Text style={{ color: colors.dark }}>
+                              {f.additional?.name}
+                            </Text>
+                          </View>
+                          <Text style={{ color: colors.dark }}>
+                            {` (R$ ${f.additional?.price?.toFixed(
+                              2,
+                            )})`}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  </>
+                ) : null}
+              </View>
+            </View>
+          );
+        }}
+        keyExtractor={item => String(item.id)}
+      />
+    );
+  }
+
+  function renderBadge(status) {
+    const colors = {
+      pending: 'red',
+      on_way: 'blue',
+      done: 'green',
+    };
+
+    const statusPtBr = {
+      pending: 'Pendente',
+      on_way: 'A caminho',
+      done: 'Finalizado',
+    };
+
+    return (
+      <View
+        style={{
+          backgroundColor: '#f1f1f1',
+          borderRadius: 5,
+          padding: 9,
+          alignItems: 'center',
+        }}
+      >
+        <Text style={[styles.cardItemCompanyDescription]}>
+          {moment(order.updated_at)
+            .subtract(3, 'hours')
+            .format(
+              ` [${statusPtBr[status]} em] DD/MM/YYYY [às] H:mm `,
+            )}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <SimpleHeader text="Pedido 123412" />
+      <SimpleHeader text={`Pedido #${order.id}`} />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.content}>
           <View style={{ marginBottom: 20 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginBottom: 15,
-              }}
-            >
-              <Feather
-                name="calendar"
-                size={17}
-                color={colors.darker}
-              />
-              <Text
-                style={{
-                  fontWeight: '500',
-                  color: colors.dark,
-                  marginLeft: 10,
-                }}
-              >
-                05 de junho de 2020{' '}
-              </Text>
-            </View>
             <View style={styles.cardItem}>
               <View style={styles.cardItemHeader}>
-                <View style={styles.cardItemLogo} />
+                <Image
+                  resizeMode="cover"
+                  style={styles.cardItemLogo}
+                  source={{ uri: order.company.imageUrl }}
+                />
+
                 <View>
                   <Text style={styles.cardItemCompanyText}>
-                    Chapão Burger
-                  </Text>
-                  <Text style={styles.cardItemCompanyDescription}>
-                    Entregue em 06/06/2020 às 23:23
+                    {order.company.name}
                   </Text>
                 </View>
               </View>
               <View
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  borderRadius: 4,
-                  paddingHorizontal: 10,
-                }}
+                style={[
+                  { flexDirection: 'row', paddingVertical: 10 },
+                  styles.border,
+                ]}
               >
+                <Feather
+                  name="calendar"
+                  size={15}
+                  color={colors.darker}
+                />
                 <Text
                   style={{
-                    fontSize: 13,
-                    color: colors.darker,
-                    fontWeight: 'bold',
+                    fontWeight: '300',
+                    color: colors.dark,
+                    marginLeft: 5,
                   }}
                 >
-                  #21343
+                  Realizado em
+                  {moment(order.created_at)
+                    .subtract(3, 'hours')
+                    .format(' D [de] MMMM [de] YYYY [às] H:mm ')}
                 </Text>
               </View>
+              {renderBadge(order.order_status)}
               <View style={styles.cardItemsContainer}>
-                <View style={styles.cardItemsSingleContainer}>
-                  <Text style={styles.cardItemsSingleQty}>143</Text>
-                  <Text style={styles.cardItemsSingleText}>
-                    X BACON
-                  </Text>
-                </View>
+                {renderItem(order.variations)}
               </View>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                marginHorizontal: 15,
+                overflow: 'hidden',
+                paddingBottom: 10,
+              }}
+            >
               <View style={styles.tringle} />
               <View style={styles.tringle} />
               <View style={styles.tringle} />
@@ -191,11 +321,16 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
   },
+  content: {
+    marginTop: 20,
+  },
 
   cardItem: {
     backgroundColor: colors.white,
     padding: 20,
-    borderRadius: 5,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    marginHorizontal: 15,
     shadowColor: 'rgba(0,0,0,0.3)',
     shadowOffset: {
       width: 0,
@@ -209,8 +344,6 @@ const styles = StyleSheet.create({
   cardItemHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#f1f1f1',
     paddingBottom: 15,
   },
   cardItemLogo: {
@@ -225,11 +358,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 10,
   },
+  border: {
+    borderBottomWidth: 1,
+    borderColor: '#f1f1f1',
+  },
   cardItemCompanyDescription: {
-    color: colors.dark,
+    color: colors.darker,
     fontSize: 14,
     fontWeight: '300',
-    marginLeft: 10,
   },
   cardItemsContainer: {
     borderBottomWidth: 1,

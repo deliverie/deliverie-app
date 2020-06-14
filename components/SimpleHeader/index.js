@@ -4,7 +4,7 @@ import { metrics, colors } from '../../styles';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 export default function SimpleHeader({ text, goBack }) {
   const navigation = useNavigation();
@@ -36,15 +36,17 @@ export default function SimpleHeader({ text, goBack }) {
             }
           />
         </View>
-        <Text
-          style={{
-            fontSize: 22,
-            color: colors.darker,
-            fontWeight: '300',
-          }}
-        >
-          {text}
-        </Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text
+            style={{
+              fontSize: 22,
+              color: colors.darker,
+              fontWeight: '300',
+            }}
+          >
+            {text}
+          </Text>
+        </View>
         <Ionicons
           style={{ paddingHorizontal: 20 }}
           name="ios-arrow-back"

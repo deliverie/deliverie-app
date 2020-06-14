@@ -129,7 +129,14 @@ export default function Orders({ navigation }) {
               data={orders}
               renderItem={({ item }) => {
                 return (
-                  <View style={{ marginBottom: 20 }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('OrderDetail', {
+                        order: item,
+                      })
+                    }
+                    style={{ marginBottom: 20 }}
+                  >
                     <View
                       style={{
                         flexDirection: 'row',
@@ -195,7 +202,7 @@ export default function Orders({ navigation }) {
                         {renderItem(item.variations)}
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 );
               }}
               keyExtractor={item => String(item.id)}
