@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   ActivityIndicator,
@@ -15,7 +15,6 @@ import {
 } from 'react-native-gesture-handler';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -26,20 +25,39 @@ import {
   Feather,
 } from '@expo/vector-icons';
 
+import RNAnimatedTabs from 'rn-animated-tabs';
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
 
-import RNAnimatedTabs from 'rn-animated-tabs';
+import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 import { colors } from '../../styles';
+
 const DATA = ['Top Tab 1 Content', 'Extra Stuff for Top Tab 2'];
 
-export default function OrderDetail({ navigation }) {
+export default function OrderDetail({
+  navigation,
+  route: { params },
+}) {
   const dispatch = useDispatch();
+  const [id, setId] = useState(0);
+
+  useEffect(() => {
+    if (params) {
+      const { id } = params;
+      if (id) {
+        console.log(`PROCURA PELO ID`);
+        setId(id);
+      }
+    }
+  }, [params]);
 
   return (
     <View style={styles.container}>
-      <SimpleHeader text="Pedido 123412" />
+      <SimpleHeader
+        goBack={() => navigation.navigate('Orders')}
+        text={`Pedido ${id}`}
+      />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.content}>
           <View style={{ marginBottom: 20 }}>

@@ -1,25 +1,49 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
 import TabBarIcon from '../components/TabBarIcon';
 import LinksScreen from '../screens/LinksScreen';
-import { useDispatch, useSelector } from 'react-redux';
 import HomeStack from './stacks/Home';
 import AccountStack from './stacks/account';
 import OrderstStack from './stacks/orders';
+import { Creators as NotificationActions } from '../store/ducks/notifications';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
-const userLogged = false;
+function getHeaderTitle(route) {
+  const routeName =
+    route.state?.routes[route.state.index]?.name ??
+    INITIAL_ROUTE_NAME;
+
+  switch (routeName) {
+    case 'Home':
+      return 'Início';
+    case 'Links':
+      return 'Links to learn more';
+    default:
+      return '';
+  }
+}
 
 export default function AuthTab({ navigation, route }) {
+  const dispatch = useDispatch();
   const login = useSelector(state => state.login);
-  console.tron.log('Auth Tab', login);
+  const { screen } = useSelector(state => state.notifications);
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
+
+  React.useEffect(() => {
+    if (screen) {
+      const { screen: scr, stack, options } = screen;
+      console.tron.log('navigate', screen);
+      navigation.navigate(stack, { screen: scr, options });
+      dispatch(NotificationActions.resetScreen());
+    }
+  }, [screen]);
 
   return (
     <BottomTab.Navigator
@@ -38,7 +62,7 @@ export default function AuthTab({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
-        name="Packages"
+        name="Orders"
         component={OrderstStack}
         options={{
           title: 'Pedidos',
@@ -76,17 +100,4 @@ export default function AuthTab({ navigation, route }) {
       />
     </BottomTab.Navigator>
   );
-}
-
-function getHeaderTitle(route) {
-  const routeName =
-    route.state?.routes[route.state.index]?.name ??
-    INITIAL_ROUTE_NAME;
-
-  switch (routeName) {
-    case 'Home':
-      return 'Início';
-    case 'Links':
-      return 'Links to learn more';
-  }
 }

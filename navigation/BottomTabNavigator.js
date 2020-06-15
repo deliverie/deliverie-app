@@ -30,7 +30,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
-        name="Packages"
+        name="Orders"
         component={LinksScreen}
         options={{
           title: 'Pedidos',

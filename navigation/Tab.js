@@ -1,18 +1,42 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeStack from './stacks/Home';
 import AuthStack from './stacks/auth';
+import { Creators as NotificationActions } from '../store/ducks/notifications';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
+function getHeaderTitle(route) {
+  const routeName =
+    route.state?.routes[route.state.index]?.name ??
+    INITIAL_ROUTE_NAME;
+
+  switch (routeName) {
+    case 'Home':
+      return 'Início';
+    case 'Links':
+      return 'Links to learn more';
+    default:
+      return '';
+  }
+}
+
 export default function Tab({ navigation, route }) {
-  // Set the header title on the parent stack navigator depending on the
-  // currently active tab. Learn more in the documentation:
-  // https://reactnavigation.org/docs/en/screen-options-resolution.html
+  const dispatch = useDispatch();
+  const { screen } = useSelector(state => state.notifications);
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
+
+  React.useEffect(() => {
+    if (screen) {
+      const { screen: scr, stack, options } = screen;
+      navigation.navigate(stack, { screen: scr, options });
+      dispatch(NotificationActions.resetScreen());
+    }
+  }, [screen]);
 
   return (
     <BottomTab.Navigator
@@ -31,7 +55,7 @@ export default function Tab({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
-        name="Packages"
+        name="Orders"
         component={AuthStack}
         options={{
           title: 'Pedidos',
@@ -63,28 +87,4 @@ export default function Tab({ navigation, route }) {
       />
     </BottomTab.Navigator>
   );
-}
-
-function getHeaderTitle(route) {
-  const routeName =
-    route.state?.routes[route.state.index]?.name ??
-    INITIAL_ROUTE_NAME;
-
-  switch (routeName) {
-    case 'Home':
-      return 'Início';
-    case 'Links':
-      return 'Links to learn more';
-  }
-}
-
-function getTabBarVisible(route) {
-  const routeName = route.state
-    ? route.state.routes[route.state.index].name
-    : route.params?.screen || 'Home';
-
-  if (routeName === 'Details') {
-    return false;
-  }
-  return true;
 }

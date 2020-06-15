@@ -67,7 +67,6 @@ function* getOrders() {
     const response = yield call(api.get, '/orders');
     if (response.status === 200) {
       yield put(OrderActions.getOrdersSuccess(response.data.data));
-      showToast('Sucesso', '', 'success');
     } else {
       yield put(OrderActions.getOrdersFail());
       showToast('Erro', '', 'danger');
