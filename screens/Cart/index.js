@@ -136,12 +136,11 @@ function Cart({ navigation }) {
   const isDisabled = () => {
     if (!deliveryType) return true;
     if (deliveryType === 'delivery' && !paymentType) return true;
-    if (paymentType === 'money' && needChange === true) return true;
-
+    if (paymentType === 'money' && needChange === false) return false;
     if (
       paymentType === 'money' &&
-      needChange === false &&
-      (!change || change <= (calcPrice() + shipment?.price || 0))
+      needChange === true &&
+      (!change || change <= calcPrice() + (shipment?.price || 0))
     )
       return true;
     return false;
@@ -1022,7 +1021,14 @@ function Cart({ navigation }) {
                                 placeholderTextColor="rgba(0, 0, 0, 0.4)"
                                 placeholder="Troco para"
                                 keyboardType="numeric"
-                                onChangeText={text => setChange(text)}
+                                onChangeText={text =>
+                                  setChange(
+                                    +text
+                                      .replace(/[R$]/g, '')
+                                      .replace(/[,]/g, '.')
+                                      .trim(),
+                                  )
+                                }
                                 value={change}
                                 style={{
                                   width: 100,
