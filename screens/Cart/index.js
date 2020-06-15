@@ -773,7 +773,7 @@ function Cart({ navigation }) {
                                 textAlign: 'right',
                               }}
                             >
-                              {monetize(shipment.price)}
+                              {monetize(shipment?.price)}
                             </Text>
                           </View>
                         )}
@@ -807,7 +807,7 @@ function Cart({ navigation }) {
                           >
                             {monetize(
                               deliveryType === 'delivery'
-                                ? calcPrice() + shipment.price
+                                ? calcPrice() + shipment?.price
                                 : calcPrice(),
                             )}
                           </Text>

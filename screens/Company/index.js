@@ -34,7 +34,6 @@ import { baseURL } from '../../services/api';
 import company, {
   Creators as CompanyActions,
 } from '../../store/ducks/company';
-import CartSheet from '../../components/CartSheet';
 
 import styles from './styles';
 import Products from './components/Products';
@@ -54,7 +53,6 @@ export default function Company({ navigation, route: { params } }) {
 
   const productSheetRef = useRef();
   const categorieSheetRef = useRef();
-  const cartSheetRef = useRef();
 
   const { item } = params;
 
@@ -494,7 +492,6 @@ export default function Company({ navigation, route: { params } }) {
         ) : null}
       </RBSheet>
       <CategorieSheet ref={categorieSheetRef} />
-      <CartSheet ref={cartSheetRef} />
     </>
   );
 }
