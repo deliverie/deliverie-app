@@ -18,7 +18,7 @@ import {
   Dimensions,
   TouchableOpacity,
   SafeAreaView,
-  TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import AlertProvider, {
   setModal,
@@ -36,7 +36,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { SimpleLayout } from 'react-native-alert-utils/Layout';
-import { ActivityIndicator } from 'react-native-paper';
 import SimpleHeader from '../../components/SimpleHeader';
 
 import Button from '../../components/ButtonFill';
@@ -71,6 +70,7 @@ function Cart({ navigation }) {
 
   const { cart } = useSelector(state => state.cart);
   const { company } = useSelector(state => state.company);
+  const user = useSelector(state => state.login);
   const { loading, shipment, currentLocation } = useSelector(
     state => state.locations,
   );
@@ -696,13 +696,19 @@ function Cart({ navigation }) {
         backgroundColor: 'white',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+        borderWidth: 1,
+        flex: 1,
       }}
     >
       <SimpleHeader text="Carrinho" goBack={closeCart} />
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator color="red" />
       ) : (
-        <View style={{ marginTop: metrics.baseMargin }}>
+        <View
+          style={{
+            marginTop: metrics.baseMargin,
+          }}
+        >
           <ScrollView>
             <View style={{ marginBottom: metrics.baseMargin * 4 }}>
               <Products />
@@ -818,7 +824,8 @@ function Cart({ navigation }) {
                 </View>
               </View>
             </View>
-            {cartNotEmpty && (
+
+            {user?.data && cartNotEmpty && (
               <View style={{}}>
                 <View
                   style={{
@@ -828,7 +835,7 @@ function Cart({ navigation }) {
                   <View
                     style={{
                       borderColor: '#ccc',
-                      borderBottomWidth: 1,
+
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       flexDirection: 'row',
@@ -844,7 +851,7 @@ function Cart({ navigation }) {
                           color: colors.darker,
                         }}
                       >
-                        ENTREGA
+                        ENTREGA {JSON.stringify()}
                       </Text>
                       <Text
                         style={{
@@ -931,7 +938,7 @@ function Cart({ navigation }) {
                     )}
                   </View>
                 </View>
-                {deliveryType === 'delivery' && (
+                {deliveryType === 'delivery' && shipment !== null && (
                   <View
                     style={{
                       marginBottom: metrics.baseMargin * 2,
@@ -1250,6 +1257,59 @@ function Cart({ navigation }) {
               </View>
             )}
           </ScrollView>
+        </View>
+      )}
+      {!user?.data && (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            borderTopWidth: 1,
+            borderTopColor: '#f1f1f1',
+            paddingTop: 35,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.primary,
+              paddingHorizontal: 75,
+              textAlign: 'center',
+              marginBottom: 10,
+              fontSize: 24,
+            }}
+          >
+            Quase lá...
+          </Text>
+          <Text
+            style={{
+              color: colors.dark,
+              paddingHorizontal: 75,
+              textAlign: 'center',
+              marginBottom: 20,
+              fontSize: 14,
+            }}
+          >
+            Para finalizar sua compra você precisa entrar ou se
+            cadastrar na plataforma
+          </Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: colors.primary,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                color: colors.white,
+                fontWeight: 'bold',
+              }}
+            >
+              Fazer login
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
       <AlertProvider />
