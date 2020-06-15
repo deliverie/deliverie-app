@@ -46,10 +46,13 @@ export default function Login({ navigation }) {
   const login = useSelector(state => state.login);
 
   const submit = async values => {
-    const expo_token = await Notifications.getExpoPushTokenAsync();
+    let expo_token = null;
+    try {
+      expo_token = await Notifications.getExpoPushTokenAsync();
+    } catch (error) {}
     dispatch(
       LoginActions.loginRequest({
-        expo_token,
+        ...(expo_token ? { expo_token } : {}),
         ...values,
       }),
     );
