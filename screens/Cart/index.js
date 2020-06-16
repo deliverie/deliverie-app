@@ -79,9 +79,6 @@ function Cart({ navigation }) {
   );
   const [deliveryType, setDeliveryType] = useState(null);
   const [success, setSuccess] = useState(false);
-  useEffect(() => {
-    console.tron.log(cart);
-  }, [cart]);
 
   useEffect(() => {
     if (deliveryType === 'delivery' && !shipment) {
@@ -114,10 +111,11 @@ function Cart({ navigation }) {
         selectedAttr.forEach(f => {
           if (f.length) {
             if (f.length > 1) {
-              price +=
-                f.reduce((ac, v) => ac.price + v.price) * item.qty;
+              const pricesMap = f.map(e => e.price);
+              const reduce = pricesMap.reduce((ac, v) => ac + v, 0);
+              price += reduce;
             } else {
-              price += f[0]?.price * item.qty;
+              price += f[0]?.price;
             }
           } else {
             price += f?.prices[0]?.price * item.qty;
@@ -484,17 +482,19 @@ function Cart({ navigation }) {
       const selectedAttr = Object.values(item?.selectedAttr);
       let price = 0;
       if (!selectedAttr.length) {
-        price = item.price;
+        price = item?.price;
       } else {
         selectedAttr.forEach(f => {
           if (f.length) {
             if (f.length > 1) {
-              price += f.reduce((ac, v) => ac.price + v.price);
+              const prices = f.map(e => e.price);
+              const reduce = prices.reduce((ac, v) => ac + v, 0);
+              price += reduce;
             } else {
-              price += f[0].price;
+              price += f[0]?.price;
             }
           } else {
-            price += f?.prices?.price;
+            price += f?.prices[0]?.price;
           }
         });
       }
@@ -1099,7 +1099,12 @@ function Cart({ navigation }) {
                         >
                           <RoundSelect
                             selected={needChange === true}
-                            onPress={() => setNeedChange(!needChange)}
+                            onPress={() => {
+                              if (!needChange) {
+                                setChange(null);
+                              }
+                              setNeedChange(!needChange);
+                            }}
                             text="Preciso de troco"
                             money
                           />

@@ -30,7 +30,7 @@ function* createOrder({ payload, addressId, paymentType, change }) {
       variations: payload,
       address_id: addressId,
       payment_type: paymentType,
-      ...(paymentType === 'money' && change && { change }),
+      ...(paymentType === 'money' && change && { money: change }),
     };
     const { data: order, status } = yield call(
       api.post,
