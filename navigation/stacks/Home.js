@@ -9,6 +9,9 @@ import Address from '../../screens/Address';
 import Zipcode from '../../screens/Address/Zipcode';
 import Cart from '../../screens/Cart';
 
+import Login from '../../screens/Login';
+import Register from '../../screens/Register';
+
 export default function HomeStack() {
   return (
     <Stack.Navigator headerMode="none">
@@ -17,6 +20,8 @@ export default function HomeStack() {
       <Stack.Screen name="Address" component={Address} />
       <Stack.Screen name="Zipcode" component={Zipcode} />
       <Stack.Screen name="Cart" component={Cart} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
     </Stack.Navigator>
   );
 }

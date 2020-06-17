@@ -3,6 +3,7 @@ import { AsyncStorage } from 'react-native';
 
 import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
+import * as RootNavigation from '../../../services/navigation';
 
 import {
   Creators as LoginActions,
@@ -10,6 +11,7 @@ import {
 } from '../../ducks/login';
 
 function* login({ payload }) {
+  console.tron.log('LOGIN:::', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
 
@@ -21,7 +23,17 @@ function* login({ payload }) {
       '@@DELIVERIE@@:refreshToken',
       response.data.refreshToken,
     );
-    yield put(LoginActions.loginSuccess(response.data));
+
+    yield put(
+      LoginActions.loginSuccess(
+        response.data,
+        payload.navigateBackTo ? payload.navigateBackTo : null,
+      ),
+    );
+
+    if (payload.navigateBackTo) {
+      RootNavigation.navigate(payload.navigateBackTo);
+    }
   } catch (error) {
     console.tron.log('catch', error);
     yield put(LoginActions.loginFail());

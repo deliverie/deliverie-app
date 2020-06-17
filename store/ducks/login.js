@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   data: null,
   loading: false,
   error: false,
+  redirectTo: null,
 };
 
 export default function login(state = INITIAL_STATE, action) {
@@ -24,6 +25,7 @@ export default function login(state = INITIAL_STATE, action) {
         data: action.payload,
         loading: false,
         error: false,
+        redirectTo: action.redirectTo,
       };
     case Types.LOGIN_FAIL:
       return { ...state, loading: false, error: true };
@@ -57,9 +59,10 @@ export const Creators = {
     type: Types.LOGIN_REQUEST,
     payload,
   }),
-  loginSuccess: payload => ({
+  loginSuccess: (payload, redirectTo) => ({
     type: Types.LOGIN_SUCCESS,
     payload,
+    redirectTo,
   }),
   loginFail: () => ({
     type: Types.LOGIN_FAIL,

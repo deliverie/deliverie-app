@@ -4,14 +4,12 @@ import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 import FlashMessage from 'react-native-flash-message';
 
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import AlertProvider from 'react-native-alert-utils';
-import BottomTabNavigator from './navigation/BottomTabNavigator';
+import { navigationRef } from './services/navigation';
 import useLinking from './navigation/useLinking';
 
 /** REDUX */
@@ -24,8 +22,6 @@ import spaceMono from './assets/fonts/SpaceMono-Regular.ttf';
 import roboto from './assets/fonts/Roboto-Regular.ttf';
 import robotoLight from './assets/fonts/Roboto-Light.ttf';
 import robotoBold from './assets/fonts/Roboto-Bold.ttf';
-
-const Stack = createStackNavigator();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(
@@ -79,7 +75,7 @@ export default function App(props) {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer
-            ref={containerRef}
+            ref={navigationRef}
             initialState={initialNavigationState}
           >
             <Router isLoadingComplete={isLoadingComplete} />

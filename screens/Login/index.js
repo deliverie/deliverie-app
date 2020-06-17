@@ -21,7 +21,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 /** Internal Imports */
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,9 +41,14 @@ import logo from '../../assets/images/logo-colored-small.png';
 import { Creators as LoginActions } from '../../store/ducks/login';
 /** REDUX END */
 
-export default function Login({ navigation }) {
+export default function Login({ navigation, route }) {
   const dispatch = useDispatch();
   const login = useSelector(state => state.login);
+  const navigateBackTo = route.params?.navigateBackTo;
+
+  React.useEffect(() => {
+    console.tron.log(navigateBackTo);
+  }, []);
 
   const submit = async values => {
     let expo_token = null;
@@ -52,11 +57,19 @@ export default function Login({ navigation }) {
     } catch (error) {}
     dispatch(
       LoginActions.loginRequest({
+        navigateBackTo,
         ...(expo_token ? { expo_token } : {}),
         ...values,
       }),
     );
   };
+
+  function renderBackButtonText(screen) {
+    if (screen === 'Cart') {
+      return 'Voltar para o carrinho';
+    }
+    return 'Voltar';
+  }
 
   return (
     <ScrollView
@@ -68,6 +81,28 @@ export default function Login({ navigation }) {
         justifyContent: 'center',
       }}
     >
+      {navigateBackTo && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate(navigateBackTo)}
+          style={{
+            position: 'absolute',
+            top: 0,
+            paddingTop: getStatusBarHeight() + 10,
+            paddingLeft: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Ionicons
+            name="md-arrow-back"
+            size={23}
+            color={colors.darker}
+          />
+          <Text style={{ marginLeft: 10 }}>
+            {renderBackButtonText(navigateBackTo)}
+          </Text>
+        </TouchableOpacity>
+      )}
       <SafeAreaView>
         <View
           style={{
