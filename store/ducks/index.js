@@ -9,6 +9,7 @@ import register from './register';
 import profile from './profile';
 import order from './order';
 import notifications from './notifications';
+import review from './review';
 
 const rootReducer = combineReducers({
   login,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   profile,
   order,
   notifications,
+  review,
 });
 
 export default rootReducer;

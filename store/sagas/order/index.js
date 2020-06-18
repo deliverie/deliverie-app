@@ -77,6 +77,21 @@ function* getOrders() {
   }
 }
 
+function* getOrderById({ payload }) {
+  try {
+    const response = yield call(api.get, `/orders/${payload}`);
+    if (response.status === 200) {
+      yield put(OrderActions.getOrderByIdSuccess(response.data));
+    } else {
+      yield put(OrderActions.getOrderByIdFail());
+      showToast('Erro', 'Erro ao obter dados do pedido.', 'danger');
+    }
+  } catch (error) {
+    yield put(OrderActions.getOrderByIdFail());
+    showToast('Erro', 'Erro ao obter dados do pedido.', 'danger');
+  }
+}
+
 function* createOrderWatcher() {
   yield takeLatest(OrderTypes.CREATE_ORDER, createOrder);
 }
@@ -85,6 +100,14 @@ function* getOrdersWatcher() {
   yield takeLatest(OrderTypes.GET_ORDERS, getOrders);
 }
 
+function* getOrderByIdWatcher() {
+  yield takeLatest(OrderTypes.GET_ORDER_BY_ID, getOrderById);
+}
+
 export default function* rootSaga() {
-  yield all([fork(createOrderWatcher), fork(getOrdersWatcher)]);
+  yield all([
+    fork(createOrderWatcher),
+    fork(getOrdersWatcher),
+    fork(getOrderByIdWatcher),
+  ]);
 }

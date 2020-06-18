@@ -1,5 +1,4 @@
 import { all } from 'redux-saga/effects';
-import { AsyncStorage } from 'react-native';
 
 import loginSagas from './login';
 import locationSagas from './location';
@@ -8,6 +7,7 @@ import productsSagas from './products';
 import registerSagas from './register';
 import profileSagas from './profile';
 import orderSagas from './order';
+import reviewSagas from './review';
 
 export default function* rootSaga() {
   return yield all([
@@ -18,5 +18,6 @@ export default function* rootSaga() {
     registerSagas(),
     profileSagas(),
     orderSagas(),
+    reviewSagas(),
   ]);
 }

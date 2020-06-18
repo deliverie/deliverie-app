@@ -15,24 +15,51 @@ import {
 } from 'react-native-gesture-handler';
 
 import { useDispatch, useSelector } from 'react-redux';
-
-import { monetize } from '../../utils/index';
+import { setModal, popModal } from 'react-native-alert-utils';
 
 import moment from 'moment';
-moment.locale('pt-br', require('moment/locale/pt-br'));
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 import RNAnimatedTabs from 'rn-animated-tabs';
+import ReviewModal from './ReviewModal';
+import { monetize } from '../../utils/index';
+import Button from '../../components/ButtonOutline';
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
 
 import { Creators as LocationsActions } from '../../store/ducks/locations';
+import { Creators as ReviewActions } from '../../store/ducks/review';
+import { Creators as OrderActions } from '../../store/ducks/order';
 
 import { colors } from '../../styles';
 
-export default function OrderDetail({ navigation, route }) {
+moment.locale('pt-br', require('moment/locale/pt-br'));
+
+export default function OrderDetail({
+  navigation,
+  route: { params },
+}) {
   const dispatch = useDispatch();
-  const { order } = route.params;
+  const { loading: reviewLoading } = useSelector(
+    state => state.review,
+  );
+  const { data, loading } = useSelector(state => state.order);
+
+  const getOrder = params?.order || data || {};
+
+  const isLoading = loading || reviewLoading;
+
+  useEffect(() => {
+    if (reviewLoading !== null && reviewLoading === false) {
+      popModal();
+    }
+  }, [reviewLoading]);
+
+  useEffect(() => {
+    if (params?.id && !params?.order) {
+      dispatch(OrderActions.getOrderById(params?.id));
+    }
+  }, [params]);
 
   function parsePrice(variation) {
     if (variation) {
@@ -94,6 +121,33 @@ export default function OrderDetail({ navigation, route }) {
                   </Text>
                 </View>
               </View>
+              {!getOrder?.review &&
+                getOrder?.order_status === 'done' && (
+                  <View
+                    style={{
+                      alignItems: 'flex-end',
+                    }}
+                  >
+                    <Button
+                      style={{ width: 120, height: 20 }}
+                      textColor={colors.success}
+                      title="AVALIAR"
+                      color={colors.success}
+                      onPress={() =>
+                        setModal(
+                          <ReviewModal
+                            handleSubmit={payload =>
+                              dispatch(
+                                ReviewActions.addReview(payload),
+                              )
+                            }
+                            order={order}
+                          />,
+                        )
+                      }
+                    />
+                  </View>
+                )}
               <View>
                 {item.increments?.length ? (
                   <>
@@ -167,7 +221,7 @@ export default function OrderDetail({ navigation, route }) {
         }}
       >
         <Text style={[styles.cardItemCompanyDescription]}>
-          {moment(order.updated_at)
+          {moment(getOrder?.updated_at)
             .subtract(3, 'hours')
             .format(
               ` [${statusPtBr[status]} em] DD/MM/YYYY [às] H:mm `,
@@ -177,9 +231,19 @@ export default function OrderDetail({ navigation, route }) {
     );
   }
 
-  return (
+  return isLoading ? (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <ActivityIndicator size="large" />
+    </View>
+  ) : (
     <View style={styles.container}>
-      <SimpleHeader text={`Pedido #${order.id}`} />
+      <SimpleHeader text={`Pedido #${getOrder?.id}`} />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.content}>
           <View style={{ marginBottom: 20 }}>
@@ -188,12 +252,12 @@ export default function OrderDetail({ navigation, route }) {
                 <Image
                   resizeMode="cover"
                   style={styles.cardItemLogo}
-                  source={{ uri: order.company.imageUrl }}
+                  source={{ uri: getOrder?.company?.imageUrl }}
                 />
 
                 <View>
                   <Text style={styles.cardItemCompanyText}>
-                    {order.company.name}
+                    {getOrder?.company?.name}
                   </Text>
                 </View>
               </View>
@@ -216,14 +280,14 @@ export default function OrderDetail({ navigation, route }) {
                   }}
                 >
                   Realizado em
-                  {moment(order.created_at)
+                  {moment(getOrder?.created_at)
                     .subtract(3, 'hours')
                     .format(' D [de] MMMM [de] YYYY [às] H:mm ')}
                 </Text>
               </View>
-              {renderBadge(order.order_status)}
+              {renderBadge(getOrder?.order_status)}
               <View style={styles.cardItemsContainer}>
-                {renderItem(order.variations)}
+                {renderItem(getOrder?.variations)}
               </View>
 
               <View
