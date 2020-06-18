@@ -49,7 +49,7 @@ const secondLayout = [
   },
 ];
 
-export default function Home() {
+export default function Home({ navigation }) {
   const locationSheet = useRef();
   const dispatch = useDispatch();
   const { companies: dataCompany, total } = useSelector(

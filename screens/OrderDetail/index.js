@@ -225,6 +225,82 @@ export default function OrderDetail({ navigation, route }) {
               <View style={styles.cardItemsContainer}>
                 {renderItem(order.variations)}
               </View>
+
+              <View
+                style={[
+                  styles.cardItemsSingleContainer,
+                  {
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-end',
+                  },
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.cardItemsSingleText}>
+                      Subtotal
+                    </Text>
+                  </View>
+                  <Text style={styles.cardItemsSingleText}>
+                    R$ {order.total}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.cardItemsSingleContainer,
+                  {
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-end',
+                  },
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.cardItemsSingleText}>
+                      Frete
+                    </Text>
+                  </View>
+                  <Text style={styles.cardItemsSingleText}>
+                    R$ {order.shipping_price}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.cardItemsSingleContainer,
+                  {
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-end',
+                  },
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.cardItemsSingleText}>
+                      Total
+                    </Text>
+                  </View>
+                  <Text style={styles.cardItemsSingleText}>
+                    R$ {order.total}
+                  </Text>
+                </View>
+              </View>
             </View>
 
             <View

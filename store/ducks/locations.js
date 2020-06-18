@@ -2,6 +2,8 @@ export const Types = {
   GET_LOCATIONS_REQUEST: 'LOCATION/GET_LOCATIONS_REQUEST',
   GET_LOCATIONS_SUCCESS: 'LOCATION/GET_LOCATIONS_SUCCESS',
   GET_LOCATIONS_FAIL: 'LOCATION/GET_LOCATIONS_FAIL',
+  ADD_LOCATION_UNLOGED: 'LOCATION/ADD_LOCATION_UNLOGED',
+  REMOVE_LOCATION_UNLOGED: 'LOCATION/REMOVE_LOCATION_UNLOGED',
   ADD_LOCATION_REQUEST: 'LOCATION/ADD_LOCATION_REQUEST',
   ADD_LOCATION_SUCCESS: 'LOCATION/ADD_LOCATION_SUCCESS',
   REMOVE_LOCATION_REQUEST: 'LOCATION/REMOVE_LOCATION_REQUEST',
@@ -16,12 +18,17 @@ const INITIAL_STATE = {
   locations: [],
   shipment: null,
   currentLocation: null,
+  locationUnloged: null,
   loading: false,
   error: true,
 };
 
 export default function locations(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case Types.ADD_LOCATION_UNLOGED:
+      return { ...state, locationUnloged: action.payload };
+    case Types.REMOVE_LOCATION_UNLOGED:
+      return { ...state, locationUnloged: null };
     case Types.GET_LOCATIONS_REQUEST:
       return { ...state, loading: true };
     case Types.GET_LOCATIONS_SUCCESS:
@@ -71,6 +78,13 @@ export default function locations(state = INITIAL_STATE, action) {
 }
 
 export const Creators = {
+  addLocationUnlogged: payload => ({
+    type: Types.ADD_LOCATION_UNLOGED,
+    payload,
+  }),
+  removeLocationUnlogged: () => ({
+    type: Types.REMOVE_LOCATION_UNLOGED,
+  }),
   getLocations: () => ({
     type: Types.GET_LOCATIONS_REQUEST,
   }),

@@ -61,8 +61,6 @@ function* addLocation({ payload }) {
   try {
     yield call(api.post, '/address', {
       ...payload,
-      lat: '-24.4881',
-      lng: '-47.8348',
     });
     yield put(LocationsActions.getLocations());
     navigation.goBack();

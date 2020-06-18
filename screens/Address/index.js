@@ -79,14 +79,14 @@ export default function Address({ navigation }) {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center',
                 marginBottom: 20,
+                alignItems: 'center',
               }}
             >
               <View
                 style={{
                   borderWidth: 2,
-                  padding: 10,
+                  padding: 0,
                   borderColor: item.is_active
                     ? colors.primary
                     : '#ccc',
@@ -101,6 +101,7 @@ export default function Address({ navigation }) {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    margin: 10,
                   }}
                 >
                   <View
@@ -125,9 +126,16 @@ export default function Address({ navigation }) {
                       }}
                     />
                   </View>
-                  <View style={{}}>
-                    <Text>Rua: {item.street}</Text>
-                    <Text>Número: {item.number}</Text>
+                  <View
+                    style={{
+                      width: '90%',
+                      alignSelf: 'stretch',
+                    }}
+                  >
+                    <Text>
+                      Rua: {item.street}, n{item.number}
+                    </Text>
+
                     <Text>Bairro: {item.district}</Text>
                     <Text>CEP: {item.zipcode}</Text>
                   </View>
@@ -158,6 +166,24 @@ export default function Address({ navigation }) {
           <ActivityIndicator />
         ) : (
           renderLocations()
+        )}
+        {locations.locations.length === 0 && !locations.loading && (
+          <View style={{ flex: 1, alignItems: 'center', margin: 30 }}>
+            <MaterialCommunityIcons
+              name="map-marker-minus"
+              size={24}
+              color={colors.darker}
+            />
+            <Text
+              style={{
+                color: colors.secundary,
+                fontSize: 15,
+                marginLeft: 12,
+              }}
+            >
+              Nenhum endereço cadastrado
+            </Text>
+          </View>
         )}
         <TouchableOpacity
           onPress={() => navigation.navigate('Zipcode')}

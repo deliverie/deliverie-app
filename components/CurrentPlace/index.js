@@ -23,16 +23,18 @@ import { colors } from '../../styles';
 import { Creators as LocationsActions } from '../../store/ducks/locations';
 /** REDUX END */
 
-export default function CurrentPlace({ open, close }) {
+export default function CurrentPlace({ open, close, navigation }) {
   const [active, setActive] = React.useState(1);
 
   const { locations, currentLocation } = useSelector(
     state => state.locations,
   );
 
-  React.useEffect(() => {
-    console.tron.log(locations);
-  }, []);
+  // React.useEffect(() => {
+  //   if (locations.length === 0) {
+  //     open();
+  //   }
+  // }, []);
 
   function handleActive(index) {
     if (index !== active) {
