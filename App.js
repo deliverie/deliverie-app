@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 
 import FlashMessage from 'react-native-flash-message';
+import AlertProvider from 'react-native-alert-utils';
 
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
@@ -95,6 +96,7 @@ export default function App(props) {
         </PersistGate>
       </Provider>
       <FlashMessage position="top" />
+      <AlertProvider />
     </View>
   );
 }

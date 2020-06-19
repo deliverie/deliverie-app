@@ -33,8 +33,9 @@ export default function Router({ isLoadingComplete }) {
       } else {
         Notifications.addListener(notification => {
           const { origin, data } = notification;
-          if (origin === 'selected' && dp && data?.redirect?.screen) {
-            const { screen: scr, stack, options } = data?.redirect;
+          if (origin === 'selected' && dp && data?.screen) {
+            console.tron.log('clicou', data, dp);
+            const { screen: scr, stack, options } = data?.screen;
             const screenObj = {
               screen: scr,
               options,

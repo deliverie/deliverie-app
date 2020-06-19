@@ -2,6 +2,9 @@ export const Types = {
   GET_ORDERS: 'ORDER/GET_ORDERS',
   GET_ORDERS_SUCCESS: 'ORDER/GET_ORDERS_SUCCESS',
   GET_ORDERS_FAIL: 'ORDER/GET_ORDERS_FAIL',
+  GET_ORDER_BY_ID: 'ORDER/GET_ORDER_BY_ID',
+  GET_ORDER_BY_ID_SUCCESS: 'ORDER/GET_ORDER_BY_ID_SUCCESS',
+  GET_ORDER_BY_ID_FAIL: 'ORDER/GET_ORDERS_FAIL',
   ADD_ITEM: 'ORDER/ADD_ITEM',
   ADD_ITEM_SUCCESS: 'ORDER/ADD_ITEM_SUCCESS',
   ADD_ITEM_FAIL: 'ORDER/ADD_ITEM_FAIL',
@@ -13,6 +16,7 @@ export const Types = {
 const INITIAL_STATE = {
   loading: false,
   order: null,
+  data: null,
   cart: null,
   error: null,
 };
@@ -38,13 +42,32 @@ export default function cart(state = INITIAL_STATE, action) {
         loading: false,
         error: true,
       };
-    case Types.ADD_ITEM:
+    case Types.GET_ORDER_BY_ID:
       return {
         ...state,
         loading: true,
         error: null,
       };
-
+    case Types.GET_ORDER_BY_ID_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        loading: false,
+        error: null,
+      };
+    case Types.GET_ORDER_BY_ID_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+      };
+    case Types.ADD_ITEM:
+      return {
+        ...state,
+        ...action.payload,
+        loading: true,
+        error: null,
+      };
     case Types.ADD_ITEM_SUCCESS:
       return {
         ...state,
@@ -92,6 +115,17 @@ export const Creators = {
   }),
   getOrdersFail: () => ({
     type: Types.GET_ORDERS_FAIL,
+  }),
+  getOrderById: payload => ({
+    type: Types.GET_ORDER_BY_ID,
+    payload,
+  }),
+  getOrderByIdSuccess: payload => ({
+    type: Types.GET_ORDER_BY_ID_SUCCESS,
+    payload,
+  }),
+  getOrderByIdFail: () => ({
+    type: Types.GET_ORDER_BY_ID_FAIL,
   }),
   addItem: payload => ({
     type: Types.ADD_ITEM,

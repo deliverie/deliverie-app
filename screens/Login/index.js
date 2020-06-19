@@ -124,8 +124,8 @@ export default function Login({ navigation, route }) {
         </View>
         <Formik
           initialValues={{
-            email: 'anilton.veigaa@gmail.com',
-            password: '123mudar',
+            email: 'test@user.com',
+            password: 'teste123',
           }}
           validationSchema={yup.object().shape({
             email: yup
