@@ -23,6 +23,7 @@ import styles from './styles';
 
 /** REDUX */
 import { Creators as CompanyActions } from '../../store/ducks/company';
+import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 /** REDUX END */
 
@@ -55,9 +56,14 @@ export default function Home({ navigation }) {
   const { companies: dataCompany, total } = useSelector(
     state => state.company,
   );
+  const { data } = useSelector(state => state.login);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (data) {
+      dispatch(LocationsActions.getLocations());
+    }
     dispatch(CompanyActions.getCompany());
   }, []);
 

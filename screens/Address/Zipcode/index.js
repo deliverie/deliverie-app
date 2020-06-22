@@ -35,19 +35,23 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import { colors } from '../../../styles';
 
-export default function Zipcode({ navigation }) {
+export default function Zipcode({ navigation, route }) {
   const dispatch = useDispatch();
   const locations = useSelector(state => state.locations);
 
   const [onlyCep, setOnlyCep] = React.useState(true);
   const [cepResponse, setCepResponse] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+  const [address, setAddress] = React.useState(
+    route?.params?.address,
+  );
 
-  // React.useEffect(() => {
-  //   if (locations.redirectTo === true) {
-  //     return navigation.goBack();
-  //   }
-  // }, [locations]);
+  React.useEffect(() => {
+    if (address) {
+      setOnlyCep(false);
+      setCepResponse(address);
+    }
+  }, []);
 
   async function checkCep(values) {
     setLoading(true);
@@ -119,6 +123,7 @@ export default function Zipcode({ navigation }) {
         }
         text="Insira um CEP"
       />
+      <Text>Endereço: {JSON.stringify(address)}</Text>
       {onlyCep && (
         <View style={styles.contentContainer}>
           <Formik
@@ -171,13 +176,14 @@ export default function Zipcode({ navigation }) {
       {cepResponse && !onlyCep && (
         <Formik
           initialValues={{
-            zipcode: cepResponse?.cep,
-            street: cepResponse?.logradouro,
-            number: cepResponse?.numero,
-            district: cepResponse?.bairro,
-            city: cepResponse?.localidade,
-            state: cepResponse?.uf,
-            complement: cepResponse?.complemento,
+            zipcode: cepResponse?.cep || cepResponse?.zipcode,
+            street: cepResponse?.logradouro || cepResponse?.street,
+            number: cepResponse?.numero || cepResponse?.number,
+            district: cepResponse?.bairro || cepResponse?.district,
+            city: cepResponse?.localidade || cepResponse?.city,
+            state: cepResponse?.uf || cepResponse?.state,
+            complement:
+              cepResponse?.complemento || cepResponse?.complement,
           }}
           validationSchema={yup.object().shape({
             street: yup.string().required('Campo obrigatório'),
@@ -262,7 +268,7 @@ export default function Zipcode({ navigation }) {
                   msg={errors.complement ? errors.complement : null}
                 />
                 <ButtonFill
-                  title="SALVAR"
+                  title={address ? 'Alterar' : 'SALVAR'}
                   color={colors.primary}
                   // disabled={loading}
                   // loading={login.loading}

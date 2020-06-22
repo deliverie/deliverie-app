@@ -6,6 +6,8 @@ export const Types = {
   REMOVE_LOCATION_UNLOGED: 'LOCATION/REMOVE_LOCATION_UNLOGED',
   ADD_LOCATION_REQUEST: 'LOCATION/ADD_LOCATION_REQUEST',
   ADD_LOCATION_SUCCESS: 'LOCATION/ADD_LOCATION_SUCCESS',
+  ADD_LOCATION_FAIL: 'LOCATION/ADD_LOCATION_FAIL',
+
   REMOVE_LOCATION_REQUEST: 'LOCATION/REMOVE_LOCATION_REQUEST',
   REMOVE_SINGLE_LOCATION: 'LOCATION/REMOVE_SINGLE_LOCATION',
   SET_LOCATION: 'LOCATION/SET_LOCATION',
@@ -44,6 +46,8 @@ export default function locations(state = INITIAL_STATE, action) {
       return { ...state, loading: false, error: true };
     case Types.ADD_LOCATION_REQUEST:
       return { ...state, loading: true, error: false };
+    case Types.ADD_LOCATION_FAIL:
+      return { ...state, loading: false, error: false };
     case Types.REMOVE_SINGLE_LOCATION:
       return { ...state, shops: [], loading: false, error: false };
     case Types.SET_LOCATION:
@@ -99,6 +103,9 @@ export const Creators = {
     type: Types.ADD_LOCATION_REQUEST,
     payload,
     navigation,
+  }),
+  addLocationFail: () => ({
+    type: Types.ADD_LOCATION_FAIL,
   }),
   removeLocation: payload => ({
     type: Types.REMOVE_LOCATION_REQUEST,

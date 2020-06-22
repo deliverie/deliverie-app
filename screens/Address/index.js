@@ -45,24 +45,20 @@ export default function Address({ navigation }) {
     console.tron.log('alterou o location', locations);
   }, [locations]);
 
-  function handleAddress() {
+  function handleAddress(address) {
     Alert.alert(
       'O que você desaja fazer?',
       '',
       [
         {
-          text: 'Excluir',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Alterar',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'Alterar endereço',
+          onPress: () => navigation.navigate('Zipcode', { address }),
           style: 'cancel',
         },
         {
           text: 'Tornar principal',
-          onPress: () => console.log('OK Pressed'),
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
         },
       ],
       { cancelable: false },
@@ -103,6 +99,7 @@ export default function Address({ navigation }) {
                     alignItems: 'center',
                     margin: 10,
                   }}
+                  onPress={() => handleAddress(item)}
                 >
                   <View
                     style={{

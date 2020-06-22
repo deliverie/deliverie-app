@@ -1,6 +1,7 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
+import * as RootNavigation from '../../../services/navigation';
 
 import {
   Creators as LocationsActions,
@@ -63,8 +64,9 @@ function* addLocation({ payload }) {
       ...payload,
     });
     yield put(LocationsActions.getLocations());
-    navigation.goBack();
+    RootNavigation.goBack();
   } catch (error) {
+    yield put(LocationsActions.addLocationFail());
     showToast(
       'Ops',
       'Não foi possível adicionar seu endereço, tente novamente',
