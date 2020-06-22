@@ -9,21 +9,27 @@ import {
   Creators as LoginActions,
   Types as LoginTypes,
 } from '../../ducks/login';
+import {
+  Creators as LocationActions,
+  Types as LocationTypes,
+} from '../../ducks/locations';
 
 function* login({ payload }) {
-  console.tron.log('LOGIN:::', payload);
   try {
     const response = yield call(api.post, '/users/login', payload);
 
     yield AsyncStorage.setItem(
       '@@DELIVERIE@@:token',
-      response.data.token,
+      response?.data?.token,
     );
     yield AsyncStorage.setItem(
       '@@DELIVERIE@@:refreshToken',
-      response.data.refreshToken,
+      response?.data?.refreshToken,
     );
-
+    yield AsyncStorage.setItem(
+      '@@DELIVERIE@@:email',
+      response?.data?.user?.email,
+    );
     yield put(
       LoginActions.loginSuccess(
         response.data,
@@ -60,7 +66,15 @@ function* refreshLogin({ payload }) {
         '@@DELIVERIE@@:refreshToken',
         data.refreshToken,
       );
+      yield AsyncStorage.setItem(
+        '@@DELIVERIE@@:email',
+        data?.user?.email,
+      );
       yield put(LoginActions.refreshLoginSuccess(data));
+      const { user } = data;
+      if (user?.addresses?.length) {
+        yield put(LocationActions.setLocation(user?.addresses?.[0]));
+      }
     } else {
       yield put(LoginActions.refreshLoginFail());
       showToast('Ops', 'Erro ao verificar login.', 'danger');

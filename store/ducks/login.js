@@ -47,7 +47,7 @@ export default function login(state = INITIAL_STATE, action) {
       };
     }
     case Types.REFRESH_LOGIN_FAIL: {
-      return { ...state, loading: false, error: true };
+      return { ...state, data: null, loading: false, error: true };
     }
     default:
       return state;
