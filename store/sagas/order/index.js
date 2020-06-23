@@ -24,12 +24,21 @@ function* addItem(payload) {
   return null;
 }
 
-function* createOrder({ payload, addressId, paymentType, change }) {
+function* createOrder({
+  payload,
+  addressId,
+  paymentType,
+  change,
+  deliveryType,
+}) {
   try {
     const orderPayload = {
       variations: payload,
       address_id: addressId,
-      payment_type: paymentType,
+      deliveryType,
+      ...(deliveryType === 'delivery' && {
+        payment_type: paymentType,
+      }),
       ...(paymentType === 'money' && change && { money: change }),
     };
     const { data: order, status } = yield call(

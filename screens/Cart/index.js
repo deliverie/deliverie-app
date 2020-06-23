@@ -677,7 +677,11 @@ function Cart({ navigation }) {
           increments: e.map(({ id }) => ({ id, qty: 1 })),
         };
       });
-      const obj = { product_id, qty, attributes };
+      const obj = {
+        product_id,
+        qty,
+        ...(attributes?.length && { attributes }),
+      };
       variations.push(obj);
     });
     dispatch(
@@ -686,6 +690,7 @@ function Cart({ navigation }) {
         currentLocation.id,
         paymentType,
         change,
+        deliveryType,
       ),
     );
   };

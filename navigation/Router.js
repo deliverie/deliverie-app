@@ -50,10 +50,12 @@ export default function Router({ isLoadingComplete }) {
       const refreshToken = await AsyncStorage.getItem(
         '@@DELIVERIE@@:refreshToken',
       );
+      const email = await AsyncStorage.getItem('@@DELIVERIE@@:email');
       if (refreshToken) {
         dispatch(
           LoginActions.refreshLoginRequest({
             refreshToken,
+            email,
           }),
         );
       } else {
