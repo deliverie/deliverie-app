@@ -122,7 +122,8 @@ export default function OrderDetail({
                 </View>
               </View>
               {!getOrder?.review &&
-                getOrder?.order_status === 'done' && (
+                getOrder?.order_status === 'done' &&
+                getOrder?.arrived_at && (
                   <View
                     style={{
                       alignItems: 'flex-end',
@@ -141,7 +142,7 @@ export default function OrderDetail({
                                 ReviewActions.addReview(payload),
                               )
                             }
-                            order={order}
+                            order={getOrder}
                           />,
                         )
                       }
@@ -311,7 +312,7 @@ export default function OrderDetail({
                     </Text>
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {order.total}
+                    R$ {getOrder?.total}
                   </Text>
                 </View>
               </View>
@@ -336,7 +337,7 @@ export default function OrderDetail({
                     </Text>
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {order.shipping_price}
+                    R$ {getOrder.shipping_price}
                   </Text>
                 </View>
               </View>
@@ -361,7 +362,7 @@ export default function OrderDetail({
                     </Text>
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {order.total}
+                    R$ {getOrder.total}
                   </Text>
                 </View>
               </View>
