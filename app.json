@@ -20,9 +20,9 @@
       "supportsTablet": true
     },
     "notification": {
-      "icon": "./assets/images/icon.png",
+      "icon": "./assets/images/icon-push.png",
       "androidMode": "collapse",
-      "androidMode": "collapse"
+      "color": "#FF5900"
     }
   }
 }
