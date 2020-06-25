@@ -2,6 +2,7 @@ import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import { Alert } from 'react-native';
 import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
+import * as RootNavigation from '../../../services/navigation';
 
 import {
   Creators as OrderActions,
@@ -48,11 +49,13 @@ function* createOrder({
     );
     if (status === 200) {
       yield put(OrderActions.createOrderSuccess({ order }));
-      showToast(
-        'Só aguardar',
-        'Seu pedido foi feito com sucess',
-        'success',
-      );
+      RootNavigation.navigate('Orders', {
+        screen: 'OrderStatus',
+        options: {
+          id: order?.order?.id,
+          order_status: order?.order?.order_status,
+        },
+      });
     } else {
       yield put(OrderActions.createOrderFail());
       showToast(

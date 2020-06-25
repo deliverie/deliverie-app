@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Orders from '../../screens/Orders';
 import OrderDetail from '../../screens/OrderDetail';
+import OrderStatus from '../../screens/OrderStatus';
 
 const Stack = createStackNavigator();
 
@@ -10,19 +11,20 @@ export default function OrdersStack({
   route: { params },
 }) {
   React.useEffect(() => {
+    console.tron.log('CHEGOU', params);
     if (params) {
       const { screen, options } = params;
       if (screen) {
-        console.tron.log(`navega`, screen, options);
-        navigation.navigate(screen, options);
+        navigation.replace(screen, options);
       }
     }
   }, [params]);
 
   return (
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="Orders" component={Orders} />
+    <Stack.Navigator headerMode="none" initialRouteName="OrdersList">
+      <Stack.Screen name="OrdersList" component={Orders} />
       <Stack.Screen name="OrderDetail" component={OrderDetail} />
+      <Stack.Screen name="OrderStatus" component={OrderStatus} />
     </Stack.Navigator>
   );
 }

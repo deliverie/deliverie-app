@@ -4,6 +4,7 @@ import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AsyncStorage, Alert } from 'react-native';
+import * as RootNavigation from '../services/navigation';
 
 import Tab from './Tab';
 import AuthTab from './AuthTab';
@@ -33,15 +34,24 @@ export default function Router({ isLoadingComplete }) {
       } else {
         Notifications.addListener(notification => {
           const { origin, data } = notification;
-          if (origin === 'selected' && dp && data?.screen) {
+          if (origin === 'selected' && dp && data?.redirect) {
             console.tron.log('clicou', data, dp);
-            const { screen: scr, stack, options } = data?.screen;
-            const screenObj = {
-              screen: scr,
-              options,
-              stack,
-            };
-            dispatch(NotificationActions.setScreen(screenObj));
+            const {
+              screen: { stack, screen: scr, options },
+            } = JSON.parse(data?.redirect || {});
+            if (stack && scr) {
+              const screenObj = {
+                screen: scr,
+                options,
+                stack,
+              };
+              console.tron.log('opt', options);
+              RootNavigation.navigate(stack, {
+                screen: scr,
+                options,
+              });
+              // dispatch(NotificationActions.setScreen(screenObj));
+            }
           }
         });
       }
