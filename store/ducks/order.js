@@ -106,8 +106,9 @@ export default function cart(state = INITIAL_STATE, action) {
 }
 
 export const Creators = {
-  getOrders: () => ({
+  getOrders: payload => ({
     type: Types.GET_ORDERS,
+    payload,
   }),
   getOrdersSuccess: payload => ({
     type: Types.GET_ORDERS_SUCCESS,

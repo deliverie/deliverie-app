@@ -699,9 +699,7 @@ function Cart({ navigation }) {
     <SafeAreaView
       style={{
         backgroundColor: 'white',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        borderWidth: 1,
+
         flex: 1,
       }}
     >
@@ -873,7 +871,7 @@ function Cart({ navigation }) {
                     </View>
                   </View>
 
-                  {deliveryType === 'delivery' && (
+                  {deliveryType === 'delivery' && shipment !== null && (
                     <View style={{ marginHorizontal: 15 }}>
                       <View
                         style={{
@@ -928,6 +926,46 @@ function Cart({ navigation }) {
                         </TouchableOpacity>
                       </View>
                     </View>
+                  )}
+                  {deliveryType === 'delivery' && shipment === null && (
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('Address')}
+                      style={{ marginHorizontal: 15 }}
+                    >
+                      <View
+                        style={{
+                          marginTop: 15,
+                          backgroundColor: colors.lighter,
+                          padding: 10,
+                          borderRadius: 7,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: colors.darker,
+                            fontFamily: 'roboto',
+                            fontSize: 14,
+                          }}
+                        >
+                          Você precisa cadastrar um{`\n`} endereço
+                          para continuar
+                        </Text>
+
+                        <View
+                          style={{
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <AntDesign
+                            name="plus"
+                            size={25}
+                            color={colors.daker}
+                          />
+                        </View>
+                      </View>
+                    </TouchableOpacity>
                   )}
                   <View style={{ marginTop: metrics.baseMargin }}>
                     {deliveryType === 'withdraw' && (

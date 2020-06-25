@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { colors } from '../../../styles';
 import { monetize } from '../../../utils';
 
-export const Cart = () => {
+export const Cart = ({ customColors }) => {
   const { cart } = useSelector(state => state.cart);
 
   const getAllPrice = () => {
@@ -52,7 +52,7 @@ export const Cart = () => {
     <View
       style={{
         padding: 10,
-        backgroundColor: 'rgba(0,0,0,1)',
+        backgroundColor: customColors.primary,
         marginHorizontal: 10,
         borderRadius: 4,
         flexDirection: 'row',

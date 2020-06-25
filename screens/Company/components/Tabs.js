@@ -13,7 +13,7 @@ import H1 from '../../../components/H1';
 
 import { Creators as ProductsActions } from '../../../store/ducks/products';
 
-export const Tabs = ({ categories }) => {
+export const Tabs = ({ categories, customColors }) => {
   const dispatch = useDispatch();
 
   const [tab, setTab] = useState(categories[0]);
@@ -57,9 +57,10 @@ export const Tabs = ({ categories }) => {
         {categories.map(e => (
           <TouchableOpacity
             style={{
-              borderColor: e === tab ? 'rgba(0,0,0,1)' : '#ccc',
+              borderColor: e === tab ? customColors.primary : '#ccc',
               borderWidth: e === tab ? 2 : 2,
-              backgroundColor: e === tab ? 'rgba(0,0,0,1)' : '#fff',
+              backgroundColor:
+                e === tab ? customColors.primary : '#fff',
               bordeRadius: 100,
               marginHorizontal: 10,
               paddingHorizontal: 10,

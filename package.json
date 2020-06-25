@@ -20,6 +20,7 @@
     "@react-navigation/web": "~1.0.0-alpha.9",
     "add": "^2.0.6",
     "axios": "^0.19.2",
+    "color": "^3.1.2",
     "date-fns": "^2.12.0",
     "expo": "~37.0.3",
     "expo-asset": "~8.1.3",

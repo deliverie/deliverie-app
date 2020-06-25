@@ -47,8 +47,15 @@ export default function Orders({ navigation }) {
   const [currentTab, setCurrentTab] = React.useState(0);
 
   React.useEffect(() => {
-    dispatch(OrdersActions.getOrders());
-  }, []);
+    dispatch(
+      OrdersActions.getOrders({
+        filters:
+          currentTab === 0
+            ? 'pending,accepted,on_way'
+            : 'done,cancelled,error',
+      }),
+    );
+  }, [currentTab]);
 
   function handleTabs(value) {
     setCurrentTab(value);
@@ -56,15 +63,18 @@ export default function Orders({ navigation }) {
 
   function renderBadge(status) {
     const colors = {
-      pending: 'red',
-      on_way: 'blue',
-      done: 'green',
+      pending: '#2ccce4',
+      on_way: '#dce775',
+      done: '#37d67a',
+      accepted: '#593C8F',
+      cancelado: '#f47373',
     };
 
     const statusPtBr = {
       pending: 'Pendente',
       on_way: 'A caminho',
       done: 'Finalizado',
+      accepted: 'Aceito',
     };
 
     return (
@@ -114,16 +124,6 @@ export default function Orders({ navigation }) {
   function renderOrders() {
     return (
       <>
-        <SimpleHeader text="Seus pedidos" />
-        <RNAnimatedTabs
-          tabTitles={['EM ANDAMENTO', 'ANTERIORES']}
-          onChangeTab={handleTabs}
-          containerStyle={styles.tabContainerStyle}
-          tabButtonStyle={styles.tabButtonStyle}
-          tabTextStyle={styles.tabTextStyle}
-          activeTabIndicatorColor={colors.primary}
-          height={50}
-        />
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.content}>
             <FlatList
@@ -216,6 +216,16 @@ export default function Orders({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <SimpleHeader text="Seus pedidos" />
+      <RNAnimatedTabs
+        tabTitles={['EM ANDAMENTO', 'ANTERIORES']}
+        onChangeTab={handleTabs}
+        containerStyle={styles.tabContainerStyle}
+        tabButtonStyle={styles.tabButtonStyle}
+        tabTextStyle={styles.tabTextStyle}
+        activeTabIndicatorColor={colors.primary}
+        height={50}
+      />
       {loading === true ? <ActivityIndicator /> : renderOrders()}
     </View>
   );

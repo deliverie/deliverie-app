@@ -35,7 +35,7 @@ function* createOrder({
     const orderPayload = {
       variations: payload,
       address_id: addressId,
-      deliveryType,
+      delivery_type: deliveryType,
       ...(deliveryType === 'delivery' && {
         payment_type: paymentType,
       }),
@@ -71,9 +71,12 @@ function* createOrder({
   }
 }
 
-function* getOrders() {
+function* getOrders(payload) {
   try {
-    const response = yield call(api.get, '/orders');
+    const response = yield call(
+      api.get,
+      `/orders?order_status=${payload.payload.filters}`,
+    );
     if (response.status === 200) {
       yield put(OrderActions.getOrdersSuccess(response.data.data));
     } else {

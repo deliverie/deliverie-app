@@ -24,6 +24,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SkeletonContent from 'react-native-skeleton-content';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Color from 'color';
 import { monetize, handleWorkHours } from '../../utils';
 import { colors } from '../../styles';
 
@@ -38,7 +39,6 @@ import company, {
 
 import styles from './styles';
 import Products from './components/Products';
-
 const { height } = Dimensions.get('window');
 
 export default function Company({ navigation, route: { params } }) {
@@ -307,14 +307,18 @@ export default function Company({ navigation, route: { params } }) {
                 </>
               )}
             </View>
-
             <LinearGradient
               colors={[
-                'transparent',
-                'rgba(0,0,0,0.3)',
+                Color(data?.primary_color)
+                  .alpha(0.5)
+                  .lighten(0.5),
+                Color(data?.primary_color)
+                  .alpha(0.5)
+                  .lighten(0.5),
 
-                'rgba(0,0,0,0.3)',
-                'rgba(0,0,0,1)',
+                Color(data?.primary_color).alpha(0.5),
+
+                Color(data?.primary_color).darken(0.1),
               ]}
               style={{
                 position: 'absolute',
@@ -457,7 +461,13 @@ export default function Company({ navigation, route: { params } }) {
             isLoading
           />
         ) : (
-          <Tabs categories={data?.categories || []} />
+          <Tabs
+            categories={data?.categories || []}
+            customColors={{
+              primary: data?.primary_color,
+              secondary: data?.secondary_color,
+            }}
+          />
         )}
         {products.loading ? <ActivityIndicator /> : renderProducts()}
       </ScrollView>
@@ -468,7 +478,12 @@ export default function Company({ navigation, route: { params } }) {
           <TouchableOpacity
             onPress={() => navigation.navigate('Cart')}
           >
-            <Cart />
+            <Cart
+              customColors={{
+                primary: data?.primary_color,
+                secondary: data?.secondary_color,
+              }}
+            />
           </TouchableOpacity>
         </SafeAreaView>
       )}

@@ -147,7 +147,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
             </View>
             {isValid && values.cep.length > 0 && (
               <ButtonFill
-                title="VER EMPRESAS"
+                title="Confirmar"
                 fontColor={colors.white}
                 disabled={!isValid}
                 color={colors.primary}
