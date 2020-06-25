@@ -40,7 +40,7 @@ import { Creators as LocationsActions } from '../../store/ducks/locations';
 const LocationSheet = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
-  const [validCep, setValidCep] = React.useState(false);
+  const [validCep, setValidCep] = React.useState(null);
   const schema = () =>
     yup.object().shape({
       cep: yup
@@ -52,6 +52,26 @@ const LocationSheet = React.forwardRef((props, ref) => {
   const { locations, currentLocation } = useSelector(
     state => state.locations,
   );
+
+  function saveAddres(values) {
+    dispatch(
+      LocationsActions.setLocation({
+        street: values.logradouro,
+        district: values.bairro,
+        city: values.localidade,
+        state: values.uf,
+        zipcode: values.cep,
+      }),
+    );
+    showToast(
+      'Boaaa!',
+      'Seu endereço foi salvo, agora você pode visualizar os estabelecimentos próximos a você',
+      'success',
+    );
+    setTimeout(() => {
+      ref.current.close();
+    }, 2000);
+  }
 
   async function getAddress(values) {
     console.tron.log(values);
@@ -67,24 +87,12 @@ const LocationSheet = React.forwardRef((props, ref) => {
           'danger',
         );
       } else {
-        setValidCep(response.data);
+        saveAddres(response.data);
       }
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
-  }
-
-  function saveAddres(values) {
-    dispatch(LocationsActions.setLocation(values));
-    showToast(
-      'Boaaa!',
-      'Seu endereço foi salvo, agora você pode visualizar os estabelecimentos próximos a você',
-      'success',
-    );
-    setTimeout(() => {
-      ref.current.close();
-    }, 2000);
   }
 
   return (
@@ -133,7 +141,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
               />
               <H1
                 align="center"
-                text={`Onde você quer ${'\n'}receber o seu pedido?`}
+                text={`Digite o cep da cidade ${'\n'} em que você está`}
               />
               <Input
                 mask="zip-code"
@@ -154,6 +162,11 @@ const LocationSheet = React.forwardRef((props, ref) => {
                 loading={loading}
                 onPress={() => handleSubmit()}
               />
+            )}
+            {validCep && (
+              <View>
+                <Text>Você esta em {JSON.stringify(validCep)}</Text>
+              </View>
             )}
           </View>
         )}

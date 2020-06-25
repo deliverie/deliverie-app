@@ -29,6 +29,7 @@ export default function CurrentPlace({ open, close, navigation }) {
   const { locations, currentLocation } = useSelector(
     state => state.locations,
   );
+  const { data } = useSelector(state => state.login);
 
   // React.useEffect(() => {
   //   if (locations.length === 0) {
@@ -84,7 +85,9 @@ export default function CurrentPlace({ open, close, navigation }) {
         ]}
       >
         <TouchableOpacity
-          onPress={() => open()}
+          onPress={() =>
+            data ? navigation.navigate('Address') : open()
+          }
           style={styles.addressContainer}
         >
           <Text style={styles.addressText}>

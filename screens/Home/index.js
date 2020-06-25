@@ -56,6 +56,7 @@ export default function Home({ navigation }) {
   const { companies: dataCompany, total } = useSelector(
     state => state.company,
   );
+  const location = useSelector(state => state.locations);
   const { data } = useSelector(state => state.login);
 
   const [loading, setLoading] = useState(true);
@@ -66,6 +67,11 @@ export default function Home({ navigation }) {
     }
     dispatch(CompanyActions.getCompany());
   }, []);
+
+  //monitoring location change
+  useEffect(() => {
+    dispatch(CompanyActions.getCompany());
+  }, [location.currentLocation]);
 
   useEffect(() => {
     if (dataCompany?.length) {
@@ -105,6 +111,7 @@ export default function Home({ navigation }) {
       <CurrentPlace
         open={() => locationSheet.current.open()}
         close={() => locationSheet.current.close()}
+        navigation={navigation}
       />
       {loading ? (
         <SkeletonContent

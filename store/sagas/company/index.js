@@ -1,4 +1,11 @@
-import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  fork,
+  put,
+  takeLatest,
+  select,
+} from 'redux-saga/effects';
 import api from '../../../services/api';
 import { showToast } from '../../../utils/toast';
 
@@ -7,13 +14,20 @@ import {
   Types as CompanyTypes,
 } from '../../ducks/company';
 
-import { Creators as ProductsActions } from '../../ducks/products';
-
 function* getCompanies({ payload }) {
-  try {
-    const response = yield call(api.get, '/companies', payload);
+  const { currentLocation } = yield select(state => state.locations);
 
-    console.tron.log('response companies', response);
+  try {
+    const response = yield call(
+      api.get,
+      `/companies${
+        currentLocation
+          ? `?city=${currentLocation.city}&state=${currentLocation.state}`
+          : ''
+      }`,
+      payload,
+    );
+
     if (response.status === 200) {
       const { page, total, lastPage } = response.data;
       yield put(
