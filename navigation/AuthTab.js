@@ -36,14 +36,14 @@ export default function AuthTab({ navigation, route }) {
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
-  React.useEffect(() => {
-    if (screen) {
-      const { screen: scr, stack, options } = screen;
-      console.tron.log('navigate', screen);
-      navigation.navigate(stack, { screen: scr, options });
-      dispatch(NotificationActions.resetScreen());
-    }
-  }, [screen]);
+  // React.useEffect(() => {
+  //   if (screen) {
+  //     const { screen: scr, stack, options } = screen;
+  //     console.tron.log('navigate', screen);
+  //     navigation.navigate(stack, { screen: scr, options });
+  //     dispatch(NotificationActions.resetScreen());
+  //   }
+  // }, [screen]);
 
   return (
     <BottomTab.Navigator
