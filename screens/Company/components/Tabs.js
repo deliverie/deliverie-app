@@ -57,10 +57,9 @@ export const Tabs = ({ categories }) => {
         {categories.map(e => (
           <TouchableOpacity
             style={{
-              borderColor: e === tab ? 'rgba(34,60,120,1)' : '#ccc',
+              borderColor: e === tab ? 'rgba(0,0,0,1)' : '#ccc',
               borderWidth: e === tab ? 2 : 2,
-              backgroundColor:
-                e === tab ? 'rgba(34,60,120,1)' : '#fff',
+              backgroundColor: e === tab ? 'rgba(0,0,0,1)' : '#fff',
               bordeRadius: 100,
               marginHorizontal: 10,
               paddingHorizontal: 10,
@@ -79,7 +78,7 @@ export const Tabs = ({ categories }) => {
                 fontWeight: e === tab ? 'bold' : '300',
               }}
             >
-              {e.name} - {e.id}
+              {e.name}
             </Text>
           </TouchableOpacity>
         ))}
@@ -112,7 +111,7 @@ export const Tabs = ({ categories }) => {
                   marginLeft: 7,
                 }}
               >
-                {e.name} - {e.id}
+                {e.name}
               </Text>
             </TouchableOpacity>
           ))}

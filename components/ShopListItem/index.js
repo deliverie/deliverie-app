@@ -4,11 +4,12 @@ import { TouchableOpacity, Image, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Card } from 'react-native-paper';
 import { colors } from '../../styles';
-
+import { monetize } from '../../utils/index';
 import styles from './styles';
 import H3 from '../H3';
 import H4 from '../H4';
 import { baseURL } from '../../services/api';
+import SvgUri from 'react-native-svg-uri';
 
 export default function ShopListItem({ item }) {
   const navigation = useNavigation();
@@ -28,7 +29,14 @@ export default function ShopListItem({ item }) {
             resizeMode="contain"
           />
         ) : (
-          <View style={styles.image} />
+          <View style={styles.image}>
+            <SvgUri
+              width="16"
+              height="16"
+              // eslint-disable-next-line global-require
+              source={require('../../assets/images/delivery.svg')}
+            />
+          </View>
         )}
         <View
           style={{
@@ -42,11 +50,11 @@ export default function ShopListItem({ item }) {
             <View style={{ flex: 1 }}>
               <Text>{item?.fantasy_name}</Text>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            {/* <View style={{ flexDirection: 'row' }}>
               <H4 text="Variadas -" />
               <H4 text=" 2,2 km" />
               <H4 badge color={colors.primary} text=" Tem cupons" />
-            </View>
+            </View> */}
           </View>
           <View
             style={{
@@ -72,7 +80,9 @@ export default function ShopListItem({ item }) {
                 color={colors.darker}
                 style={{ marginRight: 3 }}
               />
-              <H4 text="30-80 min" />
+              <H4
+                text={`${item?.min_delivery_time}-${item.max_delivery_time} min`}
+              />
             </View>
             <View style={{ flexDirection: 'row' }}>
               <MaterialCommunityIcons
@@ -81,7 +91,13 @@ export default function ShopListItem({ item }) {
                 color={colors.darker}
                 style={{ marginRight: 3 }}
               />
-              <H4 text="R$ 3,30" />
+              <H4
+                text={
+                  item?.delivery_price === 0
+                    ? 'Grátis'
+                    : monetize(item?.delivery_price)
+                }
+              />
             </View>
           </View>
         </View>

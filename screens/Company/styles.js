@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { metrics } from '../../styles';
+import { metrics, colors } from '../../styles';
 
 const styles = StyleSheet.create({
   loading: {
@@ -30,11 +30,13 @@ const styles = StyleSheet.create({
   image: {
     width: 55,
     height: 55,
-    backgroundColor: 'orange',
+    backgroundColor: colors.white,
     borderRadius: 5,
     marginRight: 10,
     borderWidth: 1,
     borderColor: '#f1f1f1',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 14,

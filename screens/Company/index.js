@@ -7,6 +7,7 @@ import {
   ImageBackground,
   StyleSheet,
   Dimensions,
+  Linking,
   SafeAreaView,
   ScrollView,
   Share,
@@ -144,7 +145,12 @@ export default function Company({ navigation, route: { params } }) {
                     }}
                   />
                 ) : (
-                  <View style={styles.image} />
+                  <SvgUri
+                    width="30"
+                    height="30"
+                    source={require('../../assets/images/picture.svg')}
+                    style={styles.image}
+                  />
                 )}
 
                 <View
@@ -300,119 +306,15 @@ export default function Company({ navigation, route: { params } }) {
                   </View>
                 </>
               )}
-              {!loading && (
-                <View
-                  style={{
-                    flex: 1,
-                    padding: 3,
-                    borderRadius: 4,
-                    marginTop: 8,
-                    flexDirection: 'row',
-                    width: wWidth - 40,
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: '#8bc34a',
-                      borderRadius: 4,
-                      paddingHorizontal: 10,
-                      justifyContent: 'center',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Ionicons
-                      name="ios-call"
-                      size={15}
-                      color={colors.darker}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: colors.lighdarker,
-                        marginLeft: 5,
-                      }}
-                    >
-                      ({data?.phone_ddd}) {data?.phone_num}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: '#8bc34a',
-                      borderRadius: 4,
-                      paddingHorizontal: 10,
-                      justifyContent: 'center',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Ionicons
-                      name="md-time"
-                      size={15}
-                      color={colors.darker}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: colors.lighdarker,
-                        marginLeft: 5,
-                      }}
-                    >
-                      Aberto
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: '#8bc34a',
-                      borderRadius: 4,
-                      paddingHorizontal: 10,
-                      justifyContent: 'center',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <SvgUri
-                      width="16"
-                      height="16"
-                      source={require('../../assets/images/delivery.svg')}
-                    />
-
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: colors.lighdarker,
-                        marginLeft: 5,
-                      }}
-                    >
-                      {data?.min_delivery_time}-
-                      {data?.max_delivery_time} min
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => setShowInfo(!showInfo)}
-                  >
-                    <Ionicons
-                      name={
-                        showInfo
-                          ? 'ios-arrow-dropup-circle'
-                          : 'ios-arrow-dropdown-circle'
-                      }
-                      size={24}
-                      color="white"
-                    />
-                  </TouchableOpacity>
-                </View>
-              )}
             </View>
 
             <LinearGradient
               colors={[
                 'transparent',
-                'rgba(34,60,120,0.3)',
+                'rgba(0,0,0,0.3)',
 
-                'rgba(34,60,120,0.3)',
-                'rgba(34,60,120,1)',
+                'rgba(0,0,0,0.3)',
+                'rgba(0,0,0,1)',
               ]}
               style={{
                 position: 'absolute',
@@ -425,22 +327,128 @@ export default function Company({ navigation, route: { params } }) {
             />
           </ImageBackground>
         </View>
-        {showInfo && (
-          <View
+
+        {!loading && (
+          <TouchableOpacity
+            onPress={() => setShowInfo(!showInfo)}
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              paddingHorizontal: 10,
-              paddingBottom: 15,
-              backgroundColor: 'rgba(34,60,120,1)',
+              flex: 1,
+              padding: 10,
+              backgroundColor: 'white',
+              borderRadius: 4,
+              marginTop: 8,
+              marginHorizontal: 10,
+              justifyContent: 'space-between',
             }}
           >
-            <View>
-              <Text style={{ color: 'white' }}>
-                {JSON.stringify(handleWorkHours(data?.workhours))}
-              </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    `tel:(${data?.phone_ddd})${data?.phone_num}`,
+                  )
+                }
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name="ios-call"
+                  size={15}
+                  color={colors.darker}
+                />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.lighdarker,
+                    marginLeft: 5,
+                  }}
+                >
+                  ({data?.phone_ddd}) {data?.phone_num}
+                </Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name="md-time"
+                  size={15}
+                  color={colors.darker}
+                />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.lighdarker,
+                    marginLeft: 5,
+                  }}
+                >
+                  Aberto
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <SvgUri
+                  width="16"
+                  height="16"
+                  source={require('../../assets/images/delivery.svg')}
+                />
+
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.lighdarker,
+                    marginLeft: 5,
+                  }}
+                >
+                  {data?.min_delivery_time}-{data?.max_delivery_time}{' '}
+                  min (
+                  {data?.delivery_price === 0
+                    ? 'Grátis'
+                    : monetize(data?.delivery_price)}
+                  )
+                </Text>
+              </View>
             </View>
-          </View>
+            {showInfo && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  paddingHorizontal: 10,
+                  paddinTop: 10,
+                  marginTop: 10,
+                }}
+              >
+                <View>
+                  <Text style={{ color: colors.darker }}>
+                    {JSON.stringify(handleWorkHours(data?.workhours))}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
         )}
         {loading ? (
           <SkeletonContent

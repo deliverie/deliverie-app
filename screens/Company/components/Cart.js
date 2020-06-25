@@ -52,7 +52,7 @@ export const Cart = () => {
     <View
       style={{
         padding: 10,
-        backgroundColor: 'rgba(34,60,120,1)',
+        backgroundColor: 'rgba(0,0,0,1)',
         marginHorizontal: 10,
         borderRadius: 4,
         flexDirection: 'row',
