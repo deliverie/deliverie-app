@@ -10,7 +10,7 @@ import Tab from './Tab';
 import AuthTab from './AuthTab';
 import Loading from '../screens/Loading';
 import { Creators as LoginActions } from '../store/ducks/login';
-import { Creators as NotificationActions } from '../store/ducks/notifications';
+import { Creators as OrderActions } from '../store/ducks/order';
 
 const Stack = createStackNavigator();
 
@@ -34,23 +34,20 @@ export default function Router({ isLoadingComplete }) {
       } else {
         Notifications.addListener(notification => {
           const { origin, data } = notification;
+          dispatch(
+            OrderActions.getOrders({
+              filters: 'pending,accepted,on_way',
+            }),
+          );
           if (origin === 'selected' && dp && data?.redirect) {
-            console.tron.log('clicou', data, dp);
             const {
               screen: { stack, screen: scr, options },
             } = JSON.parse(data?.redirect || {});
             if (stack && scr) {
-              const screenObj = {
-                screen: scr,
-                options,
-                stack,
-              };
-              console.tron.log('opt', options);
               RootNavigation.navigate(stack, {
                 screen: scr,
                 options,
               });
-              // dispatch(NotificationActions.setScreen(screenObj));
             }
           }
         });

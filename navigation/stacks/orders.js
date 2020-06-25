@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 import Orders from '../../screens/Orders';
 import OrderDetail from '../../screens/OrderDetail';
 import OrderStatus from '../../screens/OrderStatus';
@@ -11,11 +12,15 @@ export default function OrdersStack({
   route: { params },
 }) {
   React.useEffect(() => {
-    console.tron.log('CHEGOU', params);
     if (params) {
       const { screen, options } = params;
       if (screen) {
-        navigation.replace(screen, options);
+        navigation.reset({
+          routes: [{ name: 'OrdersList' }],
+        });
+        setTimeout(() => {
+          navigation.navigate(screen, options);
+        }, 50);
       }
     }
   }, [params]);
