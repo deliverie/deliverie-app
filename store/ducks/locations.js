@@ -113,9 +113,10 @@ export const Creators = {
   addLocationFail: () => ({
     type: Types.ADD_LOCATION_FAIL,
   }),
-  updateLocation: payload => ({
+  updateLocation: (payload, updateLocation) => ({
     type: Types.UPDATE_LOCATION_REQUEST,
     payload,
+    updateLocation,
   }),
   updateLocationFail: () => ({
     type: Types.UPDATE_LOCATION_FAIL,

@@ -142,7 +142,6 @@ export default function Zipcode({ navigation, route }) {
         }
         text="Insira um CEP"
       />
-      <Text>Endereço: {JSON.stringify(address)}</Text>
       {onlyCep && (
         <View style={styles.contentContainer}>
           <Formik

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "deliverie",
+    "name": "Deliverie",
     "slug": "deliverie",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",

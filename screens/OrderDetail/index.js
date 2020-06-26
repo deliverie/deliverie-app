@@ -201,32 +201,52 @@ export default function OrderDetail({
 
   function renderBadge(status) {
     const colors = {
-      pending: 'red',
-      on_way: 'blue',
-      done: 'green',
+      pending: '#2ccce4',
+      on_way: '#dce775',
+      done: '#37d67a',
+      accepted: '#593C8F',
+      cancelado: '#f47373',
     };
 
     const statusPtBr = {
       pending: 'Pendente',
       on_way: 'A caminho',
+      accepted: 'Aceito',
       done: 'Finalizado',
+    };
+
+    const textColor = {
+      pending: '#fff',
+      on_way: '#333333',
+      done: '#333333',
+      accepted: '#fff',
+      cancelado: '#333333',
+    };
+
+    const friendlyMessage = {
+      pending: 'Aguardando o estabelecimento',
+      accepted: moment(getOrder?.updated_at)
+        .subtract(3, 'hours')
+        .format(` [${statusPtBr[status]} em] DD/MM/YYYY [às] H:mm `),
+      on_way: moment(getOrder?.updated_at)
+        .subtract(3, 'hours')
+        .format(`[Saiu para entrega em] DD/MM/YYYY [às] H:mm `),
+      done: moment(getOrder?.updated_at)
+        .subtract(3, 'hours')
+        .format(`[Entregue em] DD/MM/YYYY [às] H:mm `),
     };
 
     return (
       <View
         style={{
-          backgroundColor: '#f1f1f1',
+          backgroundColor: colors[status],
           borderRadius: 5,
           padding: 9,
           alignItems: 'center',
         }}
       >
-        <Text style={[styles.cardItemCompanyDescription]}>
-          {moment(getOrder?.updated_at)
-            .subtract(3, 'hours')
-            .format(
-              ` [${statusPtBr[status]} em] DD/MM/YYYY [às] H:mm `,
-            )}
+        <Text style={{ color: textColor[status] }}>
+          {friendlyMessage[status]}
         </Text>
       </View>
     );

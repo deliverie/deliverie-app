@@ -87,8 +87,8 @@ function* removeLocation({ payload }) {
   }
 }
 
-function* updateLocation({ payload }) {
-  console.tron.log('update location: ', payload);
+function* updateLocation({ payload, navigateBackTo }) {
+  console.tron.log('update location: ', payload, navigateBackTo);
   try {
     const response = yield call(
       api.put,

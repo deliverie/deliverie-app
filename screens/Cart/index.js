@@ -907,7 +907,9 @@ function Cart({ navigation }) {
                             padding: 10,
                           }}
                           onPress={() =>
-                            navigation.navigate('Address')
+                            navigation.navigate('Address', {
+                              navigateBackTo: 'Cart',
+                            })
                           }
                         >
                           <AntDesign
@@ -949,8 +951,8 @@ function Cart({ navigation }) {
                             fontSize: 14,
                           }}
                         >
-                          Você precisa cadastrar um{`\n`} endereço
-                          para continuar
+                          Você precisa cadastrar um que a empresa
+                          {`\n`}atenda para continuar
                         </Text>
 
                         <View
