@@ -74,7 +74,6 @@ const LocationSheet = React.forwardRef((props, ref) => {
   }
 
   async function getAddress(values) {
-    console.tron.log(values);
     setLoading(true);
     try {
       const response = await apiViaCep.get(

@@ -41,9 +41,6 @@ export default function Address({ navigation }) {
   React.useEffect(() => {
     dispatch(LocationsActions.getLocations());
   }, []);
-  React.useEffect(() => {
-    console.tron.log('alterou o location', locations);
-  }, [locations]);
 
   function handleAddress(address) {
     Alert.alert(
@@ -57,7 +54,13 @@ export default function Address({ navigation }) {
         },
         {
           text: 'Tornar principal',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () =>
+            dispatch(
+              LocationsActions.updateLocation({
+                ...address,
+                is_active: true,
+              }),
+            ),
           style: 'cancel',
         },
       ],

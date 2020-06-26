@@ -41,7 +41,6 @@ function* profileUpdate({ payload }) {
       'success',
     );
   } catch (error) {
-    console.tron.log('error', error);
     yield put(ProfileActions.profileUpdateFail());
 
     showToast(

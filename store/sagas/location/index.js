@@ -13,7 +13,6 @@ function* allLocations() {
     const response = yield call(api.get, '/address');
     yield put(LocationsActions.getLocationsSuccess(response.data));
   } catch (error) {
-    console.tron.log('catch', error);
     yield put(LocationsActions.getLocationsFail());
     showToast(
       'Ops',
@@ -58,7 +57,6 @@ function* calcShipment({ payload }) {
 }
 
 function* addLocation({ payload }) {
-  console.tron.log('entrou na saga de login', payload);
   try {
     yield call(api.post, '/address', {
       ...payload,
@@ -89,6 +87,29 @@ function* removeLocation({ payload }) {
   }
 }
 
+function* updateLocation({ payload }) {
+  console.tron.log('update location: ', payload);
+  try {
+    const response = yield call(
+      api.put,
+      `/address/${payload.id}`,
+      payload,
+    );
+    yield put(LocationsActions.getLocations());
+    showToast(
+      'Pronto',
+      'Seu endereço alterado com sucesso',
+      'success',
+    );
+  } catch (error) {
+    showToast(
+      'Ops',
+      'Não foi possível alterar seu endereço, tente novamente',
+      'danger',
+    );
+  }
+}
+
 function* addLocationWatcher() {
   yield takeLatest(LocationsTypes.ADD_LOCATION_REQUEST, addLocation);
 }
@@ -114,11 +135,19 @@ function* removeLocationWatcher() {
   );
 }
 
+function* updateLocationWatcher() {
+  yield takeLatest(
+    LocationsTypes.UPDATE_LOCATION_REQUEST,
+    updateLocation,
+  );
+}
+
 export default function* rootSaga() {
   yield all([
     fork(allLocationsWatcher),
     fork(removeLocationWatcher),
     fork(addLocationWatcher),
     fork(calcShipmentWatcher),
+    fork(updateLocationWatcher),
   ]);
 }

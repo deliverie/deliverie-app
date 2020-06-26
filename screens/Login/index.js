@@ -46,10 +46,6 @@ export default function Login({ navigation, route }) {
   const login = useSelector(state => state.login);
   const navigateBackTo = route.params?.navigateBackTo;
 
-  React.useEffect(() => {
-    console.tron.log(navigateBackTo);
-  }, []);
-
   const submit = async values => {
     let expo_token = null;
     try {

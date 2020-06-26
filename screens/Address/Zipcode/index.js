@@ -95,6 +95,19 @@ export default function Zipcode({ navigation, route }) {
     );
   }
 
+  function updateAddress(values, active) {
+    dispatch(
+      LocationsActions.updateLocation(
+        {
+          id: address?.id,
+          ...values,
+          is_active: active,
+        },
+        navigation,
+      ),
+    );
+  }
+
   function confirmActiveAddress(values) {
     Alert.alert(
       'Endereço principal',
@@ -102,12 +115,18 @@ export default function Zipcode({ navigation, route }) {
       [
         {
           text: 'Sim',
-          onPress: () => saveAddress(values, true),
+          onPress: () =>
+            address
+              ? updateAddress(values, true)
+              : saveAddress(values, true),
           style: 'cancel',
         },
         {
           text: 'Não',
-          onPress: () => saveAddress(values, false),
+          onPress: () =>
+            address
+              ? updateAddress(values, false)
+              : saveAddress(values, false),
           style: 'default',
         },
       ],

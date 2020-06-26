@@ -55,8 +55,6 @@ function* getCompanyById({ payload }) {
       `/companies/${payload}`,
     );
 
-    console.tron.log('testando company id');
-
     if (status === 200) {
       yield put(
         CompanyActions.getCompanyByIdSuccess({

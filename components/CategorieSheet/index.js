@@ -47,9 +47,7 @@ const CategorieSheet = React.forwardRef((props, ref) => {
     state => state.company,
   );
   const [tab, setTab] = useState(data?.categories[0]);
-  useEffect(() => {
-    console.tron.log(tab);
-  }, [tab]);
+
   return (
     <RBSheet
       ref={ref}

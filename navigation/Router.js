@@ -25,7 +25,6 @@ export default function Router({ isLoadingComplete }) {
         Permissions.NOTIFICATIONS,
       );
 
-      console.tron.log('status', status);
       if (status !== 'granted') {
         Alert.alert(
           'Erro',

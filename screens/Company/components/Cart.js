@@ -52,7 +52,7 @@ export const Cart = ({ customColors }) => {
     <View
       style={{
         padding: 10,
-        backgroundColor: customColors.primary,
+        backgroundColor: customColors.secondary,
         marginHorizontal: 10,
         borderRadius: 4,
         flexDirection: 'row',

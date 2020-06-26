@@ -86,7 +86,9 @@ export default function CurrentPlace({ open, close, navigation }) {
       >
         <TouchableOpacity
           onPress={() =>
-            data ? navigation.navigate('Address') : open()
+            data && locations.length > 0
+              ? navigation.navigate('Address')
+              : open()
           }
           style={styles.addressContainer}
         >

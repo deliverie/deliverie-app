@@ -20,7 +20,6 @@ export const Tabs = ({ categories, customColors }) => {
   const [subTab, setSubtab] = useState(null);
 
   useEffect(() => {
-    console.tron.log('Teste', tab);
     if (tab) {
       dispatch(
         ProductsActions.getProductsRequest({ category: tab.id }),
@@ -57,10 +56,11 @@ export const Tabs = ({ categories, customColors }) => {
         {categories.map(e => (
           <TouchableOpacity
             style={{
-              borderColor: e === tab ? customColors.primary : '#ccc',
+              borderColor:
+                e === tab ? customColors.secondary : '#ccc',
               borderWidth: e === tab ? 2 : 2,
               backgroundColor:
-                e === tab ? customColors.primary : '#fff',
+                e === tab ? customColors.secondary : '#fff',
               bordeRadius: 100,
               marginHorizontal: 10,
               paddingHorizontal: 10,

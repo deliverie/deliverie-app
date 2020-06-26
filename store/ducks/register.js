@@ -15,7 +15,6 @@ export default function register(state = INITIAL_STATE, action) {
       console.log(action.payload);
       return { ...state, loading: true };
     case Types.REGISTER_REQUEST_SUCCESS:
-      console.tron.log('teste saga succcess', action);
       return {
         ...state,
         loading: false,

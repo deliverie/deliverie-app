@@ -21,7 +21,7 @@ function* register({ payload }) {
 
   try {
     const response = yield call(api.post, '/users', data);
-    console.tron.log('teste requisição', response);
+
     yield put(RegisterActions.registerSuccess());
     showToast(
       'Feito',

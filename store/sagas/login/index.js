@@ -41,7 +41,6 @@ function* login({ payload }) {
       RootNavigation.navigate(payload.navigateBackTo);
     }
   } catch (error) {
-    console.tron.log('catch', error);
     yield put(LoginActions.loginFail());
 
     showToast(

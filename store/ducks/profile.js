@@ -15,7 +15,6 @@ export default function profile(state = INITIAL_STATE, action) {
       console.log('reducer de profile', action.payload);
       return { ...state, loading: true };
     case Types.PROFILE_UPDATE_SUCCESS:
-      console.tron.log('teste saga succcess', action);
       return {
         ...state,
         loading: false,

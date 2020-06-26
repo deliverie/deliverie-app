@@ -7,13 +7,14 @@ export const Types = {
   ADD_LOCATION_REQUEST: 'LOCATION/ADD_LOCATION_REQUEST',
   ADD_LOCATION_SUCCESS: 'LOCATION/ADD_LOCATION_SUCCESS',
   ADD_LOCATION_FAIL: 'LOCATION/ADD_LOCATION_FAIL',
-
   REMOVE_LOCATION_REQUEST: 'LOCATION/REMOVE_LOCATION_REQUEST',
   REMOVE_SINGLE_LOCATION: 'LOCATION/REMOVE_SINGLE_LOCATION',
   SET_LOCATION: 'LOCATION/SET_LOCATION',
   CALC_SHIPMENT_REQUEST: 'LOCATION/CALC_SHIPMENT_REQUEST',
   CALC_SHIPMENT_SUCCESS: 'LOCATION/CALC_SHIPMENT_SUCCESS',
   CALC_SHIPMENT_FAIL: 'LOCATION/CALC_SHIPMENT_FAIL',
+  UPDATE_LOCATION_REQUEST: 'LOCATION/UPDATE_LOCATION_REQUEST',
+  UPDATE_LOCATION_FAIL: 'LOCATION/UPDATE_LOCATION_FAIL',
 };
 
 const INITIAL_STATE = {
@@ -34,7 +35,6 @@ export default function locations(state = INITIAL_STATE, action) {
     case Types.GET_LOCATIONS_REQUEST:
       return { ...state, loading: true };
     case Types.GET_LOCATIONS_SUCCESS:
-      console.tron.log('action locatioons', action);
       return {
         ...state,
         locations: action.payload,
@@ -47,6 +47,12 @@ export default function locations(state = INITIAL_STATE, action) {
     case Types.ADD_LOCATION_REQUEST:
       return { ...state, loading: true, error: false };
     case Types.ADD_LOCATION_FAIL:
+      return { ...state, loading: false, error: false };
+    case Types.UPDATE_LOCATION_REQUEST:
+      return { ...state, loading: true, error: false };
+    case Types.UPDATE_LOCATION_SUCCESS:
+      return { ...state, loading: false, error: false };
+    case Types.UPDATE_LOCATION_FAIL:
       return { ...state, loading: false, error: false };
     case Types.REMOVE_SINGLE_LOCATION:
       return { ...state, shops: [], loading: false, error: false };
@@ -106,6 +112,13 @@ export const Creators = {
   }),
   addLocationFail: () => ({
     type: Types.ADD_LOCATION_FAIL,
+  }),
+  updateLocation: payload => ({
+    type: Types.UPDATE_LOCATION_REQUEST,
+    payload,
+  }),
+  updateLocationFail: () => ({
+    type: Types.UPDATE_LOCATION_FAIL,
   }),
   removeLocation: payload => ({
     type: Types.REMOVE_LOCATION_REQUEST,
