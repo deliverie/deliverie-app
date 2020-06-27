@@ -427,11 +427,12 @@ export default function Company({ navigation, route: { params } }) {
                   }}
                 >
                   {data?.min_delivery_time}-{data?.max_delivery_time}{' '}
-                  min (
+                  min
+                  {/* min (
                   {data?.delivery_price === 0
                     ? 'Grátis'
                     : monetize(data?.delivery_price)}
-                  )
+                  ) */}
                 </Text>
               </View>
             </View>

@@ -80,13 +80,14 @@ export default function OrderDetail({
     return (
       <FlatList
         data={variations}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
             <View
               style={{
                 marginBottom: 4,
                 paddingBottom: 4,
-                borderBottomWidth: 1,
+                borderBottomWidth:
+                  index === variations.length - 1 ? 0 : 1,
                 borderColor: '#f1f1f1',
               }}
             >
@@ -317,6 +318,8 @@ export default function OrderDetail({
                   {
                     justifyContent: 'flex-end',
                     alignItems: 'flex-end',
+                    paddingTop: 10,
+                    marginTop: 10,
                   },
                 ]}
               >
@@ -332,7 +335,7 @@ export default function OrderDetail({
                     </Text>
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {getOrder?.total}
+                    {monetize(getOrder?.total)}
                   </Text>
                 </View>
               </View>
@@ -357,7 +360,7 @@ export default function OrderDetail({
                     </Text>
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {getOrder.shipping_price}
+                    {monetize(getOrder.shipping_price)}
                   </Text>
                 </View>
               </View>
@@ -382,7 +385,7 @@ export default function OrderDetail({
                     </Text>
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {getOrder.total}
+                    {monetize(getOrder.total)}
                   </Text>
                 </View>
               </View>
@@ -466,6 +469,42 @@ export default function OrderDetail({
               <View style={styles.tringle} />
               <View style={styles.tringle} />
               <View style={styles.tringle} />
+            </View>
+            <View style={styles.containerAddress}>
+              <Feather name="map-pin" size={22} color={colors.dark} />
+              <View style={{ marginLeft: 10 }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: colors.dark,
+                    fontWeight: '500',
+                    marginBottom: 3,
+                  }}
+                >
+                  Endereço de entrega
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: colors.dark,
+                  }}
+                >
+                  {getOrder?.address?.street},
+                  {getOrder?.address?.number
+                    ? ` ${getOrder?.address?.number}`
+                    : ''}
+                  {'\n'}
+                  {getOrder?.address?.city
+                    ? `${getOrder?.address?.city}/`
+                    : ''}
+                  {getOrder?.address?.state
+                    ? `${getOrder?.address?.state}`
+                    : ''}
+                  {getOrder?.address?.zipcode
+                    ? ` - CEP: ${getOrder?.address?.zipcode}`
+                    : ''}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -569,5 +608,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  containerAddress: {
+    padding: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

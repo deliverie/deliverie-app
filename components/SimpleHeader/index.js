@@ -47,13 +47,7 @@ export default function SimpleHeader({ text, goBack }) {
             {text}
           </Text>
         </View>
-        <Ionicons
-          style={{ paddingHorizontal: 20 }}
-          name="ios-arrow-back"
-          size={33}
-          color={colors.white}
-          onPress={() => {}}
-        />
+        <View style={{ paddingHorizontal: 20 }} />
       </View>
     </SafeAreaView>
   );

@@ -29,12 +29,13 @@ export default function ShopListItem({ item }) {
             resizeMode="contain"
           />
         ) : (
-          <View style={styles.image}>
+          <View style={{ padding: 10 }}>
             <SvgUri
-              width="16"
-              height="16"
+              width="45"
+              height="45"
               // eslint-disable-next-line global-require
-              source={require('../../assets/images/delivery.svg')}
+              color="red"
+              source={require('../../assets/images/picture.svg')}
             />
           </View>
         )}
