@@ -1,4 +1,10 @@
 import moment from 'moment';
+import Constants from 'expo-constants';
+
+const { manifest } = Constants;
+export const getLocalIP = () => {
+  return manifest.debuggerHost.split(':')[0];
+};
 
 export function monetize(n) {
   if (n && typeof n === 'number')
