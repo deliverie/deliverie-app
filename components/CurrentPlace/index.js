@@ -44,40 +44,13 @@ export default function CurrentPlace({ open, close, navigation }) {
   }
   return (
     <SafeAreaView>
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => handleActive(1)}
-          style={[
-            styles.button,
-            active === 1 ? styles.buttonActive : [],
-          ]}
-        >
-          <Text
-            style={active === 1 ? styles.textActive : styles.text}
-          >
-            Entrega
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleActive(2)}
-          style={[
-            styles.button,
-            active === 2 ? styles.buttonActive : [],
-          ]}
-        >
-          <Text
-            style={active === 2 ? styles.textActive : styles.text}
-          >
-            Retirada
-          </Text>
-        </TouchableOpacity>
-      </View>
       <SkeletonContent
         containerStyle={{
           flex: 1,
           width: 300,
           marginLeft: 10,
-          marginTop: 3,
+          marginVertical: 10,
+          opacity: 0.9,
         }}
         isLoading={false}
         layout={[
@@ -107,7 +80,7 @@ export default function CurrentPlace({ open, close, navigation }) {
           </Text>
           <SimpleLineIcons
             name="arrow-down"
-            size={10}
+            size={15}
             color={colors.primary}
           />
         </TouchableOpacity>

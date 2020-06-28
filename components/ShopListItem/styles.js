@@ -17,14 +17,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
 
-    elevation: 5,
+    elevation: 2,
   },
   container: {
     flexDirection: 'row',
     borderRadius: 5,
+    overflow: 'hidden',
   },
   image: {
-    width: 75,
+    width: 70,
+
+    aspectRatio: 3.5 / 3.5,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },

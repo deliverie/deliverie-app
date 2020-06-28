@@ -64,7 +64,7 @@ export default function Tab({ navigation, route }) {
           ),
         }}
       />
-      <BottomTab.Screen
+      {/*<BottomTab.Screen
         name="Settings"
         component={AuthStack}
         options={{
@@ -73,7 +73,7 @@ export default function Tab({ navigation, route }) {
             <TabBarIcon focused={focused} name="settings" />
           ),
         }}
-      />
+      />*/}
       <BottomTab.Screen
         name="Account"
         component={AuthStack}

@@ -83,7 +83,9 @@ export default function Account({ navigation }) {
               >
                 <H1 text={`Olá, ${data?.user?.name}`} />
 
-                <Text>{data?.user?.email}</Text>
+                <Text style={{ opacity: 0.45, paddingVertical: 5 }}>
+                  {data?.user?.email}
+                </Text>
                 <View
                   style={{
                     flex: 1,
@@ -186,6 +188,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fafafa',
+    paddingTop: 70,
   },
   contentContainer: {
     paddingTop: 15,

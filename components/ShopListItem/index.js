@@ -9,7 +9,7 @@ import styles from './styles';
 import H3 from '../H3';
 import H4 from '../H4';
 import { baseURL } from '../../services/api';
-import SvgUri from 'react-native-svg-uri';
+import Picture from '../../assets/images/picture.svg';
 
 export default function ShopListItem({ item }) {
   const navigation = useNavigation();
@@ -26,16 +26,15 @@ export default function ShopListItem({ item }) {
           <Image
             style={styles.image}
             source={{ uri: `${baseURL}/${item.photo}` }}
-            resizeMode="contain"
+            resizeMode="stretch"
           />
         ) : (
-          <View style={{ padding: 10 }}>
-            <SvgUri
-              width="45"
-              height="45"
+          <View style={{ paddingRight: 10 }}>
+            <Picture
+              width="70"
+              height="70"
               // eslint-disable-next-line global-require
               color="red"
-              source={require('../../assets/images/picture.svg')}
             />
           </View>
         )}
@@ -49,7 +48,9 @@ export default function ShopListItem({ item }) {
           {/* <H3 text={item.fantasy_name} /> */}
           <View style={{ flexDirection: 'column', marginTop: 4 }}>
             <View style={{ flex: 1 }}>
-              <Text>{item?.fantasy_name}</Text>
+              <Text style={{ fontSize: 16 }}>
+                {item?.fantasy_name}
+              </Text>
             </View>
             {/* <View style={{ flexDirection: 'row' }}>
               <H4 text="Variadas -" />
@@ -60,7 +61,7 @@ export default function ShopListItem({ item }) {
           <View
             style={{
               flexDirection: 'row',
-              marginTop: 4,
+              marginTop: 8,
               justifyContent: 'space-between',
               alignContent: 'center',
               alignItems: 'center',
@@ -73,6 +74,7 @@ export default function ShopListItem({ item }) {
                 alignContent: 'center',
                 alignItems: 'center',
                 justifyContent: 'center',
+                opacity: 0.6,
               }}
             >
               <MaterialCommunityIcons
@@ -85,7 +87,7 @@ export default function ShopListItem({ item }) {
                 text={`${item?.min_delivery_time}-${item.max_delivery_time} min`}
               />
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', opacity: 0.6 }}>
               <MaterialCommunityIcons
                 name="bike"
                 size={14}

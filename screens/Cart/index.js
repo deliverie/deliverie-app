@@ -860,6 +860,7 @@ function Cart({ navigation }) {
                         style={{
                           fontFamily: 'roboto-light',
                           fontSize: 14,
+                          opacity: 0.5,
                           color: colors.dark,
                         }}
                       >
@@ -1010,6 +1011,7 @@ function Cart({ navigation }) {
                         style={{
                           fontFamily: 'roboto-light',
                           fontSize: 14,
+                          opacity: 0.5,
                           color: colors.dark,
                         }}
                       >
@@ -1222,6 +1224,7 @@ function Cart({ navigation }) {
                         style={{
                           fontFamily: 'roboto-light',
                           color: colors.darker,
+                          opacity: 0.5,
                           fontSize: 16,
                         }}
                       >
@@ -1261,6 +1264,7 @@ function Cart({ navigation }) {
                           fontFamily: 'roboto-light',
                           color: colors.darker,
                           fontSize: 16,
+                          opacity: 0.5,
                         }}
                       >
                         Métodos de pagamento

@@ -16,7 +16,7 @@
       "package": "com.deliverie.app",
       "versionCode": 1
     },
-    "version": "0.0.1",
+
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -28,6 +28,22 @@
       "icon": "./assets/images/icon-push.png",
       "androidMode": "collapse",
       "color": "#FF5900"
+    },
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
     }
   }
 }

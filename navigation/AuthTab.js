@@ -71,7 +71,7 @@ export default function AuthTab({ navigation, route }) {
           ),
         }}
       />
-      <BottomTab.Screen
+      {/*<BottomTab.Screen
         name="Settings"
         component={LinksScreen}
         options={{
@@ -80,7 +80,7 @@ export default function AuthTab({ navigation, route }) {
             <TabBarIcon focused={focused} name="settings" />
           ),
         }}
-      />
+      />*/}
       <BottomTab.Screen
         name="Account"
         component={AccountStack}

@@ -40,8 +40,9 @@ const styles = StyleSheet.create({
   },
   addressText: {
     color: colors.dark,
-    fontWeight: '500',
+
     marginRight: 5,
+    fontWeight: '300',
   },
 });
 

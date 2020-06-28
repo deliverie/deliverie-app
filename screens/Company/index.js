@@ -14,7 +14,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
+
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 import { Ionicons, Feather, Entypo } from '@expo/vector-icons';
@@ -33,12 +33,16 @@ import CategorieSheet from '../../components/CategorieSheet';
 import { Cart } from './components/Cart';
 import { Tabs } from './components/Tabs';
 import { baseURL } from '../../services/api';
+import Picture from '../../assets/images/picture.svg';
+
 import company, {
   Creators as CompanyActions,
 } from '../../store/ducks/company';
 
 import styles from './styles';
 import Products from './components/Products';
+import Delivery from '../../assets/images/delivery.svg';
+
 const { height } = Dimensions.get('window');
 
 export default function Company({ navigation, route: { params } }) {
@@ -145,10 +149,9 @@ export default function Company({ navigation, route: { params } }) {
                     }}
                   />
                 ) : (
-                  <SvgUri
+                  <Picture
                     width="30"
                     height="30"
-                    source={require('../../assets/images/picture.svg')}
                     style={styles.image}
                   />
                 )}
@@ -225,10 +228,18 @@ export default function Company({ navigation, route: { params } }) {
                   marginBottom: 10,
                 }}
               >
-                <TouchableOpacity onPress={() => navigation.goBack()}>
+                <TouchableOpacity
+                  hitSlop={{
+                    top: 30,
+                    left: 20,
+                    right: 20,
+                    bottom: 30,
+                  }}
+                  onPress={() => navigation.goBack()}
+                >
                   <Ionicons
                     name="md-arrow-back"
-                    size={23}
+                    size={25}
                     color="white"
                   />
                 </TouchableOpacity>
@@ -413,11 +424,7 @@ export default function Company({ navigation, route: { params } }) {
                   alignItems: 'center',
                 }}
               >
-                <SvgUri
-                  width="16"
-                  height="16"
-                  source={require('../../assets/images/delivery.svg')}
-                />
+                <Delivery width="16" height="16" />
 
                 <Text
                   style={{

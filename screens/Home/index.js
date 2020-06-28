@@ -1,6 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import {
+  StyleSheet,
+  View,
+  StatusBar,
+  Platform,
+  FlatList,
+  Text,
+  LayoutAnimation,
+  SafeAreaView,
+} from 'react-native';
+import {
+  ScrollView,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 import pluralize from 'pluralize';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,6 +39,16 @@ import { Creators as LocationsActions } from '../../store/ducks/locations';
 
 /** REDUX END */
 
+// Categories Icons
+import PizzaSVG from '../../assets/images/pizza.svg';
+import BurgerSVG from '../../assets/images/categories/014-burger.svg';
+import TacoSVG from '../../assets/images/categories/027-taco.svg';
+import AppleSVG from '../../assets/images/categories/fruit.svg';
+import SweetsSVG from '../../assets/images/categories/036-ice-cream.svg';
+import LunchSVG from '../../assets/images/categories/040-cutlery.svg';
+import OthersSVG from '../../assets/images/categories/008-fried-chicken.svg';
+import MallSVG from '../../assets/images/categories/045-restaurant.svg';
+
 const firstLayout = [
   {
     width: 65,
@@ -50,16 +72,59 @@ const secondLayout = [
   },
 ];
 
+const categories = [
+  {
+    Icon: PizzaSVG,
+    name: 'PIZZA',
+    label: 'Pizza',
+  },
+  {
+    Icon: BurgerSVG,
+    name: 'BURGER',
+    label: 'Lanches',
+  },
+  {
+    Icon: TacoSVG,
+    name: 'SNACK',
+    label: 'Salgados',
+  },
+  {
+    Icon: AppleSVG,
+    name: 'FITNESS',
+    label: 'Saudável',
+  },
+  {
+    Icon: LunchSVG,
+    name: 'LUNCH',
+    label: 'Marmitas',
+  },
+
+  {
+    Icon: SweetsSVG,
+    name: 'SWEET',
+    label: 'Doces',
+  },
+  {
+    Icon: MallSVG,
+    name: 'MARKET',
+    label: 'Mercado',
+  },
+  {
+    Icon: OthersSVG,
+    name: 'OTHERS',
+    label: 'Outros',
+  },
+];
+
 export default function Home({ navigation }) {
   const locationSheet = useRef();
   const dispatch = useDispatch();
-  const { companies: dataCompany, total } = useSelector(
+  const { companies: dataCompany, total, loading } = useSelector(
     state => state.company,
   );
   const location = useSelector(state => state.locations);
   const { data } = useSelector(state => state.login);
-
-  const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState('');
 
   useEffect(() => {
     if (data) {
@@ -74,12 +139,13 @@ export default function Home({ navigation }) {
   }, [location.currentLocation]);
 
   useEffect(() => {
-    if (dataCompany?.length) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+    if (category?.length) {
+      console.log('request');
+      dispatch(CompanyActions.getCompany({ params: { category } }));
+    } else {
+      dispatch(CompanyActions.getCompany());
     }
-  }, [dataCompany]);
+  }, [category]);
 
   const LoadingShop = () =>
     [...Array(6).keys()].map(e => (
@@ -102,45 +168,102 @@ export default function Home({ navigation }) {
     ));
 
   return (
-    <ScrollView
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: 'white',
       }}
     >
-      <CurrentPlace
-        open={() => locationSheet.current.open()}
-        close={() => locationSheet.current.close()}
-        navigation={navigation}
-      />
-      {loading ? (
-        <SkeletonContent
-          isLoading
-          layout={[{ width: 150, height: 20 }]}
-          containerStyle={{
-            marginHorizontal: metrics.baseMargin,
-            marginBottom: metrics.baseMargin,
-          }}
+      <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          paddingTop:
+            Platform.OS === 'ios' ? 18 : StatusBar.currentHeight,
+        }}
+      >
+        <FlatList
+          data={categories}
+          horizontal
+          contentContainerStyle={{ marginVertical: 10 }}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item: { Icon, name, label } }) => (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                LayoutAnimation.configureNext(
+                  LayoutAnimation.Presets.spring,
+                );
+                if (category === name) {
+                  setCategory(null);
+                } else {
+                  setCategory(name);
+                }
+              }}
+            >
+              <View style={styles.containerCategory}>
+                <View
+                  style={[
+                    styles.category,
+                    category === name && styles.selected,
+                  ]}
+                >
+                  <Icon
+                    width={24}
+                    height={24}
+                    fill={category === name ? colors.primary : '#fff'}
+                  />
+                </View>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    opacity: 0.6,
+                    fontSize: 12,
+                  }}
+                >
+                  {label}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
+          keyExtractor={item => item.name}
         />
-      ) : (
-        <View style={{ marginBottom: 15 }}>
-          <H1
-            text={`${total} ${pluralize('estabelecimento', total)}`}
-            margin
+        <CurrentPlace
+          open={() => locationSheet.current.open()}
+          close={() => locationSheet.current.close()}
+          navigation={navigation}
+        />
+        {loading ? (
+          <SkeletonContent
+            isLoading
+            layout={[{ width: 150, height: 20 }]}
+            containerStyle={{
+              marginHorizontal: metrics.baseMargin,
+              marginBottom: metrics.baseMargin,
+            }}
           />
-        </View>
-      )}
-      <LocationSheet ref={locationSheet} />
-      {loading ? (
-        <LoadingShop />
-      ) : (
-        <View>
-          {dataCompany?.map(e => (
-            <ShopListItem key={e.id} item={e} />
-          ))}
-        </View>
-      )}
-    </ScrollView>
+        ) : (
+          <View style={{ marginBottom: 15 }}>
+            <H1
+              text={`${total} ${pluralize('estabelecimento', total)}`}
+              margin
+            />
+          </View>
+        )}
+        <LocationSheet ref={locationSheet} />
+        {loading ? (
+          <LoadingShop />
+        ) : (
+          <View>
+            <FlatList
+              contentContainerStyle={{ marginBottom: 20 }}
+              data={dataCompany}
+              renderItem={({ item: e }) => <ShopListItem item={e} />}
+              keyExtractor={item => item.id}
+            />
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

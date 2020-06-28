@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+  UIManager,
+} from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,6 +29,12 @@ import spaceMono from './assets/fonts/SpaceMono-Regular.ttf';
 import roboto from './assets/fonts/Roboto-Regular.ttf';
 import robotoLight from './assets/fonts/Roboto-Light.ttf';
 import robotoBold from './assets/fonts/Roboto-Bold.ttf';
+
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(
