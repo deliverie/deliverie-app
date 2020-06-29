@@ -130,8 +130,16 @@ export default function Home({ navigation }) {
     if (data) {
       dispatch(LocationsActions.getLocations());
     }
-    dispatch(CompanyActions.getCompany());
   }, []);
+
+  useEffect(() => {
+    console.tron.log('location', location);
+    if (!location.currentLocation) {
+      locationSheet.current.open();
+    } else {
+      dispatch(CompanyActions.getCompany());
+    }
+  }, [location]);
 
   //monitoring location change
   useEffect(() => {
@@ -178,10 +186,13 @@ export default function Home({ navigation }) {
         style={{
           flex: 1,
           backgroundColor: 'white',
-          paddingTop:
-            Platform.OS === 'ios' ? 18 : StatusBar.currentHeight,
         }}
       >
+        <CurrentPlace
+          open={() => locationSheet.current.open()}
+          close={() => locationSheet.current.close()}
+          navigation={navigation}
+        />
         <FlatList
           data={categories}
           horizontal
@@ -226,11 +237,6 @@ export default function Home({ navigation }) {
             </TouchableWithoutFeedback>
           )}
           keyExtractor={item => item.name}
-        />
-        <CurrentPlace
-          open={() => locationSheet.current.open()}
-          close={() => locationSheet.current.close()}
-          navigation={navigation}
         />
         {loading ? (
           <SkeletonContent

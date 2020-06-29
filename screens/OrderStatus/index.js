@@ -1,35 +1,79 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react';
 import { View, Image, Text } from 'react-native';
-
-import success from '../../assets/images/success.png';
-import time from '../../assets/images/time.png';
-import motorcycle from '../../assets/images/motorcycle.png';
-import fail from '../../assets/images/fail.png';
-import done from '../../assets/images/done.png';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+const colors = {
+  pending: '#2ccce4',
+  on_way: '#dce775',
+  done: '#37d67a',
+  accepted: '#593C8F',
+  cancelado: '#f47373',
+  white: '#fff',
+};
 const OrderStatus = ({ route: { params } }) => {
   const renderImage = () => {
     if (!params?.order_status) {
-      return time;
+      return (
+        <MaterialCommunityIcons
+          name="timer"
+          size={54}
+          color="black"
+        />
+      );
     }
     const { order_status } = params;
     if (order_status === 'pending') {
-      return time;
+      return (
+        <MaterialCommunityIcons
+          name="timer"
+          size={64}
+          color="rgba(255,255,255,0.4)"
+        />
+      );
     }
     if (order_status === 'accepted') {
-      return success;
+      return (
+        <MaterialCommunityIcons
+          name="timer"
+          size={64}
+          color="rgba(255,255,255,0.4)"
+        />
+      );
     }
     if (order_status === 'on_way') {
-      return motorcycle;
+      return (
+        <MaterialCommunityIcons
+          name="timer"
+          size={64}
+          color="rgba(255,255,255,0.4)"
+        />
+      );
     }
     if (order_status === 'done') {
-      return done;
+      return (
+        <MaterialCommunityIcons
+          name="timer"
+          size={64}
+          color="rgba(255,255,255,0.4)"
+        />
+      );
     }
     if (order_status === 'cancelled') {
-      return fail;
+      return (
+        <MaterialCommunityIcons
+          name="timer"
+          size={64}
+          color="rgba(255,255,255,0.4)"
+        />
+      );
     }
-    return time;
+    return (
+      <MaterialCommunityIcons
+        name="timer"
+        size={64}
+        color="rgba(255,255,255,0.4)"
+      />
+    );
   };
 
   const renderText = () => {
@@ -39,12 +83,27 @@ const OrderStatus = ({ route: { params } }) => {
     const { order_status } = params;
     if (order_status === 'pending') {
       return (
-        <View>
-          <Text style={{ fontFamily: 'roboto', fontSize: 18 }}>
+        <View style={{ alignItems: 'center' }}>
+          <Text
+            style={{
+              fontFamily: 'roboto',
+              fontSize: 18,
+              color: colors.white,
+            }}
+          >
             Pedido pendente
           </Text>
-          <Text style={{ fontFamily: 'roboto-light', fontSize: 16 }}>
-            Aguarde até que o estabelecimento aceite seu pedido.
+          <Text
+            style={{
+              fontFamily: 'roboto-light',
+              fontSize: 16,
+              color: colors.white,
+              marginTop: 10,
+              textAlign: 'center',
+            }}
+          >
+            Assim que o estabelecimento aceitar o seu pedido você será
+            informado
           </Text>
         </View>
       );
@@ -110,13 +169,20 @@ const OrderStatus = ({ route: { params } }) => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: colors[params?.order_status],
       }}
     >
-      <Text style={{ fontFamily: 'roboto', fontSize: 18 }}>
+      <Text
+        style={{
+          fontFamily: 'roboto',
+          fontSize: 18,
+          color: colors.white,
+        }}
+      >
         #{params?.id}
       </Text>
       <View style={{ marginBottom: 15, marginTop: 5 }}>
-        <Image source={renderImage()} />
+        {renderImage()}
       </View>
       {renderText()}
     </View>

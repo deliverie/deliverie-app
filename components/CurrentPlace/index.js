@@ -65,24 +65,29 @@ export default function CurrentPlace({ open, close, navigation }) {
           }
           style={styles.addressContainer}
         >
-          <Text style={styles.addressText}>
-            {currentLocation
-              ? `${currentLocation.street}, ${
-                  currentLocation.number
-                    ? `${currentLocation.number},`
-                    : ''
-                } ${
-                  currentLocation.city
-                    ? `${currentLocation.city}`
-                    : ''
-                }`
-              : 'Adicione um endereço'}
+          <Text style={{ fontSize: 14, fontColor: colors.darker }}>
+            Você esta em
           </Text>
-          <SimpleLineIcons
-            name="arrow-down"
-            size={15}
-            color={colors.primary}
-          />
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.addressText}>
+              {currentLocation
+                ? `${currentLocation.street}, ${
+                    currentLocation.number
+                      ? `${currentLocation.number},`
+                      : ''
+                  } ${
+                    currentLocation.city
+                      ? `${currentLocation.city}`
+                      : ''
+                  }`
+                : 'Adicione um endereço'}
+            </Text>
+            <SimpleLineIcons
+              name="arrow-down"
+              size={15}
+              color={colors.primary}
+            />
+          </View>
         </TouchableOpacity>
       </SkeletonContent>
     </SafeAreaView>

@@ -25,7 +25,7 @@ import SkeletonContent from 'react-native-skeleton-content';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Color from 'color';
-import { monetize, handleWorkHours } from '../../utils';
+import { monetize, handleWorkHours, weekDaysEnPt } from '../../utils';
 import { colors } from '../../styles';
 
 import CategorieSheet from '../../components/CategorieSheet';
@@ -108,6 +108,67 @@ export default function Company({ navigation, route: { params } }) {
     } catch (error) {
       alert(error.message);
     }
+  }
+
+  function renderWorkTime(times) {
+    const days = Object.keys(times.allDays);
+    console.tron.log('All Days', times);
+    return (
+      <FlatList
+        data={days}
+        renderItem={({ item, index }) => {
+          return (
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                borderBottomWidth: index === days.length - 1 ? 0 : 1,
+                borderColor: '#f1f1f1',
+                paddingVertical: 3,
+                alignItems: 'center',
+              }}
+            >
+              <View
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 5,
+                  backgroundColor:
+                    weekDaysEnPt[item] === times.day[item]
+                      ? colors.success
+                      : colors.white,
+                  marginRight: 5,
+                }}
+              />
+
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={{ fontSize: 13, color: colors.darker }}>
+                  {weekDaysEnPt[item]}:
+                </Text>
+                <View style={{ flexDirection: 'row', marginLeft: 5 }}>
+                  {times?.allDays[item]?.period.map(singleTime => {
+                    return (
+                      <Text
+                        style={[
+                          { fontSize: 13, color: colors.darker },
+                          times?.allDays[item]?.period.length > 1
+                            ? { marginRight: 10 }
+                            : { marginRight: 0 },
+                        ]}
+                      >
+                        {singleTime?.start.slice(0, -3)} até {''}
+                        {singleTime?.end.slice(0, -3)}
+                      </Text>
+                    );
+                  })}
+                </View>
+              </View>
+            </View>
+          );
+        }}
+        keyExtractor={item => String({ item })}
+      />
+    );
   }
 
   function renderProducts() {
@@ -398,21 +459,38 @@ export default function Company({ navigation, route: { params } }) {
                   justifyContent: 'center',
                   flexDirection: 'row',
                   alignItems: 'center',
+                  borderWidth: 2,
+                  backgroundColor: handleWorkHours(data?.workhours)
+                    ?.isOpen
+                    ? colors.success
+                    : colors.danger,
+                  borderColor: handleWorkHours(data?.workhours)
+                    ?.isOpen
+                    ? colors.success
+                    : 'red',
                 }}
               >
                 <Ionicons
                   name="md-time"
                   size={15}
-                  color={colors.darker}
+                  color={
+                    handleWorkHours(data?.workhours)?.isOpen
+                      ? colors.white
+                      : colors.lighdarker
+                  }
                 />
                 <Text
                   style={{
                     fontSize: 12,
-                    color: colors.lighdarker,
+                    color: handleWorkHours(data?.workhours)?.isOpen
+                      ? colors.white
+                      : colors.lighdarker,
                     marginLeft: 5,
                   }}
                 >
-                  Aberto
+                  {handleWorkHours(data?.workhours)?.isOpen
+                    ? 'Aberto'
+                    : 'Fechado'}
                 </Text>
               </View>
               <View
@@ -447,16 +525,12 @@ export default function Company({ navigation, route: { params } }) {
               <View
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  paddingHorizontal: 10,
                   paddinTop: 10,
                   marginTop: 10,
                 }}
               >
                 <View>
-                  <Text style={{ color: colors.darker }}>
-                    {JSON.stringify(handleWorkHours(data?.workhours))}
-                  </Text>
+                  {renderWorkTime(handleWorkHours(data?.workhours))}
                 </View>
               </View>
             )}

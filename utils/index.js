@@ -33,6 +33,16 @@ export function cnpj(value) {
       .replace(/(\d{4})(\d{1,2})/, '$1-$2');
 }
 
+export const weekDaysEnPt = {
+  monday: 'Segunda',
+  tuesday: 'Terça',
+  wednesday: 'Quarta',
+  thursday: 'Quinta',
+  friday: 'Sexta',
+  saturday: 'Sábado',
+  sunday: 'Domingo',
+};
+
 export function validateCnpj(cnpj) {
   if (cnpj) {
     cnpj = cnpj.replace(/[^\d]+/g, '');
@@ -104,24 +114,27 @@ export function diffDates(date1, date2) {
 }
 
 export function handleWorkHours(days) {
+  let isOpen = false;
   const weekDaysPt = [
-    'Domingo',
+    '',
     'Segunda',
     'Terça',
     'Quarta',
     'Quinta',
     'Sexta',
     'Sábado',
+    'Domingo',
   ];
 
   const weekDaysEn = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
+    '',
+    'monday',
+    'tuesday',
     'wednesday',
     'thursday',
     'friday',
     'saturday',
+    'sunday',
   ];
 
   if (days) {
@@ -147,12 +160,37 @@ export function handleWorkHours(days) {
       });
     });
 
-    const currentDay = moment().isoWeekday();
+    const currentDayOfWeek = moment().isoWeekday();
 
+    if (periods[weekDaysEn[currentDayOfWeek]]) {
+      //check if there's any period block for a company
+      // eslint-disable-next-line no-unused-expressions
+      periods[weekDaysEn[currentDayOfWeek]]?.period.map(
+        singlePeriod => {
+          const startTime = moment(Date.now());
+          const beforeTime = moment(
+            singlePeriod.start,
+            'HH.mm.ss',
+          ).subtract(3, 'hours');
+          const afterTime = moment(
+            singlePeriod.end,
+            'HH.mm.ss',
+          ).subtract(3, 'hours');
+          const between = startTime.isBetween(beforeTime, afterTime);
+
+          isOpen = between;
+        },
+      );
+    } else {
+      return null;
+    }
     return {
-      day: weekDaysPt[currentDay],
-      dayPeriod: [periods[weekDaysEn[currentDay]]],
+      day: {
+        [weekDaysEn[currentDayOfWeek]]: weekDaysPt[currentDayOfWeek],
+      },
+      dayPeriod: [periods[weekDaysEn[currentDayOfWeek]]],
       allDays: periods,
+      isOpen,
     };
   }
 }
@@ -161,6 +199,7 @@ export default {
   monetize,
   capitalize,
   cpf,
+  weekDaysEnPt,
   date,
   cnpj,
   diffDates,
