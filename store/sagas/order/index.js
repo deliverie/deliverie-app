@@ -9,6 +9,11 @@ import {
   Types as OrderTypes,
 } from '../../ducks/order';
 
+import {
+  Creators as CartActions,
+  Types as CartTypes,
+} from '../../ducks/cart';
+
 function* addItem(payload) {
   try {
     const { data: cart, status } = yield call(
@@ -32,6 +37,7 @@ function* createOrder({
   change,
   deliveryType,
 }) {
+  console.tron.log('create order payload', payload);
   try {
     const orderPayload = {
       variations: payload,
@@ -49,6 +55,9 @@ function* createOrder({
     );
     if (status === 200) {
       yield put(OrderActions.createOrderSuccess({ order }));
+      yield put(CartActions.clearCart());
+
+      RootNavigation.navigate('Home');
       RootNavigation.navigate('Orders', {
         screen: 'OrderStatus',
         options: {

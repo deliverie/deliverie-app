@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -16,9 +16,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { colors } from '../../../styles';
 import { baseURL } from '../../../services/api';
-import { monetize } from '../../../utils';
+import { monetize, handleWorkHours } from '../../../utils';
 import { Creators as CartActions } from '../../../store/ducks/cart';
 import { showToast } from '../../../utils/toast';
+import company from '../../../store/ducks/company';
 
 const Products = ({
   productSheetRef,
@@ -40,6 +41,10 @@ const Products = ({
     setQtd(0);
     return productSheetRef.current.close();
   }
+
+  useEffect(() => {
+    console.tron.log('company_id', data);
+  }, []);
 
   function isSelected(opcoes, isAdditional) {
     const values = Object.values(attr);
@@ -186,6 +191,34 @@ const Products = ({
             color={colors.dark}
             onPress={() => handleProductClose()}
           />
+          <View
+            style={{
+              borderRadius: 4,
+              paddingHorizontal: 10,
+              justifyContent: 'center',
+              borderWidth: 2,
+              borderColor: handleWorkHours(data?.workhours)?.isOpen
+                ? colors.success
+                : colors.danger,
+              alignContent: 'center',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                color: handleWorkHours(data?.workhours)?.isOpen
+                  ? colors.success
+                  : colors.danger,
+                marginLeft: 5,
+              }}
+            >
+              {handleWorkHours(data?.workhours)?.isOpen
+                ? 'Aberto'
+                : 'Fechado'}
+            </Text>
+          </View>
           <Ionicons
             style={{ paddingHorizontal: 20 }}
             name="md-share"

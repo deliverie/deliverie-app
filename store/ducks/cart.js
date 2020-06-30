@@ -5,6 +5,7 @@ export const Types = {
   ADD_CART: 'CART/ADD_CART',
   UPDATE_CART: 'CART/UPDATE_CART',
   REMOVE_CART: 'CART/REMOVE_CART',
+  CLEAR_CART: 'CART/CLEAR_CART',
 };
 
 const INITIAL_STATE = {
@@ -43,6 +44,12 @@ export default function cart(state = INITIAL_STATE, action) {
         ],
       };
     }
+    case Types.CLEAR_CART: {
+      return {
+        ...state,
+        cart: [],
+      };
+    }
     default:
       return state;
   }
@@ -61,5 +68,8 @@ export const Creators = {
   removeCart: cart_id => ({
     type: Types.REMOVE_CART,
     cart_id,
+  }),
+  clearCart: () => ({
+    type: Types.CLEAR_CART,
   }),
 };
