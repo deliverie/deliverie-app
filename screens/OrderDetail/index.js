@@ -286,7 +286,6 @@ export default function OrderDetail({
               <View
                 style={[
                   { flexDirection: 'row', paddingVertical: 10 },
-                  styles.border,
                 ]}
               >
                 <Feather

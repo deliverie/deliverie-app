@@ -24,6 +24,7 @@ const Products = ({
   productSheetRef,
   currentProduct,
   setCurrentProduct,
+  acceptOrders,
 }) => {
   const dispatch = useDispatch();
   const { company_id, cart } = useSelector(state => state.cart);
@@ -70,6 +71,14 @@ const Products = ({
   }
 
   function addToCart() {
+    if (!acceptOrders) {
+      showToast(
+        'Erro',
+        'Esse estabelecimento ainda não esta aberto, assim que o funcionamento for liberado, você poderá fazer seus pedidos, até lá você pode consultar todo o menu',
+        'danger',
+      );
+      return;
+    }
     if (company_id && company_id !== currentProduct.company_id) {
       showToast(
         'Erro',
@@ -180,7 +189,7 @@ const Products = ({
           <Ionicons
             style={{ paddingHorizontal: 20 }}
             name="md-share"
-            size={28}
+            size={23}
             color={colors.dark}
           />
         </View>

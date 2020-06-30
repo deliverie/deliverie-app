@@ -42,6 +42,7 @@ import company, {
 import styles from './styles';
 import Products from './components/Products';
 import Delivery from '../../assets/images/delivery.svg';
+import { acc } from 'react-native-reanimated';
 
 const { height } = Dimensions.get('window');
 
@@ -64,6 +65,8 @@ export default function Company({ navigation, route: { params } }) {
   if (!item) {
     return null;
   }
+
+  const acceptOrders = handleWorkHours(data?.workhours)?.isOpen;
 
   const [cart, setCart] = useState(true);
   const [qtd, setQtd] = useState(null);
@@ -111,63 +114,83 @@ export default function Company({ navigation, route: { params } }) {
   }
 
   function renderWorkTime(times) {
-    const days = Object.keys(times.allDays);
-    console.tron.log('All Days', times);
-    return (
-      <FlatList
-        data={days}
-        renderItem={({ item, index }) => {
-          return (
-            <View
-              style={{
-                flexDirection: 'row',
-                flex: 1,
-                borderBottomWidth: index === days.length - 1 ? 0 : 1,
-                borderColor: '#f1f1f1',
-                paddingVertical: 3,
-                alignItems: 'center',
-              }}
-            >
+    if (data?.workhours && times?.allDays) {
+      const days = Object.keys(times?.allDays);
+
+      return (
+        <FlatList
+          data={days}
+          renderItem={({ item, index }) => {
+            return (
               <View
                 style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 5,
-                  backgroundColor:
-                    weekDaysEnPt[item] === times.day[item]
-                      ? colors.success
-                      : colors.white,
-                  marginRight: 5,
+                  flexDirection: 'row',
+                  flex: 1,
+                  borderBottomWidth:
+                    index === days.length - 1 ? 0 : 1,
+                  borderColor: '#f1f1f1',
+                  paddingVertical: 3,
+                  alignItems: 'center',
                 }}
-              />
+              >
+                <View
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 5,
+                    backgroundColor:
+                      weekDaysEnPt[item] === times.day[item]
+                        ? colors.success
+                        : colors.white,
+                    marginRight: 5,
+                  }}
+                />
 
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ fontSize: 13, color: colors.darker }}>
-                  {weekDaysEnPt[item]}:
-                </Text>
-                <View style={{ flexDirection: 'row', marginLeft: 5 }}>
-                  {times?.allDays[item]?.period.map(singleTime => {
-                    return (
-                      <Text
-                        style={[
-                          { fontSize: 13, color: colors.darker },
-                          times?.allDays[item]?.period.length > 1
-                            ? { marginRight: 10 }
-                            : { marginRight: 0 },
-                        ]}
-                      >
-                        {singleTime?.start.slice(0, -3)} até {''}
-                        {singleTime?.end.slice(0, -3)}
-                      </Text>
-                    );
-                  })}
+                <View style={{ flexDirection: 'row' }}>
+                  <Text
+                    style={{ fontSize: 13, color: colors.darker }}
+                  >
+                    {weekDaysEnPt[item]}:
+                  </Text>
+                  <View
+                    style={{ flexDirection: 'row', marginLeft: 5 }}
+                  >
+                    {times?.allDays[item]?.period.map(singleTime => {
+                      return (
+                        <Text
+                          style={[
+                            { fontSize: 13, color: colors.darker },
+                            times?.allDays[item]?.period.length > 1
+                              ? { marginRight: 10 }
+                              : { marginRight: 0 },
+                          ]}
+                        >
+                          {singleTime?.start.slice(0, -3)} até {''}
+                          {singleTime?.end.slice(0, -3)}
+                        </Text>
+                      );
+                    })}
+                  </View>
                 </View>
               </View>
-            </View>
-          );
+            );
+          }}
+          keyExtractor={item => String({ item })}
+        />
+      );
+    }
+
+    return (
+      <Text
+        style={{
+          fontSize: 13,
+          color: colors.darker,
+          textAlign: 'center',
         }}
-        keyExtractor={item => String({ item })}
-      />
+      >
+        Esse estabelecimento ainda não informou seus horários de
+        funcionamento
+      </Text>
     );
   }
 
@@ -299,9 +322,9 @@ export default function Company({ navigation, route: { params } }) {
                   onPress={() => navigation.goBack()}
                 >
                   <Ionicons
-                    name="md-arrow-back"
-                    size={25}
-                    color="white"
+                    name="ios-arrow-back"
+                    size={33}
+                    color={colors.white}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => shareCompany()}>
@@ -467,24 +490,18 @@ export default function Company({ navigation, route: { params } }) {
                   borderColor: handleWorkHours(data?.workhours)
                     ?.isOpen
                     ? colors.success
-                    : 'red',
+                    : colors.danger,
                 }}
               >
                 <Ionicons
                   name="md-time"
                   size={15}
-                  color={
-                    handleWorkHours(data?.workhours)?.isOpen
-                      ? colors.white
-                      : colors.lighdarker
-                  }
+                  color={colors.white}
                 />
                 <Text
                   style={{
                     fontSize: 12,
-                    color: handleWorkHours(data?.workhours)?.isOpen
-                      ? colors.white
-                      : colors.lighdarker,
+                    color: colors.white,
                     marginLeft: 5,
                   }}
                 >
@@ -551,6 +568,7 @@ export default function Company({ navigation, route: { params } }) {
             }}
           />
         )}
+        <Text>Aberto: {JSON.stringify(acceptOrders)}</Text>
         {products.loading ? <ActivityIndicator /> : renderProducts()}
       </ScrollView>
       {cart && (
@@ -593,6 +611,7 @@ export default function Company({ navigation, route: { params } }) {
             currentProduct={currentProduct}
             setCurrentProduct={setCurrentProduct}
             productSheetRef={productSheetRef}
+            acceptOrders={acceptOrders}
           />
         ) : null}
       </RBSheet>

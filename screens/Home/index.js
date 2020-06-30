@@ -188,11 +188,6 @@ export default function Home({ navigation }) {
           backgroundColor: 'white',
         }}
       >
-        <CurrentPlace
-          open={() => locationSheet.current.open()}
-          close={() => locationSheet.current.close()}
-          navigation={navigation}
-        />
         <FlatList
           data={categories}
           horizontal
@@ -238,6 +233,13 @@ export default function Home({ navigation }) {
           )}
           keyExtractor={item => item.name}
         />
+
+        <CurrentPlace
+          open={() => locationSheet.current.open()}
+          close={() => locationSheet.current.close()}
+          navigation={navigation}
+        />
+
         {loading ? (
           <SkeletonContent
             isLoading

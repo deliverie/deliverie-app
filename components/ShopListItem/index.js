@@ -49,7 +49,7 @@ export default function ShopListItem({ item }) {
           <View style={{ flexDirection: 'column', marginTop: 4 }}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 16 }}>
-                {item?.fantasy_name}
+                {item?.fantasy_name} - {item?.name}
               </Text>
             </View>
             {/* <View style={{ flexDirection: 'row' }}>
