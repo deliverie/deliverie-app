@@ -13,6 +13,10 @@ import {
   Creators as CompanyActions,
   Types as CompanyTypes,
 } from '../../ducks/company';
+import {
+  Creators as ProductsActions,
+  Types as ProductsTypes,
+} from '../../ducks/products';
 
 function* getCompanies({ payload }) {
   const { currentLocation } = yield select(state => state.locations);

@@ -76,14 +76,19 @@ const Products = ({
   }
 
   function addToCart() {
-    if (!acceptOrders) {
-      showToast(
-        'Erro',
-        'Esse estabelecimento ainda não esta aberto, assim que o funcionamento for liberado, você poderá fazer seus pedidos, até lá você pode consultar todo o menu',
-        'danger',
-      );
-      return;
-    }
+    // if (!acceptOrders) {
+    //   showToast(
+    //     'Erro',
+    //     'Esse estabelecimento ainda não esta aberto, assim que o funcionamento for liberado, você poderá fazer seus pedidos, até lá você pode consultar todo o menu',
+    //     'danger',
+    //   );
+    //   return;
+    // }
+    console.tron.log(
+      'testing product data',
+      company_id,
+      currentProduct,
+    );
     if (company_id && company_id !== currentProduct.company_id) {
       showToast(
         'Erro',
