@@ -115,6 +115,7 @@ export function diffDates(date1, date2) {
 
 export function handleWorkHours(days) {
   let isOpen = false;
+  let lastBlockTime = null;
   const weekDaysPt = [
     '',
     'Segunda',
@@ -161,12 +162,13 @@ export function handleWorkHours(days) {
     });
 
     const currentDayOfWeek = moment().isoWeekday();
+    const startTime = moment(Date.now());
 
     if (periods[weekDaysEn[currentDayOfWeek]]) {
       //check if there's any period block for a company
       // eslint-disable-next-line no-unused-expressions
       periods[weekDaysEn[currentDayOfWeek]]?.period.map(
-        singlePeriod => {
+        (singlePeriod, index) => {
           const startTime = moment(Date.now());
           const beforeTime = moment(
             singlePeriod.start,
@@ -177,13 +179,28 @@ export function handleWorkHours(days) {
             'HH.mm.ss',
           ).subtract(3, 'hours');
           const between = startTime.isBetween(beforeTime, afterTime);
-
+          if (
+            index ===
+            periods[weekDaysEn[currentDayOfWeek]]?.period.length - 1
+          ) {
+            lastBlockTime = afterTime;
+          }
           isOpen = between;
         },
       );
     } else {
       return null;
     }
+    const durationTime = moment.duration(
+      moment(lastBlockTime).diff(moment().subtract('3', 'hours')),
+    );
+
+    const shortMessage = `, fecha às ${moment(lastBlockTime)
+      .add('3', 'hours')
+      .format('HH:mm')}`;
+
+    console.tron.log(lastBlockTime);
+
     return {
       day: {
         [weekDaysEn[currentDayOfWeek]]: weekDaysPt[currentDayOfWeek],
@@ -191,6 +208,7 @@ export function handleWorkHours(days) {
       dayPeriod: [periods[weekDaysEn[currentDayOfWeek]]],
       allDays: periods,
       isOpen,
+      shortMessage,
     };
   }
 }

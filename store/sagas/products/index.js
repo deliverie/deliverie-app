@@ -15,11 +15,14 @@ import {
 } from '../../ducks/products';
 
 function* getProducts({ payload }) {
-  console.tron.log('Compant', payload);
+  const companyId = yield select(
+    state => state?.company?.company?.id,
+  );
+  console.tron.log('Company ID', companyId);
   try {
     const response = yield call(
       api.get,
-      `/products?company=${payload.companyId}&category=${
+      `/products?company=${companyId}&category=${
         payload.category
       }&subcategory=${
         payload.subcategory ? payload.subcategory : ''

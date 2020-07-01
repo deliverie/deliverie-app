@@ -19,12 +19,9 @@ export const Tabs = ({ categories, customColors }) => {
   const [tab, setTab] = useState(categories[0]);
   const [subTab, setSubtab] = useState(null);
 
-  const company = useSelector(state => state.company);
-
   useEffect(() => {
     dispatch(
       ProductsActions.getProductsRequest({
-        companyId: company.company.id,
         category: tab?.id || null,
       }),
     );
@@ -34,8 +31,7 @@ export const Tabs = ({ categories, customColors }) => {
     if (subTab) {
       dispatch(
         ProductsActions.getProductsRequest({
-          companyId: company.company.id,
-          category: tab.id,
+          category: tab?.id,
           subcategory: subTab.id,
         }),
       );

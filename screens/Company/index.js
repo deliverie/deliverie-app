@@ -16,10 +16,17 @@ import {
 } from 'react-native';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
+import Popover from 'react-native-popover-view';
 
-import { Ionicons, Feather, Entypo } from '@expo/vector-icons';
+import {
+  Ionicons,
+  Feather,
+  Entypo,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 
 import { LinearGradient } from 'expo-linear-gradient';
+import { TextMask } from 'react-native-masked-text';
 
 import SkeletonContent from 'react-native-skeleton-content';
 import { useDispatch, useSelector } from 'react-redux';
@@ -159,7 +166,10 @@ export default function Company({ navigation, route: { params } }) {
                       return (
                         <Text
                           style={[
-                            { fontSize: 13, color: colors.darker },
+                            {
+                              fontSize: 13,
+                              color: colors.darker,
+                            },
                             times?.allDays[item]?.period.length > 1
                               ? { marginRight: 10 }
                               : { marginRight: 0 },
@@ -327,6 +337,81 @@ export default function Company({ navigation, route: { params } }) {
                     color={colors.white}
                   />
                 </TouchableOpacity>
+                <Popover
+                  from={
+                    <TouchableOpacity
+                      style={{
+                        borderRadius: 4,
+
+                        justifyContent: 'center',
+
+                        alignContent: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="clock-outline"
+                        size={16}
+                        color={
+                          handleWorkHours(data?.workhours)?.isOpen
+                            ? colors.success
+                            : colors.danger
+                        }
+                        style={{ marginRight: 3 }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: handleWorkHours(data?.workhours)
+                            ?.isOpen
+                            ? colors.success
+                            : colors.danger,
+                          marginLeft: 5,
+                        }}
+                      >
+                        {handleWorkHours(data?.workhours)?.isOpen
+                          ? `Aberto${
+                              handleWorkHours(data?.workhours)
+                                ?.shortMessage
+                                ? handleWorkHours(data?.workhours)
+                                    ?.shortMessage
+                                : null
+                            }`
+                          : 'Fechado'}
+                      </Text>
+                      <Ionicons
+                        name="ios-arrow-down"
+                        size={16}
+                        color={
+                          handleWorkHours(data?.workhours)?.isOpen
+                            ? colors.success
+                            : colors.danger
+                        }
+                        style={{ marginLeft: 10 }}
+                      />
+                    </TouchableOpacity>
+                  }
+                >
+                  <View
+                    style={{ padding: 10, borderRadius: 16, flex: 1 }}
+                  >
+                    {!handleWorkHours(data?.workhours)?.isOpen ? (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontSize: 14,
+                          color: colors.dark,
+                        }}
+                      >
+                        Ainda estamos aguardando o estabelecimento
+                        iniciar seu atendimento na plataforma
+                      </Text>
+                    ) : (
+                      renderWorkTime(handleWorkHours(data?.workhours))
+                    )}
+                  </View>
+                </Popover>
                 <TouchableOpacity onPress={() => shareCompany()}>
                   <Ionicons name="md-share" size={23} color="white" />
                 </TouchableOpacity>
@@ -383,8 +468,8 @@ export default function Company({ navigation, route: { params } }) {
                   </Text>
                   <View
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      alignItems: 'flex-start',
                     }}
                   >
                     <Text
@@ -398,6 +483,42 @@ export default function Company({ navigation, route: { params } }) {
                     >
                       {toAddress()}
                     </Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        Linking.openURL(
+                          `tel:(${data?.phone_ddd})${data?.phone_num}`,
+                        )
+                      }
+                      style={{
+                        borderRadius: 4,
+                        paddingVertical: 10,
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Ionicons
+                        name="ios-call"
+                        size={16}
+                        color={colors.white}
+                      />
+
+                      <TextMask
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                          color: colors.white,
+                          marginLeft: 10,
+                        }}
+                        type={'cel-phone'}
+                        options={{
+                          maskType: 'BRL',
+                          withDDD: true,
+                          dddMask: '(99) ',
+                        }}
+                        value={`${data?.phone_ddd}${data?.phone_num}`}
+                      />
+                    </TouchableOpacity>
                   </View>
                 </>
               )}
@@ -446,35 +567,6 @@ export default function Company({ navigation, route: { params } }) {
                 justifyContent: 'space-between',
               }}
             >
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    `tel:(${data?.phone_ddd})${data?.phone_num}`,
-                  )
-                }
-                style={{
-                  borderRadius: 4,
-                  paddingHorizontal: 10,
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <Ionicons
-                  name="ios-call"
-                  size={15}
-                  color={colors.darker}
-                />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: colors.lighdarker,
-                    marginLeft: 5,
-                  }}
-                >
-                  ({data?.phone_ddd}) {data?.phone_num}
-                </Text>
-              </TouchableOpacity>
               <View
                 style={{
                   borderRadius: 4,

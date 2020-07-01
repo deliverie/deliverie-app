@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
-  ImageBackground,
+  Image,
   StyleSheet,
   Dimensions,
   Text,
   TouchableOpacity,
 } from 'react-native';
+import Popover from 'react-native-popover-view';
 
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { Ionicons, Feather } from '@expo/vector-icons';
@@ -190,166 +191,79 @@ const Products = ({
           }}
         >
           <Ionicons
-            style={{ paddingHorizontal: 20 }}
+            style={{ paddingLeft: 20 }}
             name="ios-arrow-back"
             size={33}
             color={colors.dark}
             onPress={() => handleProductClose()}
           />
-          <View
-            style={{
-              borderRadius: 4,
-              paddingHorizontal: 10,
-              justifyContent: 'center',
-              borderWidth: 2,
-              borderColor: handleWorkHours(data?.workhours)?.isOpen
-                ? colors.success
-                : colors.danger,
-              alignContent: 'center',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
+          <Popover
+            from={
+              <TouchableOpacity
+                style={{
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  justifyContent: 'center',
+                  borderWidth: 2,
+                  borderColor: handleWorkHours(data?.workhours)
+                    ?.isOpen
+                    ? colors.success
+                    : colors.danger,
+                  alignContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: handleWorkHours(data?.workhours)?.isOpen
+                      ? colors.success
+                      : colors.danger,
+                    marginLeft: 5,
+                  }}
+                >
+                  {handleWorkHours(data?.workhours)?.isOpen
+                    ? 'Aberto'
+                    : 'Fechado'}
+                </Text>
+              </TouchableOpacity>
+            }
           >
-            <Text
-              style={{
-                fontSize: 14,
-                color: handleWorkHours(data?.workhours)?.isOpen
-                  ? colors.success
-                  : colors.danger,
-                marginLeft: 5,
-              }}
-            >
-              {handleWorkHours(data?.workhours)?.isOpen
-                ? 'Aberto'
-                : 'Fechado'}
-            </Text>
-          </View>
+            <View style={{ padding: 10, borderRadius: 16, flex: 1 }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 14,
+                  color: colors.dark,
+                }}
+              >
+                Ainda estamos aguardando o estabelecimento iniciar seu
+                atendimento na plataforma
+              </Text>
+            </View>
+          </Popover>
+
           <Ionicons
-            style={{ paddingHorizontal: 20 }}
+            style={{ paddingRight: 20 }}
             name="md-share"
             size={23}
             color={colors.dark}
           />
         </View>
         {currentProduct?.image && (
-          <ImageBackground
+          <Image
             style={{
               height: 220,
               borderRadius: 10,
               marginHorizontal: 20,
               justifyContent: 'flex-end',
             }}
-            imageStyle={{ borderRadius: 10 }}
             source={{
               uri: `${baseURL}/${currentProduct.image.path}`,
             }}
             resizeMode="cover"
-          >
-            <LinearGradient
-              colors={[
-                'transparent',
-                'rgba(0,0,0,0.3)',
-
-                'rgba(0,0,0,0.3)',
-                'rgba(0,0,0,0.7)',
-              ]}
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                ...StyleSheet.absoluteFill,
-                zIndex: 9999,
-              }}
-            />
-            <View
-              style={{
-                padding: 3,
-                borderRadius: 4,
-                marginTop: 8,
-                flexDirection: 'row',
-                width: wWidth - 40,
-                justifyContent: 'space-between',
-                height: 30,
-                zIndex: 99999,
-              }}
-            >
-              <View
-                style={{
-                  borderRadius: 4,
-                  paddingHorizontal: 10,
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <Ionicons
-                  name="ios-call"
-                  size={15}
-                  color={colors.white}
-                />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: colors.white,
-                    marginLeft: 5,
-                  }}
-                >
-                  ({data?.phone_ddd}) {data?.phone_num}
-                </Text>
-              </View>
-              <View
-                style={{
-                  borderRadius: 4,
-                  paddingHorizontal: 10,
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <Ionicons
-                  name="md-time"
-                  size={15}
-                  color={colors.white}
-                />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: colors.white,
-                    marginLeft: 5,
-                  }}
-                >
-                  Aberto
-                </Text>
-              </View>
-              <View
-                style={{
-                  borderRadius: 4,
-                  paddingHorizontal: 10,
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <Ionicons
-                  name="md-time"
-                  size={15}
-                  color={colors.white}
-                />
-
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: colors.white,
-                    marginLeft: 5,
-                  }}
-                >
-                  {data?.min_delivery_time}-{data?.max_delivery_time}{' '}
-                  min
-                </Text>
-              </View>
-            </View>
-          </ImageBackground>
+          />
         )}
 
         <View

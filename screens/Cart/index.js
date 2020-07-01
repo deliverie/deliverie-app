@@ -9,6 +9,7 @@ import {
 
 import { TextInputMask } from 'react-native-masked-text';
 import { useNavigation } from '@react-navigation/native';
+import EmptyChart from '../../assets/images/shopping-bag.svg';
 
 import {
   Image,
@@ -630,9 +631,35 @@ function Cart({ navigation }) {
 
     if (!cartNotEmpty) {
       return (
-        <View>
-          <Text style={{ textAlign: 'center' }}>
-            Seu carrinho esta vazio
+        <View
+          style={{
+            flex: 1,
+            alignContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <EmptyChart width={85} height={85} />
+          <Text
+            style={{
+              fontSize: 22,
+              textAlign: 'center',
+              fontFamily: 'roboto-bold',
+              color: colors.dark,
+              marginTop: 10,
+            }}
+          >
+            Vishh!
+          </Text>
+          <Text
+            style={{
+              fontSize: 22,
+              textAlign: 'center',
+              fontFamily: 'roboto-light',
+              color: colors.dark,
+              marginTop: 10,
+            }}
+          >
+            Seu carrinho esta vazio!
           </Text>
         </View>
       );
@@ -1313,7 +1340,7 @@ function Cart({ navigation }) {
           </ScrollView>
         </View>
       )}
-      {!user?.data && (
+      {!user?.data && cartNotEmpty && (
         <View
           style={{
             flex: 1,

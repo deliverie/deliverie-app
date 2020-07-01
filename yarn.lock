@@ -7019,6 +7019,13 @@ react-native-phone-call@^1.0.9:
   resolved "https://registry.yarnpkg.com/react-native-phone-call/-/react-native-phone-call-1.0.9.tgz#4468ec6f95856557fbff9bd69a0db04b54c35e1d"
   integrity sha512-OPWYg8qeWNG/U4bWGMAKcQTH/ifqJnsvUPCH4lOkvWFHbQS3fbH5M8rFhXCzcfS0GVNzHhZX9ZByMM368TFAUQ==
 
+react-native-popover-view@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-popover-view/-/react-native-popover-view-3.0.3.tgz#6376db42c077b60f782db933f3a1830ce0c35430"
+  integrity sha512-B0Y4MOdrGDKylGVNzFE+dTqNIweY4Rd3StbIBFrbKCDZbi5MK5VCDL+tWN6/3I6xQknNQUi4MdqhnsyDscgLng==
+  dependencies:
+    react-native-safe-area-view "0.14.9"
+
 react-native-raw-bottom-sheet@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-native-raw-bottom-sheet/-/react-native-raw-bottom-sheet-2.1.0.tgz#cf875206a748d4ccf0b1086d2d113eb75d128664"
@@ -7045,7 +7052,7 @@ react-native-safe-area-context@^0.7.3:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.7.3.tgz#ad6bd4abbabe195332c53810e4ce5851eb21aa2a"
   integrity sha512-9Uqu1vlXPi+2cKW/CW6OnHxA76mWC4kF3wvlqzq4DY8hn37AeiXtLFs2WkxH4yXQRrnJdP6ivc65Lz+MqwRZAA==
 
-react-native-safe-area-view@^0.14.9:
+react-native-safe-area-view@0.14.9, react-native-safe-area-view@^0.14.9:
   version "0.14.9"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.14.9.tgz#90ee8383037010d9a5055a97cf97e4c1da1f0c3d"
   integrity sha512-WII/ulhpVyL/qbYb7vydq7dJAfZRBcEhg4/UWt6F6nAKpLa3gAceMOxBxI914ppwSP/TdUsandFy6lkJQE0z4A==
