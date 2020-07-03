@@ -7,6 +7,7 @@ import {
   ImageBackground,
   StyleSheet,
   Dimensions,
+  StatusBar,
   Linking,
   SafeAreaView,
   ScrollView,
@@ -287,6 +288,7 @@ export default function Company({ navigation, route: { params } }) {
 
   return (
     <>
+      <StatusBar backgroundColor="blue" barStyle="light-content" />
       <ScrollView
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
@@ -698,6 +700,8 @@ export default function Company({ navigation, route: { params } }) {
           },
         }}
       >
+        <StatusBar backgroundColor="blue" barStyle="dark-content" />
+
         {currentProduct ? (
           <Products
             currentProduct={currentProduct}
