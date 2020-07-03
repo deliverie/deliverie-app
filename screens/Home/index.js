@@ -116,7 +116,8 @@ const categories = [
   },
 ];
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route: { params } }) {
+  const redirect = params?.redirect;
   const locationSheet = useRef();
   const dispatch = useDispatch();
   const { companies: dataCompany, total, loading } = useSelector(
@@ -127,7 +128,7 @@ export default function Home({ navigation }) {
   const [category, setCategory] = useState('');
 
   useEffect(() => {
-    if (data) {
+    if (data && location.locations.length === 0) {
       dispatch(LocationsActions.getLocations());
     }
   }, []);
@@ -136,7 +137,7 @@ export default function Home({ navigation }) {
     console.tron.log('location', location);
     if (!location.currentLocation) {
       locationSheet.current.open();
-    } else {
+    } else if (!redirect) {
       dispatch(CompanyActions.getCompany());
     }
   }, [location]);

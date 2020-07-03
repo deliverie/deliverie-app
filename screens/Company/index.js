@@ -68,9 +68,11 @@ export default function Company({ navigation, route: { params } }) {
   const productSheetRef = useRef();
   const categorieSheetRef = useRef();
 
-  const { item } = params;
+  const item = params?.item;
+  console.tron.log('item', item);
 
   if (!item) {
+    console.tron.log('params', params);
     return null;
   }
 

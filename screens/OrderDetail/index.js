@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 
+import * as RootNavigation from '../../services/navigation';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { setModal, popModal } from 'react-native-alert-utils';
 
@@ -118,7 +120,7 @@ export default function OrderDetail({
                     ) : null}
                   </View>
                   <Text style={styles.cardItemsSingleText}>
-                    R$ {parsePrice(item)}
+                    {monetize(parseFloat(parsePrice(item)))}
                   </Text>
                 </View>
               </View>
@@ -270,7 +272,16 @@ export default function OrderDetail({
         <View style={styles.content}>
           <View style={{ marginBottom: 20 }}>
             <View style={styles.cardItem}>
-              <View style={styles.cardItemHeader}>
+              <TouchableOpacity
+                onPress={() =>
+                  RootNavigation.navigate('Home', {
+                    screen: 'Company',
+                    item: getOrder?.company?.id,
+                    redirect: true,
+                  })
+                }
+                style={[styles.cardItemHeader, { borderWidth: 1 }]}
+              >
                 <Image
                   resizeMode="cover"
                   style={styles.cardItemLogo}
@@ -282,7 +293,7 @@ export default function OrderDetail({
                     {getOrder?.company?.name}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
               <View
                 style={[
                   { flexDirection: 'row', paddingVertical: 10 },

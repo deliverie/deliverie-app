@@ -12,7 +12,21 @@ import Cart from '../../screens/Cart';
 import Login from '../../screens/Login';
 import Register from '../../screens/Register';
 
-export default function HomeStack() {
+export default function HomeStack({ navigation, route: { params } }) {
+  React.useEffect(() => {
+    console.tron.log('params no route', params);
+    if (params) {
+      const { screen, options } = params;
+      if (screen) {
+        navigation.reset({
+          routes: [{ name: 'Home' }],
+        });
+        setTimeout(() => {
+          navigation.navigate(screen, options);
+        }, 50);
+      }
+    }
+  }, [params]);
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="Home" component={Home} />
