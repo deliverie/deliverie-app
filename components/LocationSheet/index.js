@@ -10,6 +10,7 @@ import {
   Text,
   ScrollView,
   Dimensions,
+  AsyncStorage,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -54,6 +55,7 @@ const LocationSheet = React.forwardRef((props, ref) => {
   );
 
   function saveAddres(values) {
+    AsyncStorage.setItem('address', JSON.stringify(values));
     dispatch(
       LocationsActions.setLocation({
         street: values.logradouro,
@@ -62,11 +64,6 @@ const LocationSheet = React.forwardRef((props, ref) => {
         state: values.uf,
         zipcode: values.cep,
       }),
-    );
-    showToast(
-      'Boaaa!',
-      'Seu endereço foi salvo, agora você pode visualizar os estabelecimentos próximos a você',
-      'success',
     );
     setTimeout(() => {
       ref.current.close();

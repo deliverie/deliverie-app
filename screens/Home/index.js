@@ -8,6 +8,7 @@ import {
   Text,
   LayoutAnimation,
   SafeAreaView,
+  AsyncStorage,
 } from 'react-native';
 import {
   ScrollView,
@@ -134,15 +135,32 @@ export default function Home({ navigation, route: { params } }) {
   }, []);
 
   useEffect(() => {
+    const handleLocation = async () => {
+      const address = await AsyncStorage.getItem('address');
+      if (address) {
+        const { values } = JSON.parse(address);
+        dispatch(
+          LocationsActions.setLocation({
+            street: values.logradouro,
+            district: values.bairro,
+            city: values.localidade,
+            state: values.uf,
+            zipcode: values.cep,
+          }),
+        );
+      } else {
+        locationSheet.current.open();
+      }
+    };
     console.tron.log('location', location);
     if (!location.currentLocation) {
-      locationSheet.current.open();
+      handleLocation();
     } else if (!redirect) {
       dispatch(CompanyActions.getCompany());
     }
   }, [location]);
 
-  //monitoring location change
+  // monitoring location change
   useEffect(() => {
     dispatch(CompanyActions.getCompany());
   }, [location.currentLocation]);
