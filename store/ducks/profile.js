@@ -12,7 +12,6 @@ const INITIAL_STATE = {
 export default function profile(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.PROFILE_UPDATE_REQUEST:
-      console.log('reducer de profile', action.payload);
       return { ...state, loading: true };
     case Types.PROFILE_UPDATE_SUCCESS:
       return {

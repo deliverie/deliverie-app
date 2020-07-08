@@ -46,8 +46,7 @@ export default function cart(state = INITIAL_STATE, action) {
     }
     case Types.CLEAR_CART: {
       return {
-        ...state,
-        cart: [],
+        ...INITIAL_STATE,
       };
     }
     default:

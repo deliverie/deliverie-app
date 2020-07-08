@@ -20,7 +20,7 @@ function* profileUpdate({ payload }) {
       phone_ddd: payload.phone.slice(0, 2),
       phone_num: payload.phone.slice(2, 14),
       password: payload.password,
-      password_confirmation: payload.password,
+      password_confirmation: payload.password_confirmation,
     };
   } else {
     data = {
@@ -36,8 +36,8 @@ function* profileUpdate({ payload }) {
     yield put(ProfileActions.profileUpdateSuccess());
     yield put(LoginActions.loginSuccess({ user: response.data }));
     showToast(
-      'Feito',
-      'Seu cadastro foi realizado com sucesso',
+      'Sucesso',
+      'Cadastro atualizado com sucesso',
       'success',
     );
   } catch (error) {
@@ -45,7 +45,7 @@ function* profileUpdate({ payload }) {
 
     showToast(
       'Ops',
-      'Erro ao realizar seu perfil, tente novamente',
+      'Erro ao atualizar seu perfil, tente novamente',
       'danger',
     );
   }

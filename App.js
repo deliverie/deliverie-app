@@ -80,7 +80,7 @@ export default function App(props) {
     return null;
   }
 
-  // console.disableYellowBox = true;
+  console.disableYellowBox = true;
 
   return (
     <View style={styles.container}>

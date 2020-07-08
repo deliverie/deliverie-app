@@ -13,6 +13,7 @@ import { RectButton, ScrollView } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { Creators as LoginActions } from '../../store/ducks/login';
+import { Creators as CartActions } from '../../store/ducks/cart';
 import logo from '../../assets/images/logo-colored-small.png';
 import { wpd } from '../../utils/scalling';
 
@@ -115,7 +116,9 @@ export default function Account({ navigation }) {
                       alignItems: 'center',
                     }}
                   >
-                    <Text style={{ fontSize: 19 }}>10</Text>
+                    <Text style={{ fontSize: 19 }}>
+                      {data?.user?.__meta__?.orders_count}
+                    </Text>
                     <Text>Pedidos realizados</Text>
                   </View>
                 </View>
@@ -138,7 +141,10 @@ export default function Account({ navigation }) {
             <OptionButton
               icon="md-log-out"
               label="Sair"
-              onPress={() => dispatch(LoginActions.loginLogout())}
+              onPress={() => {
+                dispatch(CartActions.clearCart());
+                dispatch(LoginActions.loginLogout());
+              }}
               isLastOption
               colorIcon="#e42618"
             />

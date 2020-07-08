@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
@@ -9,23 +9,22 @@ import {
 } from 'react-native-gesture-handler';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Creators as ProfileActions } from '../../store/ducks/profile';
-
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { Creators as ProfileActions } from '../../store/ducks/profile';
 
 import H4 from '../../components/H4';
 import SimpleHeader from '../../components/SimpleHeader';
 import Input from '../../components/Input';
 import ButtonFill from '../../components/ButtonFill';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import { colors } from '../../styles';
 
 export default function Profile() {
   const dispatch = useDispatch();
   const login = useSelector(state => state.login);
+  const { loading } = useSelector(state => state.profile);
   const [showPasswords, setShowPasswords] = React.useState(false);
   return (
     <View style={styles.container}>
@@ -49,6 +48,18 @@ export default function Profile() {
                 .email('Digite um e-mail válido')
                 .required('Campo obrigatório'),
               password: yup.string(),
+              password_confirmation: yup
+                .string()
+                .when('password', (pass, schema) =>
+                  pass?.length > 0
+                    ? schema
+                        .oneOf(
+                          [yup.ref('password')],
+                          'As senhas devem ser iguais.',
+                        )
+                        .required('Campo obrigatório')
+                    : schema.nullable(),
+                ),
             })}
           >
             {({
@@ -122,22 +133,41 @@ export default function Profile() {
                       <Input
                         icon="lock-outline"
                         name="Nova senha"
-                        placeholder="Digite sua nova senha senha"
+                        placeholder="Nova senha"
                         value={values.password}
                         onChangeText={handleChange('password')}
                         onBlur={() => setFieldTouched('password')}
                         msg={errors.password ? errors.password : null}
                         secureTextEntry
                       />
+                      <Input
+                        icon="lock-outline"
+                        name="Confirmação de senha"
+                        placeholder="Repetir nova senha"
+                        value={values.password_confirmation}
+                        onChangeText={handleChange(
+                          'password_confirmation',
+                        )}
+                        onBlur={() =>
+                          setFieldTouched('password_confirmation')
+                        }
+                        msg={
+                          errors.password_confirmation
+                            ? errors.password_confirmation
+                            : null
+                        }
+                        secureTextEntry
+                      />
                     </View>
                   )}
                 </View>
                 <ButtonFill
-                  title={'Atualizar'}
+                  title="Atualizar"
                   fontColor={colors.white}
-                  disabled={!isValid}
+                  disabled={!isValid || loading}
                   color={colors.primary}
                   onPress={() => handleSubmit()}
+                  loading={loading}
                 />
 
                 <KeyboardSpacer topSpacing={-40} />
@@ -167,7 +197,7 @@ function OptionButton({
           <Ionicons
             name={icon}
             size={22}
-            color={colorIcon ? colorIcon : 'rgba(0,0,0,0.35)'}
+            color={colorIcon || 'rgba(0,0,0,0.35)'}
           />
         </View>
         <View style={styles.optionTextContainer}>

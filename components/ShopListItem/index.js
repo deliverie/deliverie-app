@@ -75,15 +75,19 @@ export default function ShopListItem({ item }) {
                 opacity: 0.6,
               }}
             >
-              <MaterialCommunityIcons
-                name="clock-outline"
-                size={12}
-                color={colors.darker}
-                style={{ marginRight: 3 }}
-              />
-              <H4
-                text={`${item?.min_delivery_time}-${item.max_delivery_time} min`}
-              />
+              {item?.min_delivery_time && item?.max_delivery_time && (
+                <>
+                  <MaterialCommunityIcons
+                    name="clock-outline"
+                    size={12}
+                    color={colors.darker}
+                    style={{ marginRight: 3 }}
+                  />
+                  <H4
+                    text={`${item?.min_delivery_time}-${item?.max_delivery_time} min`}
+                  />
+                </>
+              )}
             </View>
             <View style={{ flexDirection: 'row', opacity: 0.6 }}>
               <MaterialCommunityIcons

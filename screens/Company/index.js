@@ -33,13 +33,15 @@ import SkeletonContent from 'react-native-skeleton-content';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Color from 'color';
+import Animated from 'react-native-reanimated';
+import { onScrollEvent, useValue } from 'react-native-redash';
 import { monetize, handleWorkHours, weekDaysEnPt } from '../../utils';
 import { colors } from '../../styles';
 
 import CategorieSheet from '../../components/CategorieSheet';
 
 import { Cart } from './components/Cart';
-import { Tabs } from './components/Tabs';
+import { Tabs, StickyTabs } from './components/Tabs';
 import { baseURL } from '../../services/api';
 import Picture from '../../assets/images/picture.svg';
 
@@ -50,12 +52,14 @@ import company, {
 import styles from './styles';
 import Products from './components/Products';
 import Delivery from '../../assets/images/delivery.svg';
-import { acc } from 'react-native-reanimated';
 
 const { height } = Dimensions.get('window');
 
 export default function Company({ navigation, route: { params } }) {
   const dispatch = useDispatch();
+  const [tabY, setTabY] = useState(0);
+  const y = useValue(0);
+  const onScroll = onScrollEvent({ y });
   const products = useSelector(state => state.products);
   const { loading, company: data } = useSelector(
     state => state.company,
@@ -227,7 +231,7 @@ export default function Company({ navigation, route: { params } }) {
     }
     return (
       <FlatList
-        data={products.products}
+        data={products?.products || []}
         renderItem={({ item }) => {
           if (item.is_active === 1) {
             return (
@@ -291,9 +295,11 @@ export default function Company({ navigation, route: { params } }) {
   return (
     <>
       <StatusBar backgroundColor="blue" barStyle="light-content" />
-      <ScrollView
-        style={{ flex: 1 }}
+      <Animated.ScrollView
+        style={{ flex: 1, zIndex: 9999 }}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={1}
+        {...{ onScroll }}
       >
         <View
           style={{
@@ -514,7 +520,7 @@ export default function Company({ navigation, route: { params } }) {
                           color: colors.white,
                           marginLeft: 10,
                         }}
-                        type={'cel-phone'}
+                        type="cel-phone"
                         options={{
                           maskType: 'BRL',
                           withDDD: true,
@@ -615,23 +621,26 @@ export default function Company({ navigation, route: { params } }) {
                   alignItems: 'center',
                 }}
               >
-                <Delivery width="16" height="16" />
-
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: colors.lighdarker,
-                    marginLeft: 5,
-                  }}
-                >
-                  {data?.min_delivery_time}-{data?.max_delivery_time}{' '}
-                  min
-                  {/* min (
+                {data?.min_delivery_time && data?.max_delivery_time && (
+                  <>
+                    <Delivery width="16" height="16" />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: colors.lighdarker,
+                        marginLeft: 5,
+                      }}
+                    >
+                      {data?.min_delivery_time}-
+                      {data?.max_delivery_time} min
+                      {/* min (
                   {data?.delivery_price === 0
                     ? 'Grátis'
                     : monetize(data?.delivery_price)}
                   ) */}
-                </Text>
+                    </Text>
+                  </>
+                )}
               </View>
             </View>
             {showInfo && (
@@ -657,6 +666,11 @@ export default function Company({ navigation, route: { params } }) {
           />
         ) : (
           <Tabs
+            onLayout={({
+              nativeEvent: {
+                layout: { y: newTabY },
+              },
+            }) => setTabY(newTabY)}
             categories={data?.categories || []}
             customColors={{
               primary: data?.primary_color,
@@ -664,9 +678,17 @@ export default function Company({ navigation, route: { params } }) {
             }}
           />
         )}
-        <Text>Aberto: {JSON.stringify(acceptOrders)}</Text>
         {products.loading ? <ActivityIndicator /> : renderProducts()}
-      </ScrollView>
+      </Animated.ScrollView>
+      <StickyTabs
+        tabY={tabY}
+        categories={data?.categories || []}
+        customColors={{
+          primary: data?.primary_color,
+          secondary: data?.secondary_color,
+        }}
+        {...{ y }}
+      />
       {cart && (
         <SafeAreaView
           containerStyle={{ backgroundColor: 'transparent' }}
