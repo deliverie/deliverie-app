@@ -116,8 +116,11 @@ const Products = ({
   function priceAll() {
     if (Object.keys(attr).length) {
       const prices = Object.values(attr).map(e => {
+        console.log(e);
         if (e?.prices?.length) {
-          return e?.prices[0]?.price;
+          return e.price_changes
+            ? e?.prices[0]?.price
+            : currentProduct?.price;
         }
         if (e.length > 1) {
           const addRed = e.reduce((ac, v) => ac?.price + v?.price);
@@ -457,7 +460,9 @@ const Products = ({
                                 {monetize(
                                   attribute.is_additional
                                     ? opcoes?.price
-                                    : opcoes?.prices[0]?.price,
+                                    : attribute.price_changes
+                                    ? opcoes?.prices[0]?.price
+                                    : null,
                                 )}
                               </Text>
                             </TouchableOpacity>

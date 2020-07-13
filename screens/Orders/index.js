@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   Alert,
+  StatusBar,
 } from 'react-native';
 import {
   RectButton,
@@ -235,6 +236,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+    paddingTop: StatusBar.currentHeight,
   },
   contentContainer: {},
   content: {

@@ -313,7 +313,6 @@ export default function Company({ navigation, route: { params } }) {
               width: null,
               height: null,
               padding: 20,
-              paddingTop: 50,
             }}
           >
             <View
@@ -322,12 +321,12 @@ export default function Company({ navigation, route: { params } }) {
                 flex: 1,
               }}
             >
-              <SafeAreaView
+              <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   zIndex: 9999999,
-                  borderWidht: 1,
+
                   flex: 1,
                   marginBottom: 10,
                 }}
@@ -425,7 +424,7 @@ export default function Company({ navigation, route: { params } }) {
                 <TouchableOpacity onPress={() => shareCompany()}>
                   <Ionicons name="md-share" size={23} color="white" />
                 </TouchableOpacity>
-              </SafeAreaView>
+              </View>
               {loading ? (
                 <SkeletonContent
                   isLoading

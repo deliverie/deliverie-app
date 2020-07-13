@@ -29,6 +29,10 @@
       "androidMode": "collapse",
       "color": "#FF5900"
     },
+    "androidStatusBar": {
+      "backgroundColor": "transparent",
+      "translucent": true
+    },
     "packagerOpts": {
       "config": "metro.config.js",
       "sourceExts": [
